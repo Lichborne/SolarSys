@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+// code adapted from Weimann, Jason, "Let your players place objects or turrets in Unity (RTS / Base Building games)," May 8, 2018, https://unity3d.college/2018/05/08/let-players-place-objects-turrets-unity-rts-base-building-games/ 
+
 public class placeandrotate: MonoBehaviour
 {
     [SerializeField]
@@ -11,7 +13,11 @@ public class placeandrotate: MonoBehaviour
 
     private GameObject currentPlaceableObject;
 
+
     private float mouseWheelRotation;
+
+    private int spawnDistance = 8;
+
     private int currentPrefabIndex = -1;
 
     private void Update()
@@ -20,7 +26,7 @@ public class placeandrotate: MonoBehaviour
 
         if (currentPlaceableObject != null)
         {
-            MoveCurrentObjectToMouse(currentPrefabIndex);
+            MoveCurrentObjectToMouse();
             RotateFromMouseWheel();
             ReleaseIfClicked();
         }
@@ -58,15 +64,24 @@ public class placeandrotate: MonoBehaviour
         return currentPlaceableObject != null && currentPrefabIndex == i;
     }
 
-    private void MoveCurrentObjectToMouse(int i)
+    private void MoveCurrentObjectToMouse()
     {
+        
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo))
-        {
+        if (Physics.Raycast(ray, out hitInfo)) {
             currentPlaceableObject.transform.position = hitInfo.point;
             //currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+        } else if (currentPrefabIndex == 0) {
+
+            currentPlaceableObject.transform.position =  Camera.main.transform.position;
+
+            currentPlaceableObject.transform.forward =  Camera.main.transform.forward;
+            
+            currentPlaceableObject.transform.rotation =  Camera.main.transform.rotation;
+
+            currentPlaceableObject.transform.position += currentPlaceableObject.transform.forward * spawnDistance;
         }
     }
 
