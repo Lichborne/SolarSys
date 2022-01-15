@@ -8,7 +8,7 @@ namespace Neo4JHelloWorld
     public class DatabaseView : IDisposable
     {
         private bool _disposed = false;
-        private readonly IDriver _driver;
+        private IDriver _driver;
 
         ~DatabaseView()
             => Dispose(false);
