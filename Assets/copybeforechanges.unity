@@ -281,8 +281,8 @@ GameObject:
   - component: {fileID: 1687258582}
   - component: {fileID: 1687258583}
   - component: {fileID: 1687258586}
-  - component: {fileID: 1687258587}
   - component: {fileID: 1687258588}
+  - component: {fileID: 1687258587}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -436,14 +436,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e561526d614560478ca12c6b1161fad, type: 3}
+  m_Script: {fileID: 11500000, guid: ec7e5bf494102d74990cfec7fbf5d993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghost: {fileID: 8426962150225240774, guid: 0fe72e7c3fad3c14aaf523e6d6c31f70, type: 3}
-  placed: {fileID: 1395841571981611390, guid: ae3a8bca8cf28bd4abd117525993fa1e, type: 3}
-  distance: 1
+  cameraToLookAt: {fileID: 0}
 --- !u!114 &1687258588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,10 +454,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f894d7cfe75375143bc854fbf83c3592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableObjectPrefabs:
+  _objectPrefabs:
   - {fileID: 3404108376748283412, guid: 8ebf8a09aeee6a14b88a43c97b2a2923, type: 3}
   - {fileID: 4974278123316600395, guid: cffe4958efa6c1340ae54a8cbde8ae9e, type: 3}
-  visualAidPrefabs:
+  _visualAidPrefabs:
   - {fileID: 344889050532266809, guid: f8a7976c228660447929cbbe28920b53, type: 3}
   - {fileID: 8426962150225240774, guid: 0fe72e7c3fad3c14aaf523e6d6c31f70, type: 3}
 --- !u!1001 &1916131612
