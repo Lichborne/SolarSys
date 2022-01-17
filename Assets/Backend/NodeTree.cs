@@ -3,8 +3,13 @@ using System.Collections.Generic;
 
 class NodeTree
 {
+
+    // Node id
+    public Guid Id { get; private set; } = Guid.NewGuid();
+
+
     // address of all children nodes 
-    public List<NodeTree> ChildNodes = new List<NodeTree>();
+    public List<NodeTree> ChildNodes { get; private set; } = new List<NodeTree>();
 
     // coordinates of the node
     public (double x, double y, double z) Coordinates;
@@ -21,13 +26,15 @@ class NodeTree
 
     public void RemoveChildNode(NodeTree childNode)
     {
-        if (ChildNodes.find())
+        if (ChildNodes.Remove(childNode))
         {
-            Chu
+
         }
+
+        // TODO maybe return error?
     }
 
-    public bool isLeafNode()
+    public bool IsLeafNode()
     {
         if (this.ChildNodes.Count == 0)
         {
@@ -35,10 +42,6 @@ class NodeTree
         }
         return false;
     }
-
-
-
-
 
 
 }
