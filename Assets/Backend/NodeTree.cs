@@ -21,8 +21,22 @@ class NodeTree
 
     public void RemoveChildNode(NodeTree childNode)
     {
-
+        if (ChildNodes.find())
+        {
+            Chu
+        }
     }
+
+    public bool isLeafNode()
+    {
+        if (this.ChildNodes.Count == 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
 
 
 
