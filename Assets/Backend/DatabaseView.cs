@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Neo4JHelloWorld
+namespace Backend
 {
     public class DatabaseView : IDisposable
     {
@@ -38,6 +38,23 @@ namespace Neo4JHelloWorld
         public List<int> NodeIdsLinkedFrom(int nodeId)
             => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(linkingNode) = {nodeId} return id(baseNode)");
 
+        public NodeTree CreateNodeTreeFromGuid(string guid)
+        {
+            var query = $"match (n {{'guid': {guid}}}) return n";
+            using var session = _driver.Session();
+
+            NodeTree nodeTree = session.ReadTransaction(tx =>
+            {
+                var result = tx.Run(query);
+                var record = result.Single();
+                var content = record["content"].As<string>();
+                var coordinates = record["coordinates"].As<List<double>>();
+                return new NodeTree(coordinates, content, guid);
+            }).ToList();
+
+            return nodeTree;
+        }
+
         /// <summary> IDs of the nodes that link to <paramref name="nodeId"/>. </summary>
         public List<int> NodeIdsLinkingTo(int nodeId)
             => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(baseNode) = {nodeId} return id(linkingNode)");
@@ -64,5 +81,6 @@ namespace Neo4JHelloWorld
 
             return nodeIds;
         }
+        
     }
 }
