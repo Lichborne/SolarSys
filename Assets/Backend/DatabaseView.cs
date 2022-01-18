@@ -38,23 +38,8 @@ namespace Backend
         public List<int> NodeIdsLinkedFrom(int nodeId)
             => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(linkingNode) = {nodeId} return id(baseNode)");
 
-        public GraphNode FindNodeByGuid(Guid id)
-        {
-            var query = $"match (node: {{guid: '{id}'}}) return node";
-            using var session = _driver.Session();
+        
 
-            return session.ReadTransaction(tx => 
-            {
-                var result = tx.Run(query);
-                var record = result.Single();
-
-                string text = record["text"].As<string>();
-                Guid id = Guid.Parse(record["guid"].As<string>()); 
-                List<double> coords = record["coordinates"].As<List<double>>();
-
-                return new GraphNode(text, id, (coords[0], coords[1], coords[2]));               
-            });
-        }
 
     /*
         public NodeTree CreateNodeTreeFromGuid(string guid)

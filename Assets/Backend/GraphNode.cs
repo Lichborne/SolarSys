@@ -33,6 +33,16 @@ namespace Backend
             this(text, new Guid(), coordinates)
         { }
 
+        public static GraphNode FromINode(INode dbNode)
+        {
+            string text = node.Properties["text"].As<string>();
+            string guidText = dbNode.Properties["guid"].As<string>();
+            Guid guid = Guid.Parse(guidText);
+            List<double> coords = node.Properties["coordinates"].As<List<double>>();
+
+            return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
+        }
+
 
         public void AddEdge(GraphEdge edge)
             => _edges.Add(edge);
