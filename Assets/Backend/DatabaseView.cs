@@ -38,8 +38,18 @@ namespace Backend
         public List<int> NodeIdsLinkedFrom(int nodeId)
             => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(linkingNode) = {nodeId} return id(baseNode)");
 
-        
+        public GraphNode ReadNodeWithGuid(Guid id)
+        {
+            var query = $"match (node {{guid: '{id}'}}) return node";
+            using var session = _driver.Session();
 
+            return session.ReadTransaction(tx => 
+            {
+                var result = tx.Run(query);
+                var node = result.Single()["node"].As<INode>();
+                return GraphNode.FromINode(node);         
+            });
+        }
 
     /*
         public NodeTree CreateNodeTreeFromGuid(string guid)
