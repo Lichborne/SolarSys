@@ -1,0 +1,18 @@
+CREATE 
+(ro:Node {text: 'Rowen', guid: 'abc', coordinates: [0.1,0.2,0.3]}),
+(ju:Node {text: 'Julius', guid: 'def', coordinates: [0.1,0.2,0.3]}),
+(ni:Node {text: 'Nick', guid: 'ghi', coordinates: [0.1,0.2,0.3]}),
+(jo:Node {text: 'Josh', guid: 'jkl', coordinates: [0.1,0.2,0.3]}),
+(ba:Node {text: 'Balazs', guid: 'mno', coordinates: [0.1,0.2,0.3]}),
+(ol:Node {text: 'Olivia', guid: 'pqr', coordinates: [0.1,0.2,0.3]}),
+(ko:Node {text: 'Konstantinos', guid: 'tuv', coordinates: [0.1,0.2,0.3]}),
+(ro)-[:LINK {text: 'messages', guid: '010203'}]->(ni),
+(ni)-[:LINK {text: 'calls', guid: '040506'}]->(ro),
+(ju)-[:LINK {text: 'calls', guid: '070809'}]->(ro),
+(ju)-[:LINK {text: 'calls', guid: '101112'}]->(ni),
+(jo)-[:LINK {text: 'messages', guid: '131415'}]->(ju),
+(ju)-[:LINK {text: 'messages', guid: '161718'}]->(jo),
+(jo)-[:LINK {text: 'follows', guid: '192021'}]->(ju),
+(ol)-[:LINK {text: 'follows', guid: '222324'}]->(jo),
+(ol)-[:LINK {text: 'follows', guid: '252627'}]->(ba),
+(ba)-[:LINK {text: 'message', guid: '282930'}]->(ba);
