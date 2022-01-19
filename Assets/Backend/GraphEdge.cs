@@ -23,6 +23,21 @@ namespace Backend
             this(text, Guid.NewGuid(), parent, child)
         { }
 
+        public GraphNode GetAttachedNode(GraphNode node) // return node on other side of edge
+        {
+            if (node == Parent)
+            {
+                return Child;
+            }
+            else if (node == Child)
+            {
+                return Parent;
+            }
+            else{
+                throw new ArgumentException("Node not attached to edge");
+            }
+        }
+
         public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
         {
             string text = dbRelationship.Properties["text"].As<string>();

@@ -18,10 +18,16 @@ namespace Backend
             foreach (var Edge in CentralNode.Edges)
             {
                 if (Edge.Parent == CentralNode && !edgesVisited.Contains(Edge)) // Get all edges for which node is parent
-                {   
+                {
                     Console.WriteLine($"{Edge.Parent} {Edge} {Edge.Child}");
                     edgesVisited.Add(Edge);
-                    PrintTreeFromNode(Edge.Child);
+                    PrintTreeFromNode(Edge.Child, edgesVisited);
+                }
+                else if (Edge.Child == CentralNode && !edgesVisited.Contains(Edge))
+                {
+                    Console.WriteLine($"{Edge.Parent} {Edge} {Edge.Child}");
+                    edgesVisited.Add(Edge);
+                    PrintTreeFromNode(Edge.Parent, edgesVisited);
                 }
             }
         }

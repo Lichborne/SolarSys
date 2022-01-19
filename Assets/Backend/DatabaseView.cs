@@ -73,22 +73,35 @@ namespace Backend
             // add relations with children to root (without creating childrens relations)
             // recursive call on each child
 
-            var query = $"MATCH (root {{guid: '{root.Id}'}}) -[edge :LINK]- (child) RETURN edge, child";
+            var query_parent_child = $"MATCH (root {{guid: '{root.Id}'}}) -[edge :LINK]-> (child) RETURN edge, child";
+            var query_child_parent = $"MATCH (root {{guid: '{root.Id}'}}) <-[edge :LINK]- (parent) RETURN edge, parent";
+
             using var session = _driver.Session();
 
 
             List<GraphEdge> edges = session.ReadTransaction(tx => 
             {
-                var result = tx.Run(query);
+                var result_parent_child = tx.Run(query_parent_child); // Find all parent->child relationships from node
+                var result_child_parent = tx.Run(query_child_parent);
                 List<GraphEdge> edges = new List<GraphEdge>();
 
-                foreach (var record in result)
+                foreach (var record in result_parent_child)
                 {
                     INode childRead = record["child"].As<INode>();
                     GraphNode child = GraphNode.FromINode(childRead);
 
                     IRelationship edgeRead = record["edge"].As<IRelationship>();
                     GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, root, child);
+                    edges.Add(edge);
+                }
+
+                foreach (var record in result_child_parent)
+                {
+                    INode parentRead = record["parent"].As<INode>(); 
+                    GraphNode parent = GraphNode.FromINode(parentRead);
+
+                    IRelationship edgeRead = record["edge"].As<IRelationship>();
+                    GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, parent, root);
                     edges.Add(edge);
                 }
                 
@@ -98,7 +111,7 @@ namespace Backend
             foreach (GraphEdge edge in edges)
             {
                 root.AddEdge(edge);
-                AddAllNodesLinkedToRoot(edge.Child, nodesVisited);
+                AddAllNodesLinkedToRoot(edge.GetAttachedNode(root), nodesVisited);
             }
         }
     }
