@@ -4,7 +4,7 @@ using static Backend.StringExtensions;
 
 namespace Backend
 {
-    public class GraphEdge
+    public class GraphEdge : IEquatable<GraphEdge>
     {
         public string Text { get; private set; }
         public Guid Id { get; private set; }
@@ -32,5 +32,21 @@ namespace Backend
 
         public override string ToString()
             => $"--[{Id.ToString().Truncate(5)}: {Text.Truncate(20)}]-->";
+
+        
+        public bool Equals(GraphEdge other)
+            => Id == other.Id;
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+            
+            return Equals(obj as GraphEdge);
+        }
+        
+        // override object.GetHashCode
+        public override int GetHashCode()
+            => Id.GetHashCode();
     }
 }

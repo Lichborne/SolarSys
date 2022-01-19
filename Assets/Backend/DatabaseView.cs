@@ -34,10 +34,6 @@ namespace Backend
             _disposed = true;
         }
 
-        /// <summary> IDs of the nodes that <paramref name="nodeId"/> links to. </summary>
-        public List<int> NodeIdsLinkedFrom(int nodeId)
-            => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(linkingNode) = {nodeId} return id(baseNode)");
-
         public GraphNode ReadNodeWithGuid(Guid id)
         {
             var query = $"MATCH (node {{guid: '{id}'}}) RETURN node";
@@ -59,16 +55,17 @@ namespace Backend
             });
         }
 
-        public void ReadAllChildrenFromRoot(GraphNode root)
+        /// <summary> From database, recursively reads in all nodes linked to root (either --> or <--). Gives each parent found an edge to all children. </summary>
+        public void AddAllNodesLinkedToRoot(GraphNode root)
         {
             HashSet<GraphNode> nodesVisited = new HashSet<GraphNode>();
-            ReadAllChildrenFromRoot(root, nodesVisited);
+            AddAllNodesLinkedToRoot(root, nodesVisited);
         }
 
 
-        private void ReadAllChildrenFromRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
+        private void AddAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
         {
-            if (nodesVisited.Any(node => node.Id == root.Id))
+            if (nodesVisited.Contains(root))
                 return;
             
             nodesVisited.Add(root);
@@ -76,7 +73,7 @@ namespace Backend
             // add relations with children to root (without creating childrens relations)
             // recursive call on each child
 
-            var query = $"MATCH (parent {{guid: '{root.Id}'}}) -[edge :LINK]-> (child) RETURN edge, child";
+            var query = $"MATCH (parent {{guid: '{root.Id}'}}) -[edge :LINK]- (child) RETURN edge, child";
             using var session = _driver.Session();
 
 
@@ -102,59 +99,8 @@ namespace Backend
             foreach (GraphEdge edge in edges)
             {
                 root.AddEdge(edge);
-                ReadAllChildrenFromRoot(edge.Child, nodesVisited);
+                AddAllNodesLinkedToRoot(edge.Child, nodesVisited);
             }
         }
-
-
-        private void ReadAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
-        {
-            
-        }
-
-    /*
-        public NodeTree CreateNodeTreeFromGuid(string guid)
-        {
-            var query = $"match (n {{'guid': {guid}}}) return n";
-            using var session = _driver.Session();
-
-            NodeTree nodeTree = session.ReadTransaction(tx =>
-            {
-                var result = tx.Run(query);
-                var record = result.Single();
-                var content = record["content"].As<string>();
-                var coordinates = record["coordinates"].As<List<double>>();
-                return new NodeTree(coordinates, content, guid);
-            }).ToList();
-
-            return nodeTree;
-        } */
-
-        /// <summary> IDs of the nodes that link to <paramref name="nodeId"/>. </summary>
-        public List<int> NodeIdsLinkingTo(int nodeId)
-            => NodeIdsMatchingQuery($"match (linkingNode) --> (baseNode) where id(baseNode) = {nodeId} return id(linkingNode)");
-
-        /// <summary> The IDs of every node in the database. </summary>
-        public List<int> AllNodeIds()
-            => NodeIdsMatchingQuery("match (x) return id(x)");
-
-        /// <summary> The IDs returned by <paramref name="query"/>. <paramref name="query"/> must return node IDs. </summary>
-        private List<int> NodeIdsMatchingQuery(string query)
-        {
-            using var session = _driver.Session();
-
-            List<int> nodeIds = session.ReadTransaction(tx =>
-            {
-                var result = tx.Run(query);
-                List<int> ids = new List<int>();
-
-                foreach (var record in result)
-                    ids.Add(record[0].As<int>());
-
-                return ids;
-            }).ToList();
-
-            return nodeIds;
-        }  
     }
 }

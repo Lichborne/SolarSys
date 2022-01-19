@@ -46,16 +46,17 @@ namespace Backend
             return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
         }
 
-        public override string ToString()
-            => $"({Id.ToString().Truncate(5)}: {Text.Truncate(20)})";
-
         public void AddEdge(GraphEdge edge)
             => _edges.Add(edge);
            
         public void RemoveEdge(GraphEdge edge)
             => _edges.Remove(edge);
         
-        public override bool Equals(GraphNode other)
+
+        public override string ToString()
+            => $"({Id.ToString().Truncate(5)}: {Text.Truncate(20)})";
+
+        public bool Equals(GraphNode other)
             => Id == other.Id;
 
         public override bool Equals(object obj)
@@ -63,15 +64,10 @@ namespace Backend
             if (obj == null || GetType() != obj.GetType())
                 return false;
             
-            
+            return Equals(obj as GraphNode);
         }
         
-        // override object.GetHashCode
         public override int GetHashCode()
-        {
-            // TODO: write your implementation of GetHashCode() here
-            throw new System.NotImplementedException();
-            return base.GetHashCode();
-        }
+            => Id.GetHashCode();
     }
 }
