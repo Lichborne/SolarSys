@@ -7,6 +7,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+		sh 'whoami' 
                 sh 'unity-editor  -batchmode -manualLicenseFile ./*.ulf -logfile'
                 sh 'unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt'
 
