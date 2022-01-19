@@ -89,7 +89,6 @@ namespace Backend
 
                     IRelationship edgeRead = record["edge"].As<IRelationship>();
                     GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, root, child);
-                    Console.WriteLine($"{root} {edge} {child}");
                     edges.Add(edge);
                 }
                 
