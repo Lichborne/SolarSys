@@ -11,7 +11,7 @@ pipeline {
             steps {
                 sh 'unity-editor  -batchmode -manualLicenseFile *.ulf -logfile lic_log.txt | true; cat lic_log.txt'
 		sh 'rm -rf Assets/Backend'
-                sh 'unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt'
+                sh 'unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt; cat log.txt'
 
             }
         }
