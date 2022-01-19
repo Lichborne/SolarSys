@@ -5,9 +5,11 @@ pipeline {
         }
     }
     stages {
-        stage('Test') {
+        stage('Build') {
             steps {
-                sh 'ls -la'
+                sh 'unity-editor  -batchmode -manualLicenseFile ./*.ulf -logfile'
+                sh 'unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt'
+
             }
         }
     }
