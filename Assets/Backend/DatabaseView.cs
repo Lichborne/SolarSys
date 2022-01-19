@@ -73,7 +73,7 @@ namespace Backend
             // add relations with children to root (without creating childrens relations)
             // recursive call on each child
 
-            var query = $"MATCH (parent {{guid: '{root.Id}'}}) -[edge :LINK]- (child) RETURN edge, child";
+            var query = $"MATCH (root {{guid: '{root.Id}'}}) -[edge :LINK]- (child) RETURN edge, child";
             using var session = _driver.Session();
 
 
