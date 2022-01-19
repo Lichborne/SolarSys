@@ -40,15 +40,70 @@ namespace Backend
 
         public GraphNode ReadNodeWithGuid(Guid id)
         {
-            var query = $"match (node {{guid: '{id}'}}) return node";
+            var query = $"MATCH (node {{guid: '{id}'}}) RETURN node";
             using var session = _driver.Session();
 
             return session.ReadTransaction(tx => 
             {
                 var result = tx.Run(query);
-                var node = result.Single()["node"].As<INode>();
-                return GraphNode.FromINode(node);         
+                try 
+                {
+                    var record = result.Single();
+                    var node = record["node"].As<INode>();
+                    return GraphNode.FromINode(node); 
+                }   
+                catch (InvalidOperationException)
+                {
+                    throw new Exception($"Error (probably found no nodes) in running query \n{query}");
+                }
             });
+        }
+
+        public void ReadAllChildrenFromRoot(GraphNode root)
+        {
+            HashSet<GraphNode> nodesVisited = new HashSet<GraphNode>();
+            ReadAllChildrenFromRoot(root, nodesVisited);
+        }
+
+
+        private void ReadAllChildrenFromRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
+        {
+            if (nodesVisited.Any(node => node.Id == root.Id))
+                return;
+            
+            nodesVisited.Add(root);
+            // in query, find all relations and children of root
+            // add relations with children to root (without creating childrens relations)
+            // recursive call on each child
+
+            var query = $"MATCH (parent {{guid: '{root.Id}'}}) -[edge :LINK]-> (child) RETURN edge, child";
+            using var session = _driver.Session();
+
+
+            List<GraphEdge> edges = session.ReadTransaction(tx => 
+            {
+                var result = tx.Run(query);
+                List<GraphEdge> edges = new List<GraphEdge>();
+
+                foreach (var record in result)
+                {
+                    INode childRead = record["child"].As<INode>();
+                    GraphNode child = GraphNode.FromINode(childRead);
+
+                    IRelationship edgeRead = record["edge"].As<IRelationship>();
+                    GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, root, child);
+                    Console.WriteLine($"{root} {edge} {child}");
+                    edges.Add(edge);
+                }
+                
+                return edges;
+            });
+
+            foreach (GraphEdge edge in edges)
+            {
+                root.AddEdge(edge);
+                ReadAllChildrenFromRoot(edge.Child, nodesVisited);
+            }
         }
 
     /*

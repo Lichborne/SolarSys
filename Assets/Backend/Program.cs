@@ -8,8 +8,9 @@ namespace Backend
         {
             using (var database = new DatabaseView("bolt://localhost:7687", "neo4j", "password"))
             {
-                GraphNode node = database.ReadNodeWithGuid(Guid.Parse("b22f0d72-cf45-481d-b697-80c0350341b9"));
-                Console.WriteLine(node.Text);
+                GraphNode root = database.ReadNodeWithGuid(Guid.Parse("20d39f6b-8662-4328-8dc5-df57eb3c4a3a"));
+                database.ReadAllChildrenFromRoot(root);
+                Console.WriteLine(root.Text);
             }
         }
     }

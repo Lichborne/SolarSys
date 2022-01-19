@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
+using Neo4j.Driver;
 using System.Collections.Generic;
+using static Backend.StringExtensions;
 
 namespace Backend
 {
@@ -35,14 +38,16 @@ namespace Backend
 
         public static GraphNode FromINode(INode dbNode)
         {
-            string text = node.Properties["text"].As<string>();
+            string text = dbNode.Properties["text"].As<string>();
             string guidText = dbNode.Properties["guid"].As<string>();
             Guid guid = Guid.Parse(guidText);
-            List<double> coords = node.Properties["coordinates"].As<List<double>>();
+            List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
 
             return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
         }
 
+        public override string ToString()
+            => $"({Id.ToString().Substring(0, 5)}: {Text.Truncate(20)})";
 
         public void AddEdge(GraphEdge edge)
             => _edges.Add(edge);
