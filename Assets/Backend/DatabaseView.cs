@@ -106,6 +106,12 @@ namespace Backend
             }
         }
 
+
+        private void ReadAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
+        {
+            
+        }
+
     /*
         public NodeTree CreateNodeTreeFromGuid(string guid)
         {

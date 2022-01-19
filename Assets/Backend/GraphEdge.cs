@@ -31,6 +31,6 @@ namespace Backend
         }
 
         public override string ToString()
-            => $"--[{Id.ToString().Substring(0, 5)}: {Text.Truncate(20)}]-->";
+            => $"--[{Id.ToString().Truncate(5)}: {Text.Truncate(20)}]-->";
     }
 }

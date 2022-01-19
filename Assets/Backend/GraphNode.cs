@@ -6,7 +6,7 @@ using static Backend.StringExtensions;
 
 namespace Backend
 {
-    public class GraphNode
+    public class GraphNode : IEquatable<GraphNode>
     {
         public string Text { get; private set; }
         public Guid Id { get; private set; }
@@ -47,12 +47,31 @@ namespace Backend
         }
 
         public override string ToString()
-            => $"({Id.ToString().Substring(0, 5)}: {Text.Truncate(20)})";
+            => $"({Id.ToString().Truncate(5)}: {Text.Truncate(20)})";
 
         public void AddEdge(GraphEdge edge)
             => _edges.Add(edge);
            
         public void RemoveEdge(GraphEdge edge)
             => _edges.Remove(edge);
+        
+        public override bool Equals(GraphNode other)
+            => Id == other.Id;
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+            
+            
+        }
+        
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            throw new System.NotImplementedException();
+            return base.GetHashCode();
+        }
     }
 }
