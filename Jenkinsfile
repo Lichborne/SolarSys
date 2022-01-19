@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'unity-editor  -batchmode -manualLicenseFile ./*.ulf -logfile lic_loc.txt | cat lic-log.txt'
+                sh 'unity-editor  -batchmode -manualLicenseFile ./*.ulf -logfile lic_loc.txt | cat lic_log.txt'
 		sh 'rm -rf Assets/Backend'
                 sh 'unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt'
 
