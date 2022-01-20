@@ -54,7 +54,7 @@ namespace Neo4JHelloWorld
             List<int> nodeIds = session.ReadTransaction(tx =>
             {
                 var result = tx.Run(query);
-                List<int> ids = new();
+                List<int> ids = new List<int>();
 
                 foreach (var record in result)
                     ids.Add(record[0].As<int>());
