@@ -15,4 +15,12 @@ pipeline {
 		}
         }
     }
+  post {
+    failure {
+      mail to: jh1521@ic.ac.uk, subject: ‘OOPS: The SolarSystem-Pipeline failed :(‘
+    }
+    always {
+      mail to: jh1521@ic.ac.uk, subject: ‘The Pipeline ran successfully‘
+    }
+  }
 }
