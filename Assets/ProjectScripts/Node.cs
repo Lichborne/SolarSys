@@ -42,7 +42,7 @@ public class Node : MonoBehaviour
     sj.connectedAnchor = new Vector3(0,0,0);    
     sj.enableCollision = true;
     sj.connectedBody = n.GetComponent<Rigidbody>();
-    Edge edge = new Edge(this.planet, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity,Edge.EdgeType.PARENTCHILD); //add the typing here
+    Edge edge = new Edge(this.planet, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); //add the typing here
     edges.Add(edge);
     joints.Add(sj);
   }
