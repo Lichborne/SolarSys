@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker { image 'unityci/editor:ubuntu-2020.3.25f1-webgl-0.16.1' 
-//		args '-u root:sudo'
+//  	dd	args '-u root:sudo'
 		args '-v /etc/passwd:/etc/passwd:ro'
             alwaysPull false
 		
