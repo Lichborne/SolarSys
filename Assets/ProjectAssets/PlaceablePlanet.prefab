@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2795184990556609965}
   - component: {fileID: 1513767936331820806}
   - component: {fileID: 54018621629960233}
-  - component: {fileID: 3605046673363571186}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -101,18 +100,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3605046673363571186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1927956392948707846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b4747a97bab05c41bb7769e497dbecd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4974278123316600395
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,9 +117,9 @@ GameObject:
   - component: {fileID: 5978846526343817461}
   - component: {fileID: 5259970875435682607}
   - component: {fileID: 8432814057563205319}
-  - component: {fileID: 4833529534243260188}
   - component: {fileID: 1382814546054436200}
   - component: {fileID: 7665654089118164107}
+  - component: {fileID: 8081068204467829478}
   m_Layer: 0
   m_Name: PlaceablePlanet
   m_TagString: Untagged
@@ -307,7 +294,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 100
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8432814057563205319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,18 +305,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb03bed0a232f0428cc6d38820654a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4833529534243260188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4974278123316600395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b4747a97bab05c41bb7769e497dbecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1382814546054436200
@@ -359,6 +334,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraToLookAt: {fileID: 0}
+--- !u!114 &8081068204467829478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974278123316600395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11888becd9c3f1b49a35110039ce9d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4433291504053779210
 PrefabInstance:
   m_ObjectHideFlags: 0

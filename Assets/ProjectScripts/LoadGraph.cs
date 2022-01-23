@@ -3,43 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Backend;
-/*
+
 public class LoadGraph : MonoBehaviour
 {
-    public GameObject planet;
-    public GameObject sun;
-    public GameObject edge;
+    public GameObject _planet;
 
-    private int x = 0;
+    public GameObject _edgePreFab;
 
-    private int y = 0;
+    private int x = 50;
 
-    private int z = 0;
+    private int y = 50;
+
+    private int z = 50;
 
     // Start is called before the first frame update
     void Start()
     {
-        using (var database = new DatabaseView("bolt://localhost:7687", "neo4j", "password")) 
-        {
-            List<GraphNode> startNodes = database.ReadStartingNodes();
+        Backend.Graph graph = new Backend.Graph();
 
-            foreach (GraphNode startNode in startNodes) {
-
-                    GameObject newsun = Instantiate(Node, new Vector3(x, y, z), Quaternion.identity);
-                    x+=5; y+=5; z+=5;
-                    ChangeInputFieldText(newsun, startNode.Text);
-
-                    foreach (var edge in startNode.Edges) {
-                        GameObject newedge = Instantiate(edge, new Vector3(x, y, z), Quaternion.identity)
-                        edge.Child
-                    }
-
+        List<Node> graphNodes = new List<Node>();
+            
+        foreach (GraphNode node in graph.Nodes) {
+            
+            GameObject NewNode = Instantiate(_planet,new Vector3(Random.Range(-x/2, x/2), Random.Range(-y/2, y/2), Random.Range(-z/2, z/2)), Quaternion.identity);
+            NewNode.transform.parent = transform;
+            ChangeText.ChangeInputFieldText(NewNode, node.Text);
+            Node NewNodeScript = NewNode.GetComponent<Node>();
+            graphNodes.Add(NewNodeScript);
+            NewNodeScript.SetEdgePrefab(_edgePreFab);
+        }
+        // for simplicity's sake and to avoid duplicates, we do a separate loop.
+        for (int i = 0; i < graph.Nodes.Count; i++) {
+            foreach (GraphEdge edge in graph.Edges) {
+                if (edge.Child == graph.Nodes[i]) {
+                    int index = (graph.Nodes).IndexOf(edge.Parent);
+                    if (index != -1 && index < graphNodes.Count)
+                            graphNodes[i].AddEdge(graphNodes[index]);
+                }
             }
         }
-
-        
-
-    
     }
 
     // Update is called once per frame
@@ -49,5 +51,5 @@ public class LoadGraph : MonoBehaviour
     }
 
 }
-*/
+
 
