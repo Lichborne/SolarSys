@@ -1,0 +1,18 @@
+CREATE 
+(ro:Node {text: 'Rowen', guid: 'b22f0d72-cf45-481d-b697-80c0350341b9', coordinates: [0.1,0.2,0.3]}),
+(ju:Node {text: 'Julius', guid: '0db4d262-6f58-41ff-8d1c-24741ff70c0f', coordinates: [0.1,0.2,0.3]}),
+(ni:Node {text: 'Nick', guid: '3e8bb21f-e69d-4001-90ec-94b8448346e3', coordinates: [0.1,0.2,0.3]}),
+(jo:Node {text: 'Josh', guid: '80dc35fb-13b8-4231-9fd4-d37824bdf1ee', coordinates: [0.1,0.2,0.3]}),
+(ba:Node {text: 'Balazs', guid: 'd9391f3a-a35b-442c-8f5e-255b0d7df5d8', coordinates: [0.1,0.2,0.3]}),
+(ol:Node {text: 'Olivia', guid: '20d39f6b-8662-4328-8dc5-df57eb3c4a3a', coordinates: [0.1,0.2,0.3]}),
+(ko:Node {text: 'Konstantinos', guid: '199640fc-3605-4368-827c-a4e66551c0b5', coordinates: [0.1,0.2,0.3]}),
+(ro)-[:LINK {text: 'messages', guid: '180d1ece-d50b-4bbc-9507-a2af6812b22c'}]->(ni),
+(ni)-[:LINK {text: 'calls', guid: 'c997c2d1-3c9c-4ea1-bd30-3a098fa92b15'}]->(ro),
+(ju)-[:LINK {text: 'calls', guid: 'e73b6cb0-99f9-4179-a372-79b4062eb680'}]->(ro),
+(ju)-[:LINK {text: 'calls', guid: '43cf5e02-a874-4207-8727-00fdd0df3786'}]->(ni),
+(jo)-[:LINK {text: 'messages', guid: '9813edc1-dcb4-4d13-b57f-ee954f81e89f'}]->(ju),
+(ju)-[:LINK {text: 'messages', guid: 'd70c33ef-7db1-4cf5-9ece-f4a6301b8ef4'}]->(jo),
+(jo)-[:LINK {text: 'follows', guid: 'f4835b6f-1489-4bb5-9105-69931e43c462'}]->(ju),
+(ol)-[:LINK {text: 'follows', guid: '32bfb7b2-8485-4b0d-b794-acee5395f32d'}]->(jo),
+(ol)-[:LINK {text: 'follows', guid: '8ab798e8-421a-425d-b9a2-3232dfcdd13d'}]->(ba),
+(ba)-[:LINK {text: 'messages', guid: 'dfad166e-d4cf-4cb1-b09b-740d542c59af'}]->(ba);

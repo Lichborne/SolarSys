@@ -3,7 +3,7 @@ using UnityEngine;
 
 // code adapted from Weimann, Jason, "Let your players place objects or turrets in Unity (RTS / Base Building games)," May 8, 2018, https://unity3d.college/2018/05/08/let-players-place-objects-turrets-unity-rts-base-building-games/ 
 
-public class placeandrotate: MonoBehaviour
+public class placeAndRotate: MonoBehaviour
 {
     [SerializeField]
     private GameObject[] _objectPrefabs;
