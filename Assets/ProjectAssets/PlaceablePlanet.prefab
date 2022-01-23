@@ -129,9 +129,10 @@ GameObject:
   - component: {fileID: 4974278123316600392}
   - component: {fileID: 5978846526343817461}
   - component: {fileID: 5259970875435682607}
-  - component: {fileID: 3649825909397182435}
   - component: {fileID: 8432814057563205319}
   - component: {fileID: 4833529534243260188}
+  - component: {fileID: 1382814546054436200}
+  - component: {fileID: 7665654089118164107}
   m_Layer: 0
   m_Name: PlaceablePlanet
   m_TagString: Untagged
@@ -307,19 +308,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 100
   m_PresetInfoIsWorld: 0
---- !u!114 &3649825909397182435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4974278123316600395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec7e5bf494102d74990cfec7fbf5d993, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraToLookAt: {fileID: 0}
 --- !u!114 &8432814057563205319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,6 +332,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b4747a97bab05c41bb7769e497dbecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1382814546054436200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974278123316600395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f894d7cfe75375143bc854fbf83c3592, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _objectPrefabs: []
+  _visualAidPrefabs: []
+--- !u!114 &7665654089118164107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974278123316600395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec7e5bf494102d74990cfec7fbf5d993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraToLookAt: {fileID: 0}
 --- !u!1001 &4433291504053779210
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cameraFol : MonoBehaviour
+public class CameraFollow : MonoBehaviour
 {
     public Camera cameraToLookAt;
    

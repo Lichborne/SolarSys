@@ -70,6 +70,55 @@ namespace Backend
             AddAllNodesLinkedToRoot(root, nodesVisited);
         }
 
+        public List<GraphEdge> AllEdges(List<GraphNode> allNodes)
+        {
+            string query = "MATCH (parent) -[edge: LINK]-> (child) RETURN parent, edge, child";
+            using var session = _driver.Session();
+
+            return session.ReadTransaction(tx => 
+            {
+                var result = tx.Run(query);
+                List<GraphEdge> edges = new List<GraphEdge>();
+                foreach (var record in result)
+                {
+                    Guid parentId = Guid.Parse(record["parent"].As<INode>().Properties["guid"].As<string>());
+                    Guid childId = Guid.Parse(record["child"].As<INode>().Properties["guid"].As<string>());
+                    
+                    GraphNode parent = allNodes.Find(node => node.Id == parentId);
+                    if (parent == null)
+                        throw new Exception($"Could not find parent node with id = {parentId}");
+                    
+
+                    GraphNode child = allNodes.Find(node => node.Id == childId);
+                    if (child == null)
+                        throw new Exception($"Could not find child with id = {childId}");
+                    
+                    GraphEdge edge = GraphEdge.FromIRelationship(record["edge"].As<IRelationship>(), parent, child);
+
+                    edges.Add(edge);
+                }
+                return edges;
+            });
+        }
+
+        public List<GraphNode> AllNodes()
+        {
+            string query = "MATCH (node) RETURN node";
+            using (var session = _driver.Session())
+            {
+                return session.ReadTransaction(tx => 
+                {
+                    var result = tx.Run(query);
+                    List<GraphNode> nodes = new List<GraphNode>();
+
+                    foreach (var record in result)
+                        nodes.Add(GraphNode.FromINode(record["node"].As<INode>()));
+
+                    return nodes;
+                });
+            }
+        }
+
 
         private void AddAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
         {

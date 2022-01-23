@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Backend
 {
-    public class HelperFunctions
+    public static class HelperFunctions
     {
         public static void PrintTreeFromNode(GraphNode centralNode)
         {
@@ -26,6 +26,22 @@ namespace Backend
                 }
             }
         }
+
+        private static void VisitSection(this GraphNode centralNode, Action<GraphEdge> visitor, HashSet<GraphEdge> edgesVisited)
+        {
+            foreach (var edge in centralNode.Edges)
+            {
+                if (!edgesVisited.Contains(edge))
+                {
+                    visitor(edge);
+                    edgesVisited.Add(edge);
+                    edge.GetAttachedNode(centralNode).VisitSection(visitor, edgesVisited);
+                }
+            }
+        }
+
+        public static void VisitSection(this GraphNode centralNode, Action<GraphEdge> visitor)
+            => centralNode.VisitSection(visitor, new HashSet<GraphEdge>()); 
 
     }
 }
