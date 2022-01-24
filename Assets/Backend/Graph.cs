@@ -6,13 +6,13 @@ namespace Backend
 {
     public class Graph 
     {
-        public IReadOnlyList<GraphNode> Nodes 
+        public /*IReadOnly*/List<GraphNode> Nodes 
         {
-            get => _nodes.AsReadOnly();
+            get => _nodes/*.AsReadOnly()*/;
         }
-        public IReadOnlyList<GraphEdge> Edges 
+        public /*IReadOnly*/List<GraphEdge> Edges 
         {
-            get => _edges.AsReadOnly();
+            get => _edges/*.AsReadOnly()*/;
         }
 
         private List<GraphNode> _nodes = new List<GraphNode>();

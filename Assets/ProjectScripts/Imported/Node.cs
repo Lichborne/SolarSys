@@ -2,51 +2,109 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node : MonoBehaviour
+public class Node: MonoBehaviour
 {
     
-  GameObject planet;
+  GameObject _edgePreFab;
 
-  List<Edge>  edges  = new List<Edge> ();
+  List<GameObject> edges  = new List<GameObject>();
+
+  List<GameObject> selfReferences = new List<GameObject>();
+
   List<SpringJoint> joints = new List<SpringJoint>();  
   
   void Start(){
-    transform.GetChild(0).GetComponent<TextMesh>().text = name;
+    //transform.GetChild(0).GetComponent<TextMesh>().text = name;
   }
   
-  void Update(){    
+  void Update(){
+    foreach (GameObject selfReference in selfReferences) {    
+      selfReference.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+    }
+
     int i = 0;
-    foreach (Edge edge in edges){
+    foreach (GameObject edge in edges){
+
       edge.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
       SpringJoint sj = joints[i];
-      GameObject target = sj.connectedBody.gameObject;
+
+      if (sj == null)
+        return;
+
+      GameObject target = new GameObject();
+
+      if (sj.connectedBody == null)
+        return;
+
+      target = sj.connectedBody.gameObject;
+
       edge.transform.LookAt(target.transform);
+
       Vector3 ls = edge.transform.localScale;
+
       ls.z = Vector3.Distance(transform.position, target.transform.position);
       edge.transform.localScale = ls;
-      edge.transform.position = new Vector3((transform.position.x+target.transform.position.x)/2,
+
+      edge.transform.position = new Vector3(
+              (transform.position.x+target.transform.position.x)/2,
 					    (transform.position.y+target.transform.position.y)/2,
 					    (transform.position.z+target.transform.position.z)/2);
       i++;
     }
   }
 
-  public void SetEdgePrefab(GameObject planet){
-    this.planet = planet;
+  public void SetEdgePrefab(GameObject _edgePreFab){
+    this._edgePreFab = _edgePreFab;
   }
   
-  public void AddEdge(Node n){
-    SpringJoint sj = gameObject.AddComponent<SpringJoint> ();  
+  public void AddEdge(GameObject n){
+
+    SpringJoint sj = gameObject.AddComponent<SpringJoint> (); 
+
     sj.autoConfigureConnectedAnchor = false;
-    sj.anchor = new Vector3(0,0.5f,0);
-    sj.connectedAnchor = new Vector3(0,0,0);    
+
+    sj.spring = 20;
+    //if(edges.Count == 0) {
+      //sj.anchor = new Vector3(0,0.5f,0);
+
+      //sj.connectedAnchor = new Vector3(0,0,0);  
+    //} else {
+      sj.anchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+
+      sj.connectedAnchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+      //foreach(SpringJoint joint in joints)  {
+
+        ///joint.anchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+
+        //joint.connectedAnchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+      //}
+    //}  
+
     sj.enableCollision = true;
-    sj.connectedBody = n.GetComponent<Rigidbody>();
-    Edge edge = new Edge(this.planet, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); //add the typing here
-    edges.Add(edge);
-    joints.Add(sj);
-  }
+
+    //sj.massScale = 0;
+
+    //sj.connectedMassScale = 0;
+
+    //sj.currentForce = 1;
+
+    //sj.currentTorque = 1;
+
+    sj.damper = 5;
+
+    if (n.GetComponent<Rigidbody>() == GetComponent<Rigidbody>()) {
+      return;
+    }
     
+    sj.connectedBody = n.GetComponent<Rigidbody>();
+
+    GameObject edge = Instantiate(this._edgePreFab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+
+    joints.Add(sj);
+
+    edges.Add(edge);
+  }
 }
 
 

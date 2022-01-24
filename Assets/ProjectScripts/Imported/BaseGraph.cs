@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Graph : MonoBehaviour
+/*
+public class BaseGraph : MonoBehaviour
 {
 
   public TextAsset file;
@@ -128,3 +128,4 @@ public class Graph : MonoBehaviour
     }
     
 }
+*/
