@@ -15,4 +15,16 @@ pipeline {
 		}
         }
     }
+  post {
+    failure {
+	emailext body: 'OOPS: The SolarSystem pipeline failed :(.',
+	    subject: 'OOPS: The SolarSystem pipeline failed :(.',
+	    to: 'jh1521@ic.ac.uk'
+    }
+    always {
+	emailext body: 'The SolarSystem works :).',
+	    subject: 'The SolarSystem works :).',
+	    to: 'jh1521@ic.ac.uk'
+    }
+  }
 }
