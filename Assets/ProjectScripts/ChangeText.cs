@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 
 
 public class ChangeText : MonoBehaviour
 {
-
     public static void ChangeInputFieldText(GameObject obj, string message) {
- 
-         Text textscript = obj.transform.Find("InputField (TMP)").GetComponentInChildren<Text>(); // This will get the script responsable for editing text
-         if(textscript == null){Debug.LogError("Script not found");return;}
-         textscript.text = message; // This will change the text inside it
+
+        TMP_Text textmeshPro = obj.GetComponentInChildren<TextMeshProUGUI>();
+
+        if(textmeshPro == null)
+            return;
+
+        textmeshPro.text = message;
      }
 }

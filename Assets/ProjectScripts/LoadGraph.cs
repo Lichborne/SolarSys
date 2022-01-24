@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 using Backend;
 
@@ -10,35 +12,61 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _edgePreFab;
 
-    private int x = 50;
+    public GameObject _selfReferencePreFab;
 
-    private int y = 50;
+    private Backend.Graph graph = new Backend.Graph();
 
-    private int z = 50;
+    private List<GameObject> graphNodes = new List<GameObject>();
+
+    private List<Node> graphNodeScripts = new List<Node>();
 
     // Start is called before the first frame update
     void Start()
     {
-        Backend.Graph graph = new Backend.Graph();
 
-        List<Node> graphNodes = new List<Node>();
-            
         foreach (GraphNode node in graph.Nodes) {
             
-            GameObject NewNode = Instantiate(_planet,new Vector3(Random.Range(-x/2, x/2), Random.Range(-y/2, y/2), Random.Range(-z/2, z/2)), Quaternion.identity);
-            NewNode.transform.parent = transform;
+            GameObject NewNode = new GameObject();
+            NewNode = Instantiate(_planet,new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z), Quaternion.identity);
+
             ChangeText.ChangeInputFieldText(NewNode, node.Text);
-            Node NewNodeScript = NewNode.GetComponent<Node>();
-            graphNodes.Add(NewNodeScript);
-            NewNodeScript.SetEdgePrefab(_edgePreFab);
+
+            graphNodes.Add(NewNode);
+            
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
+        // remember to add self-reference.
         for (int i = 0; i < graph.Nodes.Count; i++) {
             foreach (GraphEdge edge in graph.Edges) {
                 if (edge.Child == graph.Nodes[i]) {
+                    if (edge.Parent == edge.Child) {
+                        GameObject selfReferenceRing = Instantiate(_selfReferencePreFab, new Vector3(0,0,0), Quaternion.identity);
+                        selfReferenceRing.transform.parent = graphNodes[i].transform;
+                        continue;
+                    }
                     int index = (graph.Nodes).IndexOf(edge.Parent);
-                    if (index != -1 && index < graphNodes.Count)
-                            graphNodes[i].AddEdge(graphNodes[index]);
+                    if (index != -1 && index < graphNodes.Count) {
+                            Node NewNodeScript = graphNodes[i].AddComponent<Node>();
+                            NewNodeScript.SetEdgePrefab(_edgePreFab);
+                            NewNodeScript.AddEdge(graphNodes[index]);
+                            graphNodeScripts.Add(NewNodeScript);
+                    }
+                }
+            }
+            foreach (GraphEdge edge in graph.Edges) {
+                if (edge.Parent == graph.Nodes[i]) {
+                    if (edge.Child == edge.Parent) {
+                        GameObject selfReferenceRing = Instantiate(_selfReferencePreFab, new Vector3(0,0,0), Quaternion.identity);
+                        selfReferenceRing.transform.parent = graphNodes[i].transform;
+                        continue;
+                    }
+                    int index = (graph.Nodes).IndexOf(edge.Child);
+                    if (index != -1 && index < graphNodes.Count) {
+                            Node NewNodeScript = graphNodes[i].AddComponent<Node>();
+                            NewNodeScript.SetEdgePrefab(_edgePreFab);
+                            NewNodeScript.AddEdge(graphNodes[index]);
+                            graphNodeScripts.Add(NewNodeScript);
+                    }
                 }
             }
         }
@@ -53,3 +81,9 @@ public class LoadGraph : MonoBehaviour
 }
 
 
+            /*TMP_Text textmeshPro = NewNode.GetComponentInChildren<TextMeshProUGUI>();
+            textmeshPro.text = (node.Text);
+            
+            
+            GameObject NewNode = new GameObject();
+            NewNode = Instantiate(_planet,new Vector3(Random.Range(-x/2, x/2), Random.Range(-y/2, y/2), Random.Range(-z/2, z/2)), Quaternion.identity);*/
