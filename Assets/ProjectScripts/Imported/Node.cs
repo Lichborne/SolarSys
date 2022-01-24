@@ -9,7 +9,7 @@ public class Node: MonoBehaviour
 
   List<GameObject> edges  = new List<GameObject>();
 
-  List<GameObject> selfReferences  = new List<GameObject>();
+  List<GameObject> selfReferences = new List<GameObject>();
 
   List<SpringJoint> joints = new List<SpringJoint>();  
   
@@ -65,10 +65,21 @@ public class Node: MonoBehaviour
     sj.autoConfigureConnectedAnchor = false;
 
     sj.spring = 20;
+    //if(edges.Count == 0) {
+      //sj.anchor = new Vector3(0,0.5f,0);
 
-    sj.anchor = new Vector3(0,0.5f,0);
+      //sj.connectedAnchor = new Vector3(0,0,0);  
+    //} else {
+      sj.anchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
 
-    sj.connectedAnchor = new Vector3(0,0,0);    
+      sj.connectedAnchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+      //foreach(SpringJoint joint in joints)  {
+
+        ///joint.anchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+
+        //joint.connectedAnchor = new Vector3(Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f),Random.Range(-0.5f,0.5f));
+      //}
+    //}  
 
     sj.enableCollision = true;
 

@@ -45,7 +45,7 @@ public class LoadGraph : MonoBehaviour
                         continue;
                     }
                     int index = (graph.Nodes).IndexOf(edge.Parent);
-                    if (index != -1 && index < graphNodes.Count) {
+                    if (index != -1 && index < graph.Nodes.Count) {
                             Node NewNodeScript = graphNodes[i].AddComponent<Node>();
                             NewNodeScript.SetEdgePrefab(_edgePreFab);
                             NewNodeScript.AddEdge(graphNodes[index]);
