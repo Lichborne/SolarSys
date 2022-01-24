@@ -332,7 +332,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 92d39fb38bd447c4f903ae7942a520d6, type: 2}
+  - {fileID: 2100000, guid: 407ccb2696d3d1245a9cb9495a47675e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2234,6 +2234,7 @@ GameObject:
   - component: {fileID: 3377997189674868507}
   - component: {fileID: 3377997189674868506}
   - component: {fileID: 3377997189674868505}
+  - component: {fileID: 9154335461045707342}
   m_Layer: 5
   m_Name: Button-ChangeNodeColour
   m_TagString: Untagged
@@ -2355,6 +2356,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &9154335461045707342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3377997189674868503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c14288c1526c694da5076c922d778b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  node: {fileID: 3377997188610529825}
 --- !u!1 &3377997189725717996
 GameObject:
   m_ObjectHideFlags: 0
