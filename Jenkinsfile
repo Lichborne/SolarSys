@@ -17,10 +17,14 @@ pipeline {
     }
   post {
     failure {
-      mail to: jh1521@ic.ac.uk, subject: ‘OOPS: The SolarSystem-Pipeline failed :(‘
+	emailext body: 'OOPS: The SolarSystem pipeline failed :(.',
+	    subject: 'OOPS: The SolarSystem pipeline failed :(.',
+	    to: 'jh1521@ic.ac.uk'
     }
     always {
-      mail to: jh1521@ic.ac.uk, subject: ‘The Pipeline ran successfully‘
+	emailext body: 'The SolarSystem works :).',
+	    subject: 'The SolarSystem works :).',
+	    to: 'jh1521@ic.ac.uk'
     }
   }
 }

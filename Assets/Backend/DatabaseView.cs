@@ -34,6 +34,13 @@ namespace Backend
             _disposed = true;
         }
 
+        // TODO: make this sensible
+        public List<GraphNode> ReadStartingNodes()
+            => new List<GraphNode> 
+            {
+                ReadNodeWithGuid(Guid.Parse("20d39f6b-8662-4328-8dc5-df57eb3c4a3a"))
+            };
+
         public GraphNode ReadNodeWithGuid(Guid id)
         {
             var query = $"MATCH (node {{guid: '{id}'}}) RETURN node";
