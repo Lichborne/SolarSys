@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0025969907, g: 0.018092118, b: 0.07727372, a: 1}
+  m_IndirectSpecularColor: {r: 0.0025978456, g: 0.018169886, b: 0.07748409, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -247,6 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1487399003}
   - component: {fileID: 1487399004}
+  - component: {fileID: 1487399005}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -282,6 +283,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _planet: {fileID: 4974278123316600395, guid: cffe4958efa6c1340ae54a8cbde8ae9e, type: 3}
+  _edgePreFab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
+  _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+--- !u!114 &1487399005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487399002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c709b25a29aff24e80fd58a9e386754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nodePrefab: {fileID: 4974278123316600395, guid: cffe4958efa6c1340ae54a8cbde8ae9e, type: 3}
   _edgePreFab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
 --- !u!1 &1687258581
@@ -457,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec7e5bf494102d74990cfec7fbf5d993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraToLookAt: {fileID: 0}
+  cameraToLookAt: {fileID: 1687258584}
 --- !u!114 &1687258588
 MonoBehaviour:
   m_ObjectHideFlags: 0

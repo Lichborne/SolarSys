@@ -20,22 +20,21 @@ public class NewLoadGraph : MonoBehaviour
 
     private List<NewEdge> graphEdges = new List<NewEdge>();
 
-    private int x = 0;
-
     // Start is called before the first frame update
     void Start()
     {
 
         foreach (GraphNode node in graph.Nodes) {
             
-            
-            GameObject NewNode = Instantiate(_nodePrefab, new Vector3(0,0,x)/*+new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z)*/, Quaternion.identity);
+            Vector3 pos = new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z);
+
+            GameObject NewNode = Instantiate(_nodePrefab, pos, Quaternion.identity);
+
+            NewNode.transform.position = pos;
 
             ChangeText.ChangeInputFieldText(NewNode, node.Text);
 
             graphNodes.Add(NewNode);
-
-            x+=3;
             
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
@@ -45,9 +44,10 @@ public class NewLoadGraph : MonoBehaviour
         foreach (GraphEdge edge in graph.Edges) {
             int parent_index = (graph.Nodes).IndexOf(edge.Parent);
             int child_index = (graph.Nodes).IndexOf(edge.Child);
-            NewEdge graphEdge = graphNodes[child_index].AddComponent<NewEdge>();
+            NewEdge graphEdge = graphNodes[parent_index].AddComponent<NewEdge>();
             graphEdge.InstantiateEdge(_edgePreFab, _selfReferencePreFab, graphNodes[parent_index], graphNodes[child_index]);
             }
+            
     }
 
     // Update is called once per frame
