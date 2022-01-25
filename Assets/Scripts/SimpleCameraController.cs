@@ -243,8 +243,8 @@ namespace UnityTemplateProjects
                 if (Physics.Raycast(cameraRay, out hit) && hit.collider.name == "Sphere")
                 {
                     m_TargetCameraState.SetFromTransform(hit.collider.gameObject.transform);
-                    Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 0.93f);
-                    Vector3 newAngles = GetEulerAngles(cameraRay);
+                    Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 0.7f);
+                    Vector3 newAngles = GetEulerAngles(cameraRay, hit);
                     m_TargetCameraState.ModifyTargetState(newPosition, newAngles);
                     m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
                     m_InterpolatingCameraState.UpdateTransform(transform);
@@ -261,15 +261,17 @@ namespace UnityTemplateProjects
 
         Vector3 GetPositionAlongRay(Ray cameraray, RaycastHit hit, float pctalongray)
         {
-            Vector3 newPosition = new Vector3(cameraray.origin.x + hit.distance*cameraray.direction.x*pctalongray,
-                                              cameraray.origin.y + hit.distance*cameraray.direction.y*pctalongray,
-                                              cameraray.origin.z + hit.distance*cameraray.direction.z*pctalongray);
-            return newPosition;
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center; // Find center of sphere
+            Vector3 translation = new Vector3(centerOfSphere.x - cameraray.origin.x,
+                                              centerOfSphere.y - cameraray.origin.y,
+                                              centerOfSphere.z - cameraray.origin.z)*pctalongray;
+            return translation+cameraray.origin;
         }
 
-        Vector3 GetEulerAngles(Ray cameraray)
+        Vector3 GetEulerAngles(Ray cameraray, RaycastHit hit)
         {
-            Quaternion q = Quaternion.FromToRotation(Vector3.forward, cameraray.direction);
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center;                
+            Quaternion q = Quaternion.FromToRotation(Vector3.forward, centerOfSphere - cameraray.origin);
             return q.eulerAngles;
         }
 
