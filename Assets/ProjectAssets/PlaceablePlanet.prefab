@@ -359,6 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a424e2a8908c734a884fa8c6ce1f85a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _edgePrefab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
+  _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
 --- !u!1001 &4433291504053779210
 PrefabInstance:
   m_ObjectHideFlags: 0

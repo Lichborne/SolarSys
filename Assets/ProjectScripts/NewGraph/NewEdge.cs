@@ -27,20 +27,25 @@ public class NewEdge : MonoBehaviour
             return;
 
         if (_parent == _child) {
-            edge.transform.position = new Vector3(_parent.transform.position.x+0.5f, _parent.transform.position.y, _parent.transform.position.z);
+            edge.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
             edge.transform.LookAt(_parent.transform);
             return;
         }
 
         edge.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
         // rotate towards child
         edge.transform.LookAt(_child.transform);
+
         //for scaling
         Vector3 ls = edge.transform.localScale;
+
         // get scaling measure
         ls.z = Vector3.Distance(edge.transform.position, _child.transform.position);
+
         //scale
         edge.transform.localScale = ls;
+
         //move into position
         edge.transform.position = new Vector3(
               (_child.transform.position.x+_parent.transform.position.x)/2,
