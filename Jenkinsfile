@@ -19,7 +19,7 @@ pipeline {
 		steps{
 		sh 'docker build -t solarsystem-docker .'
 		sh 'docker-compose down'
-		sh 'docker-compose up'
+		sh 'docker-compose up --detach'
 		}
 	}
     }
