@@ -36,11 +36,15 @@ namespace UnityTemplateProjects
                 z += rotatedTranslation.z;
             }
 
-            public void ModifyTargetState(Vector3 newState)
+            public void ModifyTargetState(Vector3 newposition, Vector3 eulerangles)
             {
-                x = newState.x;
-                y = newState.y;
-                z = newState.z;
+
+                pitch = eulerangles.x;
+                yaw = eulerangles.y;
+                roll = eulerangles.z;
+                x = newposition.x;
+                y = newposition.y;
+                z = newposition.z;
             }
 
             public void LerpTowards(CameraState target, float positionLerpPct, float rotationLerpPct)
@@ -239,9 +243,10 @@ namespace UnityTemplateProjects
                 if (Physics.Raycast(cameraRay, out hit) && hit.collider.name == "Sphere")
                 {
                     m_TargetCameraState.SetFromTransform(hit.collider.gameObject.transform);
-                    Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 0.95f);
-                    m_TargetCameraState.ModifyTargetState(newPosition);
-                    m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, (float)0.1*positionLerpPct, rotationLerpPct);
+                    Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 0.93f);
+                    Vector3 newAngles = GetEulerAngles(cameraRay);
+                    m_TargetCameraState.ModifyTargetState(newPosition, newAngles);
+                    m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
                     m_InterpolatingCameraState.UpdateTransform(transform);
                 }
             }
@@ -262,7 +267,11 @@ namespace UnityTemplateProjects
             return newPosition;
         }
 
-
+        Vector3 GetEulerAngles(Ray cameraray)
+        {
+            Quaternion q = Quaternion.FromToRotation(Vector3.forward, cameraray.direction);
+            return q.eulerAngles;
+        }
 
         float GetBoostFactor()
         {
