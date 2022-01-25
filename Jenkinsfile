@@ -26,8 +26,8 @@ pipeline {
   post {
     failure {
 	emailext body: 'OOPS: The SolarSystem pipeline failed :(.',
-	    subject: 'OOPS: The SolarSystem pipeline failed :(.',
-//	    to: 'doc-g21mscprj18-group@imperial.ac.uk'
+	    subject: 'OOPS: The SolarSystem pipeline failed :(.'
+//,	    to: 'doc-g21mscprj18-group@imperial.ac.uk'
 // Use default recipients
     }
     always {
