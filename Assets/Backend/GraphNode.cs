@@ -11,7 +11,7 @@ namespace Backend
         public string Text { get; private set; }
         public Guid Id { get; private set; }
 
-        public (double X, double Y, double Z) Coordinates { get; private set; }
+        public (float X, float Y, float Z) Coordinates { get; private set; }
 
         public IReadOnlyList<GraphEdge> Edges 
         {
@@ -25,14 +25,14 @@ namespace Backend
 
         private List<GraphEdge> _edges = new List<GraphEdge>();
 
-        public GraphNode(string text, Guid id, (double x, double y, double z) coordinates)
+        public GraphNode(string text, Guid id, (float x, float y, float z) coordinates)
         {
             Text = text;
             Id = id;
             Coordinates = coordinates;
         }
 
-        public GraphNode(string text, (double x, double y, double z) coordinates) :
+        public GraphNode(string text, (float x, float y, float z) coordinates) :
             this(text, new Guid(), coordinates)
         { }
 
@@ -41,7 +41,7 @@ namespace Backend
             string text = dbNode.Properties["text"].As<string>();
             string guidText = dbNode.Properties["guid"].As<string>();
             Guid guid = Guid.Parse(guidText);
-            List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
+            List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
 
             return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using static Backend.HelperFunctions;
 
 namespace Backend
 {
@@ -6,12 +7,21 @@ namespace Backend
     {
         public static void Main()
         {
-            using (var database = new DatabaseView("bolt://localhost:7687", "neo4j", "password"))
-            {
-                GraphNode root = database.ReadNodeWithGuid(Guid.Parse("20d39f6b-8662-4328-8dc5-df57eb3c4a3a"));
-                database.AddAllNodesLinkedToRoot(root);
-                HelperFunctions.PrintTreeFromNode(root);
-            }
+            Graph graph = new Graph(); 
+
+            Console.WriteLine("Displaying all nodes");
+            foreach (GraphNode node in graph.Nodes)
+                Console.WriteLine($"{node}"); 
+            
+            Console.WriteLine("\nDisplaying all edges");
+            foreach (GraphEdge edge in graph.Edges)
+                Console.WriteLine($"{edge.Parent} {edge} {edge.Child}"); 
+
+            
+            Console.WriteLine("\nDouble checking that each node has its edges");
+            foreach (GraphNode node in graph.Nodes)
+                foreach (GraphEdge edge in node.Edges)
+                    Console.WriteLine($"{edge.Parent} {edge} {edge.Child}"); 
         }
     }
 }
