@@ -36,6 +36,17 @@ namespace UnityTemplateProjects
                 z += rotatedTranslation.z;
             }
 
+            public void ModifyTargetState(Vector3 newposition, Vector3 eulerangles)
+            {
+
+                pitch = eulerangles.x;
+                yaw = eulerangles.y;
+                roll = eulerangles.z;
+                x = newposition.x;
+                y = newposition.y;
+                z = newposition.z;
+            }
+
             public void LerpTowards(CameraState target, float positionLerpPct, float rotationLerpPct)
             {
                 yaw = Mathf.Lerp(yaw, target.yaw, rotationLerpPct);
@@ -182,12 +193,15 @@ namespace UnityTemplateProjects
                 Cursor.lockState = CursorLockMode.Locked;
             }
 
+
             // Unlock and show cursor when right mouse button released
             if (IsRightMouseButtonUp())
             {
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             }
+
+
 
             // Rotation
             if (IsCameraRotationAllowed())
@@ -221,9 +235,44 @@ namespace UnityTemplateProjects
             // Calculate the lerp amount, such that we get 99% of the way to our target in the specified time
             var positionLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / positionLerpTime) * Time.deltaTime);
             var rotationLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / rotationLerpTime) * Time.deltaTime);
-            m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
 
-            m_InterpolatingCameraState.UpdateTransform(transform);
+            if (IsLeftMouseButtonDown())
+            {
+                RaycastHit hit;
+                Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(cameraRay, out hit) && hit.collider.name == "Sphere")
+                {
+                    m_TargetCameraState.SetFromTransform(hit.collider.gameObject.transform);
+                    Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 0.7f);
+                    Vector3 newAngles = GetEulerAngles(cameraRay, hit);
+                    m_TargetCameraState.ModifyTargetState(newPosition, newAngles);
+                    m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
+                    m_InterpolatingCameraState.UpdateTransform(transform);
+                }
+            }
+            else
+            {
+                m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
+                m_InterpolatingCameraState.UpdateTransform(transform);
+            }
+
+   
+        }
+
+        Vector3 GetPositionAlongRay(Ray cameraray, RaycastHit hit, float pctalongray)
+        {
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center; // Find center of sphere
+            Vector3 translation = new Vector3(centerOfSphere.x - cameraray.origin.x,
+                                              centerOfSphere.y - cameraray.origin.y,
+                                              centerOfSphere.z - cameraray.origin.z)*pctalongray;
+            return translation+cameraray.origin;
+        }
+
+        Vector3 GetEulerAngles(Ray cameraray, RaycastHit hit)
+        {
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center;                
+            Quaternion q = Quaternion.FromToRotation(Vector3.forward, centerOfSphere - cameraray.origin);
+            return q.eulerAngles;
         }
 
         float GetBoostFactor()
@@ -298,6 +347,23 @@ namespace UnityTemplateProjects
 #endif
         }
 
+        bool IsLeftMouseButtonDown()
+        {
+#if ENABLE_INPUT_SYSTEM
+                return Mouse.current != null ? Mouse.current.leftButton.isPressed : false;
+#else
+                return Input.GetMouseButtonDown(0);
+#endif
+        }
+    
+        bool IsLeftMouseButtonUp()
+        {
+#if ENABLE_INPUT_SYSTEM
+            return Mouse.current != null ? Mouse.current.leftButton.isPressed : false;
+#else
+            return Input.GetMouseButtonUp(0);
+#endif
+        }
     }
 
 }

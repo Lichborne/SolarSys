@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  apache:
+    image: 'solarsystem-docker:latest'
+    ports:
+      - '8001:8080'
+      - '8401:8443'
+        #volumes:
+            #- /path/to/app:/app
