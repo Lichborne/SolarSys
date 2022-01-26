@@ -310,7 +310,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &3404108375825809971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,6 +907,7 @@ GameObject:
   - component: {fileID: 3404108376748283413}
   - component: {fileID: 3404108376748283416}
   - component: {fileID: 3404108376748283422}
+  - component: {fileID: 8720920546488656970}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -1018,3 +1019,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bb03bed0a232f0428cc6d38820654a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8720920546488656970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3404108376748283412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec7e5bf494102d74990cfec7fbf5d993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraToLookAt: {fileID: 0}

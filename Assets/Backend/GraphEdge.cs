@@ -60,7 +60,6 @@ namespace Backend
             return Equals(obj as GraphEdge);
         }
         
-        // override object.GetHashCode
         public override int GetHashCode()
             => Id.GetHashCode();
     }
