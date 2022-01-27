@@ -272,7 +272,7 @@ namespace UnityTemplateProjects
             var positionLerpPctZoom = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / positionLerpTime) * 0.8f*Time.deltaTime);
             var rotationLerpPctZoom = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / rotationLerpTime) * 0.014f*Time.deltaTime);
 
-            if (IsLeftMouseButtonDown())
+            if (Input.GetKeyDown(KeyCode.LeftShift) && (IsLeftMouseButtonDown()))
             {
                 RaycastHit hit;
                 Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
