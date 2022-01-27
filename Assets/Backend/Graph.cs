@@ -22,14 +22,18 @@ namespace Backend
         private string _username;
         private string _password;
 
-        public Graph(string uri = "bolt://localhost:7687", string username = "neo4j", string password = "password")
+        public Graph(string uri = "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string username = "neo4j", string password = "s3cr3t")
         {
             _uri = uri;
             _username = username;
             _password = password;
 
+
             using (var database = new DatabaseView(_uri, _username, _password))
             {
+                foreach (int id in database.AllIds())
+                    Console.WriteLine($"found id = {id}");
+
                 _nodes = database.AllNodes();
                 _edges = database.AllEdges(_nodes);
             }
