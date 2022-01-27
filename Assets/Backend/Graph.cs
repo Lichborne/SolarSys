@@ -22,7 +22,7 @@ namespace Backend
         private string _username;
         private string _password;
 
-        public Graph(string uri = "bolt://localhost:7687", string username = "neo4j", string password = "none")
+        public Graph(string uri = "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string username = "neo4j", string password = "s3cr3t")
         {
             _uri = uri;
             _username = username;
