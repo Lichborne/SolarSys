@@ -19,15 +19,16 @@ pipeline {
 		steps{
 		sh 'docker build -t solarsystem-docker .'
 		sh 'docker-compose down'
-		sh 'docker-compose up'
+		sh 'docker-compose up --detach'
 		}
 	}
     }
   post {
     failure {
 	emailext body: 'OOPS: The SolarSystem pipeline failed :(.',
-	    subject: 'OOPS: The SolarSystem pipeline failed :(.',
-	    to: 'doc-g21mscprj18-group@imperial.ac.uk'
+	    subject: 'OOPS: The SolarSystem pipeline failed :(.'
+//,	    to: 'doc-g21mscprj18-group@imperial.ac.uk'
+// Use default recipients
     }
     always {
 	emailext body: 'The SolarSystem works :).',
