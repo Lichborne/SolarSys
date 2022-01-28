@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ChangeColour : MonoBehaviour
 {   
-    [SerializeField]
-    private GameObject node;
+    [HideInInspector]
+    public GameObject node;
     private Renderer nodeRenderer;
     private Color nodeColor;
     private float randomChannelOne, randomChannelTwo, randomChannelThree;

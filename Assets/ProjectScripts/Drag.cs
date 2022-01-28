@@ -18,12 +18,12 @@ class Drag : MonoBehaviour
    
     void OnMouseEnter()
     {
-        GetComponent<Renderer>().material.color = mouseOverColor;
+        // GetComponent<Renderer>().material.color = mouseOverColor;
     }
  
     void OnMouseExit()
     {
-        GetComponent<Renderer>().material.color = originalColor;
+        // GetComponent<Renderer>().material.color = originalColor;
     }
 
     void OnMouseOver () {

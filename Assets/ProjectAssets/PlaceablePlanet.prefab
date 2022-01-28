@@ -117,13 +117,13 @@ GameObject:
   - component: {fileID: 5978846526343817461}
   - component: {fileID: 5259970875435682607}
   - component: {fileID: 8432814057563205319}
-  - component: {fileID: 1382814546054436200}
   - component: {fileID: 7665654089118164107}
   - component: {fileID: 8081068204467829478}
   - component: {fileID: 677231329430238084}
-  m_Layer: 0
+  - component: {fileID: 4479089368949881827}
+  m_Layer: 3
   m_Name: PlaceablePlanet
-  m_TagString: Untagged
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 100
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8432814057563205319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,20 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bb03bed0a232f0428cc6d38820654a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1382814546054436200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4974278123316600395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f894d7cfe75375143bc854fbf83c3592, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _objectPrefabs: []
-  _visualAidPrefabs: []
 --- !u!114 &7665654089118164107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,6 +347,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _edgePrefab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+--- !u!114 &4479089368949881827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974278123316600395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05432c2844176bf4c8737b0667af81da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unselected: {fileID: 2100000, guid: fe35b0871d1eff44ca5a932651227c34, type: 2}
+  selected: {fileID: 2100000, guid: 2cdf802e143afcc489210e9a74a21309, type: 2}
+  currentlySelected: 0
+  currentlyHidden: 0
 --- !u!1001 &4433291504053779210
 PrefabInstance:
   m_ObjectHideFlags: 0

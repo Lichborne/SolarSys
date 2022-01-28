@@ -8,66 +8,47 @@ public class ShowHideChildren : MonoBehaviour
 {   
     public GameObject infoDisplay;
     public GameObject textInput;
-    public GameObject UICanvas;
+    public GameObject UI;
 
-    void Update()
-    {
-       
-        // //exit on esc
-        // if (Input.GetKey(KeyCode.Escape))
-        // {
-        //     infoDisplay.SetActive(false);
-        //     textInput.SetActive(false);
-        //     UICanvas.SetActive(false);
-        // }
-        
-    }
-
-    private void OnMouseOver() 
+   
+   
+    public void Toggle_infoDisplay()
     {   
-        if (!EventSystem.current.IsPointerOverGameObject()) {
-            if(Input.GetMouseButtonDown(0))
-            {
-                infoDisplay.SetActive(true);
-            }
-
-            if(Input.GetMouseButtonDown(1))
-            {
-                // UIPanel.transform=Input.mousePosition;
-                UICanvas.SetActive(true);
-            }
+        if (infoDisplay.activeSelf == true) 
+        {
+            infoDisplay.SetActive(false);
         }
-        
+        else 
+        {
+            infoDisplay.SetActive(true);
+        }
     }
 
-    public void SelectDisplayInfo()
-    {
-        UICanvas.SetActive(false);
-        infoDisplay.SetActive(true);
-        
+    public void Toggle_textInput()
+    {   
+        if (textInput.activeSelf == true) 
+        {
+            textInput.SetActive(false);
+        }
+        else 
+        {
+            textInput.SetActive(true);
+        }
     }
 
-    public void SelectTextInput()
-    {
-        UICanvas.SetActive(false);
-        textInput.SetActive(true);
-        
+    public void Toggle_UI()
+    {   
+        if (UI.activeSelf == true) 
+        {
+            UI.SetActive(false);
+        }
+        else 
+        {
+            UI.SetActive(true);
+        }
     }
 
-    public void CloseUI()
-    {
-        UICanvas.SetActive(false);
-    }
-
-    public void CloseInfoDosplay()
-    {
-        infoDisplay.SetActive(false);
-    }
-
-    public void CloseTextInput()
-    {
-        textInput.SetActive(false);
-    }
+   
 
   
 }
