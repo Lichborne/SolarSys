@@ -120,17 +120,37 @@ namespace Backend
 
 // =========================== UPDATE
 
-        /// <summary> Updates database by making sure that the node with GUID `nodeWithChanges.Id` has the same fields as `nodeWithChanges`. If no node with GUID `nodeWithChanges.Id` is found, no changes will happen. </summary>
-        public void UpdateNode(GraphNode nodeWithChanges)
+        /// <summary> Updates database by making sure that the node with GUID `nodeWithChanges.Id` has the same fields as `nodeWithChanges`. 
+        /// Will not change the edges or children of `nodeWithChanges`.
+        /// If no node with GUID `nodeWithChanges.Id` is found, no changes will happen. </summary>
+        public void UpdateNodeFields(GraphNode nodeWithChanges)
         {
-            string query = $"MATCH (node :NODE {{guid: '{nodeWithChanges.Id}'}}) "
-                + $"SET node.title = '{nodeWithChanges.Title}', node.body = '{nodeWithChanges.Body}', "
-                + $"node.coordinates = [{nodeWithChanges.Coordinates.X}, {nodeWithChanges.Coordinates.Y}, {nodeWithChanges.Coordinates.Z}]";
+            string query = $"MATCH (node :NODE {{guid: '{nodeWithChanges.Id}'}}) " +
+                $" SET node.title = '{nodeWithChanges.Title}', " + 
+                $" node.body = '{nodeWithChanges.Body}', " +
+                $" node.coordinates = [{nodeWithChanges.Coordinates.X}, {nodeWithChanges.Coordinates.Y}, {nodeWithChanges.Coordinates.Z}]";
             
             using (var session = _driver.Session())
             {
                 session.WriteTransaction(tx => tx.Run(query).Consume());
             }
-        }        
+        }  
+
+        /// <summary> Updates database by making sure that the edge with GUID `edgeWithChanges.Id` has the same fields as `edgeWithChanges`. 
+        /// Will not change the parent or child of `edgeWithChanges`. 
+        /// If no node with GUID `edgeWithChanges.Id` is found, no changes will happen. </summary>
+        public void UpdateEdgeFields(GraphEdge edgeWithChanges)
+        {
+            string query = $"MATCH (:NODE {{guid: '{edgeWithChanges.Parent.Id}'}}) " +
+                $"-[edge :LINK {{guid: '{edgeWithChanges.Id}'}}]-> " + 
+                $" (:NODE {{guid: '{edgeWithChanges.Child.Id}'}})" +
+                $" SET edge.title = '{edgeWithChanges.Title}', " +
+                $" edge.body = '{edgeWithChanges.Body}' ";
+            
+            using (var session = _driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query).Consume());
+            }
+        }
     }
 }

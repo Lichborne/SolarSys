@@ -35,6 +35,18 @@ namespace Backend
 
             using (var database = new DatabaseView(_uri, _username, _password))
             {
+                /*
+                GraphNode parent = new GraphNode("parenty", "hi there parent", (0, 0, 0));                
+                GraphNode child = new GraphNode("childy", "hi there child", (0, 1, 0));
+                GraphEdge edge = new GraphEdge("edgy", "body of edge", parent, child);
+                
+                database.CreateUnlinkedNode(this, parent);
+                database.CreateUnlinkedNode(this, child);
+                database.CreateParentChildRelationship(parent, edge, child);
+
+                GraphEdge newEdge = new GraphEdge(edge.Id, "new edgy", "body of edgy ne", parent, child);
+                database.UpdateEdgeFields(newEdge); */
+
                 _nodes = database.ReadNodesFromProject(UserEmail, ProjectTitle);
                 _edges = database.ReadAllEdgesFromProject(UserEmail, ProjectTitle, _nodes);
             }

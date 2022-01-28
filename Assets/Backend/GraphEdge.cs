@@ -13,7 +13,7 @@ namespace Backend
         public GraphNode Parent { get; private set; }
         public GraphNode Child { get; private set; }
 
-        public GraphEdge(string title, string body, Guid id, GraphNode parent, GraphNode child)
+        public GraphEdge(Guid id, string title, string body, GraphNode parent, GraphNode child)
         {
             Title = title;
             Body = body;
@@ -23,7 +23,7 @@ namespace Backend
         }
 
         public GraphEdge(string title, string body, GraphNode parent, GraphNode child) :
-            this(title, body, Guid.NewGuid(), parent, child)
+            this(Guid.NewGuid(), title, body, parent, child)
         { }
 
         public GraphNode GetAttachedNode(GraphNode node) // return node on other side of edge
@@ -46,7 +46,7 @@ namespace Backend
             string title = dbRelationship.Properties["title"].As<string>();
             string body = dbRelationship.Properties["body"].As<string>();
             string guidText = dbRelationship.Properties["guid"].As<string>();
-            return new GraphEdge(title, body, Guid.Parse(guidText), parent, child);
+            return new GraphEdge(Guid.Parse(guidText), title, body, parent, child);
         }
 
         public override string ToString()
