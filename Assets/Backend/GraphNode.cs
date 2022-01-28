@@ -26,7 +26,7 @@ namespace Backend
 
         private List<GraphEdge> _edges = new List<GraphEdge>();
 
-        public GraphNode(string title, string body, Guid id, (double x, double y, double z) coordinates)
+        public GraphNode(Guid id, string title, string body, (double x, double y, double z) coordinates)
         {
             Title = title;
             Body = body;
@@ -35,7 +35,7 @@ namespace Backend
         }
 
         public GraphNode(string title, string body, (double x, double y, double z) coordinates) :
-            this(title, body, new Guid(), coordinates)
+            this(Guid.NewGuid(), title, body, coordinates)
         { }
 
         public static GraphNode FromINode(INode dbNode)
@@ -46,7 +46,7 @@ namespace Backend
             Guid guid = Guid.Parse(guidText);
             List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
 
-            return new GraphNode(title, body, guid, (coords[0], coords[1], coords[2]));
+            return new GraphNode(guid, title, body, (coords[0], coords[1], coords[2]));
         }
 
         public void AddEdge(GraphEdge edge)

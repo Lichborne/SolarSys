@@ -8,7 +8,7 @@ namespace Backend
         public static void Main()
         {
             GraphProject graph = new GraphProject(); 
-
+            /*
             Console.WriteLine("Displaying all nodes");
             foreach (GraphNode node in graph.Nodes)
                 Console.WriteLine($"{node}"); 
@@ -22,7 +22,7 @@ namespace Backend
             Console.WriteLine("\nDouble checking that each node has its edges");
             foreach (GraphNode node in graph.Nodes)
                 foreach (GraphEdge nodeEdge in node.Edges)
-                    Console.WriteLine($"{node} {nodeEdge} {nodeEdge.Child}"); 
+                    Console.WriteLine($"{node} {nodeEdge} {nodeEdge.Child}");  */
         }
     }
 }

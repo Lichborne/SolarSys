@@ -67,7 +67,7 @@ namespace Backend
 
 
 // ===================================== READ
-        /// <summary> From database, recursively reads in all nodes linked to root (either --> or <--). Gives each parent found an edge to all children. </summary>
+        /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
         public List<GraphNode> ReadNodesFromProject(string userEmail, string projectTitle)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(node :NODE) RETURN node";
@@ -86,7 +86,7 @@ namespace Backend
             }
         }
 
-
+        /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
         public List<GraphEdge> ReadAllEdgesFromProject(string userEmail, string projectTitle, List<GraphNode> allNodes)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) RETURN parent, edge, child";
@@ -118,65 +118,19 @@ namespace Backend
             });
         }
 
+// =========================== UPDATE
 
-        /*
-        public void ReadAllNodesLinkedToRoot(GraphNode root)
+        /// <summary> Updates database by making sure that the node with GUID `nodeWithChanges.Id` has the same fields as `nodeWithChanges`. If no node with GUID `nodeWithChanges.Id` is found, no changes will happen. </summary>
+        public void UpdateNode(GraphNode nodeWithChanges)
         {
-            HashSet<GraphNode> nodesVisited = new HashSet<GraphNode>();
-            ReadAllNodesLinkedToRoot(root, nodesVisited);
-        }
-
-        
-        private void ReadAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
-        {
-            if (nodesVisited.Contains(root))
-                return;
+            string query = $"MATCH (node :NODE {{guid: '{nodeWithChanges.Id}'}}) "
+                + $"SET node.title = '{nodeWithChanges.Title}', node.body = '{nodeWithChanges.Body}', "
+                + $"node.coordinates = [{nodeWithChanges.Coordinates.X}, {nodeWithChanges.Coordinates.Y}, {nodeWithChanges.Coordinates.Z}]";
             
-            nodesVisited.Add(root);
-            // in query, find all relations and children of root
-            // add relations with children to root (without creating childrens relations)
-            // recursive call on each child
-
-            var query_parent_child = $"MATCH (root {{guid: '{root.Id}'}}) -[edge :LINK]-> (child) RETURN edge, child";
-            var query_child_parent = $"MATCH (root {{guid: '{root.Id}'}}) <-[edge :LINK]- (parent) RETURN edge, parent";
-
-            using var session = _driver.Session();
-
-
-            List<GraphEdge> edges = session.ReadTransaction(tx => 
+            using (var session = _driver.Session())
             {
-                var result_parent_child = tx.Run(query_parent_child); // Find all parent->child relationships from node
-                var result_child_parent = tx.Run(query_child_parent);
-                List<GraphEdge> edges = new List<GraphEdge>();
-
-                foreach (var record in result_parent_child)
-                {
-                    INode childRead = record["child"].As<INode>();
-                    GraphNode child = GraphNode.FromINode(childRead);
-
-                    IRelationship edgeRead = record["edge"].As<IRelationship>();
-                    GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, root, child);
-                    edges.Add(edge);
-                }
-
-                foreach (var record in result_child_parent)
-                {
-                    INode parentRead = record["parent"].As<INode>(); 
-                    GraphNode parent = GraphNode.FromINode(parentRead);
-
-                    IRelationship edgeRead = record["edge"].As<IRelationship>();
-                    GraphEdge edge = GraphEdge.FromIRelationship(edgeRead, parent, root);
-                    edges.Add(edge);
-                }
-                
-                return edges;
-            });
-
-            foreach (GraphEdge edge in edges)
-            {
-                root.AddEdge(edge);
-                ReadAllNodesLinkedToRoot(edge.GetAttachedNode(root), nodesVisited);
+                session.WriteTransaction(tx => tx.Run(query).Consume());
             }
-        } */
+        }        
     }
 }
