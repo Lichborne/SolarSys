@@ -152,5 +152,19 @@ namespace Backend
                 session.WriteTransaction(tx => tx.Run(query).Consume());
             }
         }
+
+
+// ==================== DESTROY
+        /// <summary> Destroys the supplied node, along with all edges from which the node is either a parent or child.
+        public void DestroyNode(GraphNode node)
+        {
+            string query = $"MATCH (node :NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}'}}) " + 
+                $"DETACH DELETE (node)";
+            
+            using (var session = _driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query).Consume());
+            }
+        }
     }
 }
