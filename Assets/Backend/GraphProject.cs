@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Backend
 {
-    public class Graph 
+    public class GraphProject 
     {
         public IReadOnlyList<GraphNode> Nodes 
         {
@@ -22,24 +22,27 @@ namespace Backend
         private string _username;
         private string _password;
 
-        public Graph(string uri = "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string username = "neo4j", string password = "s3cr3t")
+        public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string uri = "bolt://localhost:7687", /*"neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", */ string dbUsername = "neo4j", string dbPassword = "password")
         {
             _uri = uri;
-            _username = username;
-            _password = password;
-
+            _username = dbUsername;
+            _password = dbPassword;
 
             using (var database = new DatabaseView(_uri, _username, _password))
             {
-                foreach (int id in database.AllIds())
-                    Console.WriteLine($"found id = {id}");
-
-                _nodes = database.AllNodes();
-                _edges = database.AllEdges(_nodes);
+                _nodes = database.ReadNodesFromProject(userEmail, projectTitle);
+                _edges = database.ReadAllEdgesFromProject(userEmail, projectTitle, _nodes);
             }
 
             foreach (var edge in _edges)
                 edge.Parent.AddEdge(edge);
+        }
+
+        public void AddRelation(GraphNode parent, GraphEdge edge, GraphNode child)
+        {
+            parent.AddEdge(edge);
+
+            // write all this to database
         }
     }
 }

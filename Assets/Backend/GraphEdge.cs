@@ -6,21 +6,24 @@ namespace Backend
 {
     public class GraphEdge : IEquatable<GraphEdge>
     {
-        public string Text { get; private set; }
+        public string Title { get; private set; }
+        public string Body {get; private set; }
+
         public Guid Id { get; private set; }
         public GraphNode Parent { get; private set; }
         public GraphNode Child { get; private set; }
 
-        public GraphEdge(string text, Guid id, GraphNode parent, GraphNode child)
+        public GraphEdge(string title, string body, Guid id, GraphNode parent, GraphNode child)
         {
-            Text = text;
+            Title = title;
+            Body = body;
             Id = id;
             Parent = parent;
             Child = child;
         }
 
-        public GraphEdge(string text, GraphNode parent, GraphNode child) :
-            this(text, Guid.NewGuid(), parent, child)
+        public GraphEdge(string title, string body, GraphNode parent, GraphNode child) :
+            this(title, body, Guid.NewGuid(), parent, child)
         { }
 
         public GraphNode GetAttachedNode(GraphNode node) // return node on other side of edge
@@ -33,20 +36,21 @@ namespace Backend
             {
                 return Parent;
             }
-            else{
+            else {
                 throw new ArgumentException("Node not attached to edge");
             }
         }
 
         public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
         {
-            string text = dbRelationship.Properties["text"].As<string>();
+            string title = dbRelationship.Properties["title"].As<string>();
+            string body = dbRelationship.Properties["body"].As<string>();
             string guidText = dbRelationship.Properties["guid"].As<string>();
-            return new GraphEdge(text, Guid.Parse(guidText), parent, child);
+            return new GraphEdge(title, body, Guid.Parse(guidText), parent, child);
         }
 
         public override string ToString()
-            => $"--[{Id.ToString().Truncate(5)}: {Text.Truncate(20)}]-->";
+            => $"--[{Id.ToString().Truncate(5)}: {Title.Truncate(20)}]-->";
 
         
         public bool Equals(GraphEdge other)

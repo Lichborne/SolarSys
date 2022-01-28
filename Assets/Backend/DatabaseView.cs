@@ -34,45 +34,38 @@ namespace Backend
             _disposed = true;
         }
 
-        // TODO: make this sensible
-        public List<GraphNode> ReadStartingNodes()
-            => new List<GraphNode> 
-            {
-                ReadNodeWithGuid(Guid.Parse("20d39f6b-8662-4328-8dc5-df57eb3c4a3a")),
-                ReadNodeWithGuid(Guid.Parse("199640fc-3605-4368-827c-a4e66551c0b5"))
-            };
-
-        public GraphNode ReadNodeWithGuid(Guid id)
+// ===================================== Create
+        /// <summary> Writes the node to the database, without any links </summary>
+        public void CreateUnlinkedNode(GraphNode node)
         {
-            var query = $"MATCH (node {{guid: '{id}'}}) RETURN node";
-            using var session = _driver.Session();
-
-            return session.ReadTransaction(tx => 
-            {
-                var result = tx.Run(query);
-                try 
-                {
-                    var record = result.Single();
-                    var node = record["node"].As<INode>();
-                    return GraphNode.FromINode(node); 
-                }   
-                catch (InvalidOperationException)
-                {
-                    throw new Exception($"Error (probably found no nodes) in running query \n{query}");
-                }
-            });
+            string query = $"MERGE ({{guid: {node.Id}, }})";
         }
 
+
+// ===================================== READ
         /// <summary> From database, recursively reads in all nodes linked to root (either --> or <--). Gives each parent found an edge to all children. </summary>
-        public void AddAllNodesLinkedToRoot(GraphNode root)
+        public List<GraphNode> ReadNodesFromProject(string userEmail, string projectTitle)
         {
-            HashSet<GraphNode> nodesVisited = new HashSet<GraphNode>();
-            AddAllNodesLinkedToRoot(root, nodesVisited);
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(node :NODE) RETURN node";
+            using (var session = _driver.Session())
+            {
+                return session.ReadTransaction(tx => 
+                {
+                    var result = tx.Run(query);
+                    List<GraphNode> nodes = new List<GraphNode>();
+
+                    foreach (var record in result)
+                        nodes.Add(GraphNode.FromINode(record["node"].As<INode>()));
+
+                    return nodes;
+                });
+            }
         }
 
-        public List<GraphEdge> AllEdges(List<GraphNode> allNodes)
+
+        public List<GraphEdge> ReadAllEdgesFromProject(string userEmail, string projectTitle, List<GraphNode> allNodes)
         {
-            string query = "MATCH (parent) -[edge: LINK]-> (child) RETURN parent, edge, child";
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) RETURN parent, edge, child";
             using var session = _driver.Session();
 
             return session.ReadTransaction(tx => 
@@ -101,26 +94,16 @@ namespace Backend
             });
         }
 
-        public List<GraphNode> AllNodes()
+
+        /*
+        public void ReadAllNodesLinkedToRoot(GraphNode root)
         {
-            string query = "MATCH (node) RETURN node";
-            using (var session = _driver.Session())
-            {
-                return session.ReadTransaction(tx => 
-                {
-                    var result = tx.Run(query);
-                    List<GraphNode> nodes = new List<GraphNode>();
-
-                    foreach (var record in result)
-                        nodes.Add(GraphNode.FromINode(record["node"].As<INode>()));
-
-                    return nodes;
-                });
-            }
+            HashSet<GraphNode> nodesVisited = new HashSet<GraphNode>();
+            ReadAllNodesLinkedToRoot(root, nodesVisited);
         }
 
-
-        private void AddAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
+        
+        private void ReadAllNodesLinkedToRoot(GraphNode root, HashSet<GraphNode> nodesVisited)
         {
             if (nodesVisited.Contains(root))
                 return;
@@ -168,8 +151,8 @@ namespace Backend
             foreach (GraphEdge edge in edges)
             {
                 root.AddEdge(edge);
-                AddAllNodesLinkedToRoot(edge.GetAttachedNode(root), nodesVisited);
+                ReadAllNodesLinkedToRoot(edge.GetAttachedNode(root), nodesVisited);
             }
-        }
+        } */
     }
 }

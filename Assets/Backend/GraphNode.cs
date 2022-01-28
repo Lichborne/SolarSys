@@ -8,7 +8,8 @@ namespace Backend
 {
     public class GraphNode : IEquatable<GraphNode>
     {
-        public string Text { get; private set; }
+        public string Title { get; private set; }
+        public string Body { get; private set; }
         public Guid Id { get; private set; }
 
         public (double X, double Y, double Z) Coordinates { get; private set; }
@@ -25,25 +26,27 @@ namespace Backend
 
         private List<GraphEdge> _edges = new List<GraphEdge>();
 
-        public GraphNode(string text, Guid id, (double x, double y, double z) coordinates)
+        public GraphNode(string title, string body, Guid id, (double x, double y, double z) coordinates)
         {
-            Text = text;
+            Title = title;
+            Body = body;
             Id = id;
             Coordinates = coordinates;
         }
 
-        public GraphNode(string text, (double x, double y, double z) coordinates) :
-            this(text, new Guid(), coordinates)
+        public GraphNode(string title, string body, (double x, double y, double z) coordinates) :
+            this(title, body, new Guid(), coordinates)
         { }
 
         public static GraphNode FromINode(INode dbNode)
         {
-            string text = dbNode.Properties["text"].As<string>();
+            string title = dbNode.Properties["title"].As<string>();
+            string body = dbNode.Properties["body"].As<string>();
             string guidText = dbNode.Properties["guid"].As<string>();
             Guid guid = Guid.Parse(guidText);
             List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
 
-            return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
+            return new GraphNode(title, body, guid, (coords[0], coords[1], coords[2]));
         }
 
         public void AddEdge(GraphEdge edge)
@@ -54,7 +57,7 @@ namespace Backend
         
 
         public override string ToString()
-            => $"({Id.ToString().Truncate(5)}: {Text.Truncate(20)})";
+            => $"({Id.ToString().Truncate(5)}: {Title.Truncate(20)})";
 
         public bool Equals(GraphNode other)
             => Id == other.Id;
