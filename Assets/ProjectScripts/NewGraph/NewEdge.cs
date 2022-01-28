@@ -9,7 +9,7 @@ public class NewEdge : MonoBehaviour
 
     private GameObject _selfReferencePrefab = null;
 
-    private GameObject edge = null;
+    public GameObject edge = null;
 
     public GameObject _parent { get; set; } = null;
 
@@ -61,9 +61,13 @@ public class NewEdge : MonoBehaviour
 
         if (_parent == _child) {
                 edge = Instantiate(_selfReferencePrefab, _parent.transform.position, _parent.transform.rotation);
+                edge.GetComponent<StoreParentChild>().parent = _parent;
+                edge.GetComponent<StoreParentChild>().child = _child;
                 return;
             }
 
         edge = Instantiate(_edgePrefab, _parent.transform.position, _parent.transform.rotation);
+        edge.GetComponent<StoreParentChild>().parent = _parent;
+        edge.GetComponent<StoreParentChild>().child = _child;
     }
 }

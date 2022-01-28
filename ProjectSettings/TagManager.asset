@@ -3,12 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Node
+  - Edge
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ClickableNodes
   - Water
   - UI
   - 
