@@ -43,10 +43,7 @@ namespace Backend
                             $" CREATE (project_root) -[:CONTAINS]-> " + 
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
                 
-            using (var session = _driver.Session())
-            {
-                session.WriteTransaction(tx => tx.Run(query).Consume());
-            }
+            WriteQuery(query);
         }
 
 
@@ -56,13 +53,8 @@ namespace Backend
             string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " + 
                             $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " + 
                             $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Body}'}}]-> (child)";
-            
-            Console.WriteLine($"trying query:\n{query}");
-            
-            using (var session = _driver.Session())
-            {
-                session.WriteTransaction(tx => tx.Run(query).Consume());
-            }
+                        
+            WriteQuery(query);
         }
 
 
@@ -130,10 +122,7 @@ namespace Backend
                 $" node.body = '{nodeWithChanges.Body}', " +
                 $" node.coordinates = [{nodeWithChanges.Coordinates.X}, {nodeWithChanges.Coordinates.Y}, {nodeWithChanges.Coordinates.Z}]";
             
-            using (var session = _driver.Session())
-            {
-                session.WriteTransaction(tx => tx.Run(query).Consume());
-            }
+            WriteQuery(query);
         }  
 
         /// <summary> Updates database by making sure that the edge with GUID `edgeWithChanges.Id` has the same fields as `edgeWithChanges`. 
@@ -147,10 +136,7 @@ namespace Backend
                 $" SET edge.title = '{edgeWithChanges.Title}', " +
                 $" edge.body = '{edgeWithChanges.Body}' ";
             
-            using (var session = _driver.Session())
-            {
-                session.WriteTransaction(tx => tx.Run(query).Consume());
-            }
+            WriteQuery(query);
         }
 
 
@@ -161,6 +147,21 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}'}}) " + 
                 $"DETACH DELETE (node)";
             
+            WriteQuery(query);
+        }
+
+        public void DestroyEdge(GraphEdge edge)
+        {
+            string query = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " + 
+                $" -[edge :LINK {{guid: '{edge.Id}'}}]-> " + 
+                $" (:NODE {{guid: '{edge.Child.Id}'}}) " + 
+                $" DELETE edge";
+            
+            WriteQuery(query);
+        }
+
+        private void WriteQuery(string query)
+        {
             using (var session = _driver.Session())
             {
                 session.WriteTransaction(tx => tx.Run(query).Consume());
