@@ -36,9 +36,33 @@ namespace Backend
 
 // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
-        public void CreateUnlinkedNode(GraphNode node)
+        public void CreateUnlinkedNode(GraphProject project, GraphNode node)
         {
-            string query = $"MERGE ({{guid: {node.Id}, }})";
+            string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
+                            $" CREATE (project_root) -[:CONTAINS]-> " + 
+                            $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
+                
+            using (var session = _driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query).Consume());
+            }
+        }
+
+
+        /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
+        public void CreateParentChildRelationship(GraphNode parent, GraphEdge edge, GraphNode child)
+        {
+            string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " + 
+                            $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " + 
+                            $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Body}'}}]-> (child)";
+            
+            Console.WriteLine($"trying query:\n{query}");
+            
+            using (var session = _driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query).Consume());
+            }
         }
 
 
