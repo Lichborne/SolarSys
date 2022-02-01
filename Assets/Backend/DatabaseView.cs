@@ -46,19 +46,30 @@ namespace Backend
             WriteQuery(query);
         }
 
+        /// <summary> Writes to the database a log node that is linked to a project, but not linked to other log nodes </summary>
         public void CreateUnlinkedLogNode(GraphProject project, LogNode node)
         {
-
-
-
             string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
-                            $" (:NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}'}})";
+                            $" (:NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'})";
 
             WriteQuery(query);
         }
 
+        /// <summary> Add new log node to chain of log nodes </summary>
+        public void AppendLogNode(GraphProject project, LogNode node)
+        {
+            // identify current log head, and remove its links to project node
+            var oldHeadId = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle);
+            DestroyLogHistoryEdge(project);
+
+            // make node the new log head 
+            CreateUnlinkedLogNode(project, node);
+
+            // attach new log head node to previous log head node
+            CreateLogLink(node.Id, oldHeadId);
+        }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
         public void CreateParentChildRelationship(GraphNode parent, GraphEdge edge, GraphNode child)
@@ -66,6 +77,15 @@ namespace Backend
             string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " +
                             $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
                             $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Body}'}}]-> (child)";
+
+            WriteQuery(query);
+        }
+
+        /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
+        public void CreateLogLink(Guid parentId, Guid childId)
+        {
+            string query = $" CREATE (parent :LOG_NODE {{guid: '{parentId}'}}) " +
+                            $"-[:LOG_LINK]-> (child :LOG_NODE {{guid: '{childId}'}})";
 
             WriteQuery(query);
         }
@@ -106,6 +126,19 @@ namespace Backend
                         nodes.Add(LogNode.FromINode(record["node"].As<INode>()));
 
                     return nodes;
+                });
+            }
+        }
+        // TODO guid in neo4j, not id
+        public Guid GetHeadLogNodeId(string userEmail, string projectTitle)
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[r:LOG_HISTORY]-> (node) RETURN node.guid";
+            using (var session = _driver.Session())
+            {
+                return session.ReadTransaction(tx =>
+                {
+                    var result = tx.Run(query);
+                    return Guid.Parse(result.Single()[0].As<string>());
                 });
             }
         }
@@ -188,6 +221,15 @@ namespace Backend
                 $" -[edge :LINK {{guid: '{edge.Id}'}}]-> " +
                 $" (:NODE {{guid: '{edge.Child.Id}'}}) " +
                 $" DELETE edge";
+
+            WriteQuery(query);
+        }
+
+        public void DestroyLogHistoryEdge(GraphProject project)
+        {
+            string query = $"MATCH ({{title: '{project.ProjectTitle}'}}) " +
+                " -[r:LOG_HISTORY]->(n) " +
+                " DELETE r";
 
             WriteQuery(query);
         }
