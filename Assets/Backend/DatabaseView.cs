@@ -52,7 +52,7 @@ namespace Backend
             string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
-                            $" (:NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'})";
+                            $" (:NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
             WriteQuery(query);
         }
@@ -61,14 +61,18 @@ namespace Backend
         public void AppendLogNode(GraphProject project, LogNode node)
         {
             // identify current log head, and remove its links to project node
-            var oldHeadId = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle);
-            DestroyLogHistoryEdge(project);
+            Guid guid = Guid.Empty;
+            var headPresent = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle, ref guid);
+            if (headPresent)
+            {
+                DestroyLogHistoryEdge(project);
+            }
 
-            // make node the new log head 
+            // // make node the new log head 
             CreateUnlinkedLogNode(project, node);
 
-            // attach new log head node to previous log head node
-            CreateLogLink(node.Id, oldHeadId);
+            // // attach new log head node to previous log head node
+            // CreateLogLink(node.Id, oldHeadId);
         }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
@@ -129,16 +133,21 @@ namespace Backend
                 });
             }
         }
-        // TODO guid in neo4j, not id
-        public Guid GetHeadLogNodeId(string userEmail, string projectTitle)
+
+        public bool GetHeadLogNodeId(string userEmail, string projectTitle, ref Guid guid)
         {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[r:LOG_HISTORY]-> (node) RETURN node.guid";
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[r:LOG_HISTORY]-> (node) RETURN node";
             using (var session = _driver.Session())
             {
                 return session.ReadTransaction(tx =>
                 {
                     var result = tx.Run(query);
-                    return Guid.Parse(result.Single()[0].As<string>());
+                    if (result.Count() == 0)
+                    {
+                        return false;
+                    }
+                    var guid = Guid.Parse(result.Single()[0].As<string>());
+                    return true;
                 });
             }
         }

@@ -24,9 +24,9 @@ namespace Backend
 
         // public LogNode NextNode { get; private set; }
 
-        public LogNode(ChangeEnum change, string body, Guid id)
+        public LogNode(ChangeEnum change, string body)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Change = change;
             Body = body;
             TimeStamp = DateTime.UtcNow;
