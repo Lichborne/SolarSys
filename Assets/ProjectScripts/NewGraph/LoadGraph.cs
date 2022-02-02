@@ -6,7 +6,7 @@ using TMPro;
 
 using Backend;
 
-public class NewLoadGraph : MonoBehaviour
+public class LoadGraph : MonoBehaviour
 {
     public GameObject _nodePrefab;
 
@@ -16,9 +16,9 @@ public class NewLoadGraph : MonoBehaviour
 
     private Backend.Graph graph = new Backend.Graph();
 
-    private List<GameObject> graphNodes = new List<GameObject>();
+    private List<FrontEndNode> graphNodes = new List<FrontEndNode>();
 
-    private List<NewEdge> graphEdges = new List<NewEdge>();
+    private List<FrontEndEdge> graphEdges = new List<FrontEndEdge>();
 
     // Start is called before the first frame update
     void Start()
@@ -28,11 +28,15 @@ public class NewLoadGraph : MonoBehaviour
             
             Vector3 pos = new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z);
 
-            GameObject NewNode = Instantiate(_nodePrefab, pos, Quaternion.identity);
+            //custom cosntructors to initialize game obejcts are ill-advised in unity; so initialization is separated
+            // into default cosntruction and initialization either via the start method or in imm. succession.
+            FrontEndNode NewNode = new FrontEndNode();
+            
+            NewNode.InstantiateNode(_nodePrefab, node, pos, Quaternion.identity);
 
-            NewNode.transform.position = pos;
+            NewNode.nodeObject.transform.position = pos; // redundant 
 
-            ChangeText.ChangeInputFieldText(NewNode, node.Text);
+            ChangeText.ChangeInputFieldText(NewNode.nodeObject, node.Text);
 
             graphNodes.Add(NewNode);
             
@@ -44,8 +48,8 @@ public class NewLoadGraph : MonoBehaviour
         foreach (GraphEdge edge in graph.Edges) {
             int parent_index = (graph.Nodes).IndexOf(edge.Parent);
             int child_index = (graph.Nodes).IndexOf(edge.Child);
-            NewEdge graphEdge = graphNodes[parent_index].AddComponent<NewEdge>();
-            graphEdge.InstantiateEdge(_edgePreFab, _selfReferencePreFab, graphNodes[parent_index], graphNodes[child_index]);
+            FrontEndEdge graphEdge = graphNodes[parent_index].nodeObject.AddComponent<FrontEndEdge>();
+            graphEdge.InstantiateEdge(_edgePreFab, _selfReferencePreFab, edge, graphNodes[parent_index].nodeObject, graphNodes[child_index].nodeObject);
             }
             
     }

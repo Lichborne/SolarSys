@@ -3,6 +3,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using Backend;
  
 class Drag : MonoBehaviour
 {
@@ -62,10 +64,15 @@ class Drag : MonoBehaviour
             Debug.Log("No available position found");
         }
 
-        GameObject NewNode = Instantiate(gameObject, NewPosition, Quaternion.identity);
+        Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
+        FrontEndNode NewNode = new FrontEndNode();
+        NewNode.InstantiateNode(gameObject, newDatabaseNode, NewPosition, Quaternion.identity);
 
-        NewEdge graphEdge = gameObject.AddComponent<NewEdge>();
-        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, gameObject, NewNode);
+        /**/
+
+        FrontEndEdge graphEdge = gameObject.AddComponent<FrontEndEdge>();
+        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<GraphNode>(), newDatabaseNode);
+        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, newDatabaseEdge, gameObject, NewNode.nodeObject);
             
     }
 }

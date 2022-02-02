@@ -2,30 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewEdge : MonoBehaviour
+public class FrontEndEdge : MonoBehaviour
 {
 
     private GameObject _edgePrefab = null;
 
     private GameObject _selfReferencePrefab = null;
 
-    public GameObject edge = null;
+    public Backend.GraphEdge _databaseEdge = null;
 
     public GameObject _parent { get; set; } = null;
 
     public GameObject _child {get; set; } = null;
-    // Start is called before the first frame update
+
+    // the game object itslef, no underscore to distinguish 
+    public GameObject edge = null;
+
     void Start()
     {
-
+        //empty because we have an instantiator (not exactly a constructor, but like it)
     }
 
     // Instead of update; moving called by funct in node.
     void Update()
     {   
+        //if we are missing something, i e the object has not yet been initialized, we do nothing
         if(edge == null  || _edgePrefab == null || _selfReferencePrefab == null)
             return;
 
+        //if it's a self reference edge, we just update its position in a more simple manner and return
         if (_parent == _child) {
             edge.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
             edge.transform.LookAt(_parent.transform);
@@ -53,9 +58,10 @@ public class NewEdge : MonoBehaviour
 					    (_child.transform.position.z+_parent.transform.position.z)/2);
   }
 
-    public void InstantiateEdge(GameObject epf, GameObject srpf, GameObject p, GameObject c) { 
+    public void InstantiateEdge(GameObject epf, GameObject srpf, Backend.GraphEdge graphEdge, GameObject p, GameObject c) { 
         _edgePrefab = epf;
         _selfReferencePrefab = srpf;
+        _databaseEdge = graphEdge;
         _parent = p;
         _child = c;
 
