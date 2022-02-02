@@ -61,10 +61,10 @@ namespace Backend
         public void AppendLogNode(GraphProject project, LogNode node)
         {
             // identify current log head, and remove its links to project node
-            Guid guid = Guid.Empty;
-            var headPresent = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle, ref guid);
 
-            if (headPresent)
+            var guidHead = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle);
+
+            if (!guidHead.Equals(Guid.Empty))
             {
                 DestroyLogHistoryEdge(project);
 
@@ -72,7 +72,7 @@ namespace Backend
                 CreateUnlinkedLogNode(project, node);
 
                 // attach new log head node to previous log head node
-                CreateLogLink(node.Id, guid);
+                CreateLogLink(node.Id, guidHead);
             }
             else
             {
@@ -143,7 +143,7 @@ namespace Backend
             }
         }
 
-        public bool GetHeadLogNodeId(string userEmail, string projectTitle, ref Guid guid)
+        public Guid GetHeadLogNodeId(string userEmail, string projectTitle)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
                             $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{projectTitle}'}}) " +
@@ -151,16 +151,23 @@ namespace Backend
 
             using (var session = _driver.Session())
             {
-                guid = session.ReadTransaction(tx =>
+                return session.ReadTransaction(tx =>
                 {
                     var result = tx.Run(query);
 
-                    var guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
-                    return Guid.Parse(guidString);
+                    try
+                    {
+                        String guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
+                        return Guid.Parse(guidString);
+                    }
+                    catch (System.InvalidOperationException)
+                    {
+                        // No results in query
+                        return Guid.Empty;
+                    }
+
                 });
             }
-
-            return true;
         }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
