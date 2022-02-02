@@ -6,15 +6,14 @@ using static Backend.StringExtensions;
 
 namespace Backend
 {
-
+    public enum ChangeEnum
+    {
+        Add,
+        Update,
+        Delete
+    }
     public class LogNode
     {
-        public enum ChangeEnum
-        {
-            Add,
-            Update,
-            Delete
-        }
         public ChangeEnum Change { get; private set; }
         public string Body { get; private set; }
 
