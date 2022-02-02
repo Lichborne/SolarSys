@@ -52,7 +52,7 @@ namespace Backend
             string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
-                            $" (:NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
+                            $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
             WriteQuery(query);
         }
@@ -64,23 +64,21 @@ namespace Backend
             Guid guid = Guid.Empty;
             var headPresent = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle, ref guid);
 
-            Console.WriteLine(guid);
+            if (headPresent)
+            {
+                DestroyLogHistoryEdge(project);
 
-            // if (headPresent)
-            // {
-            //     DestroyLogHistoryEdge(project);
+                // make node the new log head 
+                CreateUnlinkedLogNode(project, node);
 
-            //     // make node the new log head 
-            //     CreateUnlinkedLogNode(project, node);
-
-            //     // attach new log head node to previous log head node
-            //     CreateLogLink(node.Id, guid);
-            // }
-            // else
-            // {
-            //     // make node the new log head 
-            //     CreateUnlinkedLogNode(project, node);
-            // }
+                // attach new log head node to previous log head node
+                CreateLogLink(node.Id, guid);
+            }
+            else
+            {
+                // make node the new log head 
+                CreateUnlinkedLogNode(project, node);
+            }
 
 
         }
@@ -98,8 +96,9 @@ namespace Backend
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
         public void CreateLogLink(Guid parentId, Guid childId)
         {
-            string query = $" CREATE (parent :LOG_NODE {{guid: '{parentId}'}}) " +
-                            $"-[:LOG_LINK]-> (child :LOG_NODE {{guid: '{childId}'}})";
+            string query = $" MATCH (parent :LOG_NODE {{guid: '{parentId}'}}), " +
+                            $" (child :LOG_NODE {{guid: '{childId}'}}) " +
+                            " CREATE (parent) -[:LOG_LINK]-> (child)";
 
             WriteQuery(query);
         }
