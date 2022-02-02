@@ -63,16 +63,26 @@ namespace Backend
             // identify current log head, and remove its links to project node
             Guid guid = Guid.Empty;
             var headPresent = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle, ref guid);
-            if (headPresent)
-            {
-                DestroyLogHistoryEdge(project);
-            }
 
-            // // make node the new log head 
-            CreateUnlinkedLogNode(project, node);
+            Console.WriteLine(guid);
 
-            // // attach new log head node to previous log head node
-            // CreateLogLink(node.Id, oldHeadId);
+            // if (headPresent)
+            // {
+            //     DestroyLogHistoryEdge(project);
+
+            //     // make node the new log head 
+            //     CreateUnlinkedLogNode(project, node);
+
+            //     // attach new log head node to previous log head node
+            //     CreateLogLink(node.Id, guid);
+            // }
+            // else
+            // {
+            //     // make node the new log head 
+            //     CreateUnlinkedLogNode(project, node);
+            // }
+
+
         }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
@@ -136,20 +146,22 @@ namespace Backend
 
         public bool GetHeadLogNodeId(string userEmail, string projectTitle, ref Guid guid)
         {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[r:LOG_HISTORY]-> (node) RETURN node";
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
+                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{projectTitle}'}}) " +
+                            "-[:LOG_HISTORY]-> (node) RETURN node";
+
             using (var session = _driver.Session())
             {
-                return session.ReadTransaction(tx =>
+                guid = session.ReadTransaction(tx =>
                 {
                     var result = tx.Run(query);
-                    if (result.Count() == 0)
-                    {
-                        return false;
-                    }
-                    var guid = Guid.Parse(result.Single()[0].As<string>());
-                    return true;
+
+                    var guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
+                    return Guid.Parse(guidString);
                 });
             }
+
+            return true;
         }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
