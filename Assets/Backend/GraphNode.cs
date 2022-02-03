@@ -9,10 +9,12 @@ namespace Backend
     public class GraphNode : IEquatable<GraphNode>
     {
         public string Title { get; private set; }
-        public string Body { get; private set; }
+        public string Description { get; private set; }
         public Guid Id { get; private set; }
 
         public (double X, double Y, double Z) Coordinates { get; private set; }
+
+        public GraphProject Project {get; private set; }
 
         public IReadOnlyList<GraphEdge> Edges 
         {
@@ -26,19 +28,20 @@ namespace Backend
 
         private List<GraphEdge> _edges = new List<GraphEdge>();
 
-        public GraphNode(Guid id, string title, string body, (double x, double y, double z) coordinates)
+        public GraphNode(Guid id, GraphProject project, string title, string body, (double x, double y, double z) coordinates)
         {
             Title = title;
-            Body = body;
+            Description = body;
             Id = id;
             Coordinates = coordinates;
+            Project = project;
         }
 
-        public GraphNode(string title, string body, (double x, double y, double z) coordinates) :
-            this(Guid.NewGuid(), title, body, coordinates)
+        public GraphNode(GraphProject project, string title, string body, (double x, double y, double z) coordinates) :
+            this(Guid.NewGuid(), project, title, body, coordinates)
         { }
 
-        public static GraphNode FromINode(INode dbNode)
+        public static GraphNode FromINode(GraphProject project, INode dbNode)
         {
             string title = dbNode.Properties["title"].As<string>();
             string body = dbNode.Properties["body"].As<string>();
@@ -46,14 +49,46 @@ namespace Backend
             Guid guid = Guid.Parse(guidText);
             List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
 
-            return new GraphNode(guid, title, body, (coords[0], coords[1], coords[2]));
+            return new GraphNode(guid, project, title, body, (coords[0], coords[1], coords[2]));
         }
 
+        //  Writes the node, with no edges, to the database
+        public void CreateInDatabase()
+            =>  Project.Database.CreateUnlinkedNode(this);
+
+        // Adds an extra edge to the node, writing it to the database
         public void AddEdge(GraphEdge edge)
-            => _edges.Add(edge);
-           
+        {
+            Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
+            _edges.Add(edge);
+        }       
+
+        // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
         public void RemoveEdge(GraphEdge edge)
             => _edges.Remove(edge);
+        
+
+        public void UpdateTitle(string title)
+        {
+            Project.Database.UpdateNodeTitle(this, title);
+            Title = title;
+        }
+
+        public void UpdateDescription(string description)
+        {
+            Project.Database.UpdateNodeDescription(this, description);
+            Description = description;
+        }
+
+        public void UpdateCoordinates((double x, double y, double z) coordinates)
+        {
+            Project.Database.UpdateNodeCoordinates(this, coordinates);
+            Coordinates = coordinates;
+        }
+
+        // deletes the node from the database. does not affect the node's edges or children
+        public void DeleteFromDatabase()
+            => Project.Database.DestroyNode(this);
         
 
         public override string ToString()

@@ -25,6 +25,8 @@ namespace Backend
         private string _username;
         private string _password;
 
+        public DatabaseView Database { get; private set; }
+
         public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string uri = "bolt://localhost:7687", /*"neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", */ string dbUsername = "neo4j", string dbPassword = "password")
         {
             UserEmail = userEmail;
@@ -50,8 +52,8 @@ namespace Backend
                 Console.ReadKey();
                 database.DestroyEdge(edge); */
 
-                _nodes = database.ReadNodesFromProject(UserEmail, ProjectTitle);
-                _edges = database.ReadAllEdgesFromProject(UserEmail, ProjectTitle, _nodes);
+                _nodes = database.ReadNodesFromProject(this);
+                _edges = database.ReadAllEdgesFromProject(this, _nodes);
             }
 
             foreach (var edge in _edges)
