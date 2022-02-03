@@ -10,8 +10,9 @@ namespace Backend
             GraphProject project = new GraphProject();
             DatabaseView view = new DatabaseView("bolt://localhost:7687", "neo4j", "password");
 
-            LogNode logNode = new LogNode(0, "body");
+            LogNode logNode = new LogNode(ChangeEnum.Update, "body");
             view.AppendLogNode(project, logNode);
+
 
             /*
             Console.WriteLine("Displaying all nodes");
