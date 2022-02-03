@@ -34,38 +34,84 @@ namespace Backend
             _disposed = true;
         }
 
-// ===================================== Create
+        // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
         public void CreateUnlinkedNode(GraphProject project, GraphNode node)
         {
             string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
-                            $" CREATE (project_root) -[:CONTAINS]-> " + 
+                            $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
-                
+
             WriteQuery(query);
         }
 
+        /// <summary> Writes to the database a log node that is linked to a project, but not linked to other log nodes </summary>
+        public void CreateUnlinkedLogNode(GraphProject project, LogNode node)
+        {
+            string query = $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
+                            $" CREATE (project_root) -[:LOG_HISTORY]-> " +
+                            $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
+
+            WriteQuery(query);
+        }
+
+        /// <summary> Add new log node to chain of log nodes </summary>
+        public void AppendLogNode(GraphProject project, LogNode node)
+        {
+            // identify current log head, and remove its links to project node
+
+            var guidHead = GetHeadLogNodeId(project.UserEmail, project.ProjectTitle);
+
+            if (!guidHead.Equals(Guid.Empty))
+            {
+                DestroyLogHistoryEdge(project);
+
+                // make node the new log head 
+                CreateUnlinkedLogNode(project, node);
+
+                // attach new log head node to previous log head node
+                CreateLogLink(node.Id, guidHead);
+            }
+            else
+            {
+                // make node the new log head 
+                CreateUnlinkedLogNode(project, node);
+            }
+
+
+        }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
         public void CreateParentChildRelationship(GraphNode parent, GraphEdge edge, GraphNode child)
         {
-            string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " + 
-                            $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " + 
+            string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " +
+                            $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
                             $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Body}'}}]-> (child)";
-                        
+
+            WriteQuery(query);
+        }
+
+        /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
+        public void CreateLogLink(Guid parentId, Guid childId)
+        {
+            string query = $" MATCH (parent :LOG_NODE {{guid: '{parentId}'}}), " +
+                            $" (child :LOG_NODE {{guid: '{childId}'}}) " +
+                            " CREATE (parent) -[:LOG_LINK]-> (child)";
+
             WriteQuery(query);
         }
 
 
-// ===================================== READ
+        // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
         public List<GraphNode> ReadNodesFromProject(string userEmail, string projectTitle)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(node :NODE) RETURN node";
             using (var session = _driver.Session())
             {
-                return session.ReadTransaction(tx => 
+                return session.ReadTransaction(tx =>
                 {
                     var result = tx.Run(query);
                     List<GraphNode> nodes = new List<GraphNode>();
@@ -78,13 +124,59 @@ namespace Backend
             }
         }
 
+        /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
+        public List<LogNode> ReadLogNodesFromProject(string userEmail, string projectTitle)
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:LOG_HISTORY]->(node :LOG_NODE) RETURN node";
+            using (var session = _driver.Session())
+            {
+                return session.ReadTransaction(tx =>
+                {
+                    var result = tx.Run(query);
+                    List<LogNode> nodes = new List<LogNode>();
+
+                    foreach (var record in result)
+                        nodes.Add(LogNode.FromINode(record["node"].As<INode>()));
+
+                    return nodes;
+                });
+            }
+        }
+
+        public Guid GetHeadLogNodeId(string userEmail, string projectTitle)
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
+                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{projectTitle}'}}) " +
+                            "-[:LOG_HISTORY]-> (node) RETURN node";
+
+            using (var session = _driver.Session())
+            {
+                return session.ReadTransaction(tx =>
+                {
+                    var result = tx.Run(query);
+
+                    try
+                    {
+                        String guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
+                        return Guid.Parse(guidString);
+                    }
+                    catch (System.InvalidOperationException)
+                    {
+                        // No results in query
+                        return Guid.Empty;
+                    }
+
+                });
+            }
+        }
+
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
         public List<GraphEdge> ReadAllEdgesFromProject(string userEmail, string projectTitle, List<GraphNode> allNodes)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectTitle}'}}) -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) RETURN parent, edge, child";
             using var session = _driver.Session();
 
-            return session.ReadTransaction(tx => 
+            return session.ReadTransaction(tx =>
             {
                 var result = tx.Run(query);
                 List<GraphEdge> edges = new List<GraphEdge>();
@@ -92,16 +184,16 @@ namespace Backend
                 {
                     Guid parentId = Guid.Parse(record["parent"].As<INode>().Properties["guid"].As<string>());
                     Guid childId = Guid.Parse(record["child"].As<INode>().Properties["guid"].As<string>());
-                    
+
                     GraphNode parent = allNodes.Find(node => node.Id == parentId);
                     if (parent == null)
                         throw new Exception($"Could not find parent node with id = {parentId}");
-                    
+
 
                     GraphNode child = allNodes.Find(node => node.Id == childId);
                     if (child == null)
                         throw new Exception($"Could not find child with id = {childId}");
-                    
+
                     GraphEdge edge = GraphEdge.FromIRelationship(record["edge"].As<IRelationship>(), parent, child);
 
                     edges.Add(edge);
@@ -110,7 +202,7 @@ namespace Backend
             });
         }
 
-// =========================== UPDATE
+        // =========================== UPDATE
 
         /// <summary> Updates database by making sure that the node with GUID `nodeWithChanges.Id` has the same fields as `nodeWithChanges`. 
         /// Will not change the edges or children of `nodeWithChanges`.
@@ -118,12 +210,12 @@ namespace Backend
         public void UpdateNodeFields(GraphNode nodeWithChanges)
         {
             string query = $"MATCH (node :NODE {{guid: '{nodeWithChanges.Id}'}}) " +
-                $" SET node.title = '{nodeWithChanges.Title}', " + 
+                $" SET node.title = '{nodeWithChanges.Title}', " +
                 $" node.body = '{nodeWithChanges.Body}', " +
                 $" node.coordinates = [{nodeWithChanges.Coordinates.X}, {nodeWithChanges.Coordinates.Y}, {nodeWithChanges.Coordinates.Z}]";
-            
+
             WriteQuery(query);
-        }  
+        }
 
         /// <summary> Updates database by making sure that the edge with GUID `edgeWithChanges.Id` has the same fields as `edgeWithChanges`. 
         /// Will not change the parent or child of `edgeWithChanges`. 
@@ -131,32 +223,41 @@ namespace Backend
         public void UpdateEdgeFields(GraphEdge edgeWithChanges)
         {
             string query = $"MATCH (:NODE {{guid: '{edgeWithChanges.Parent.Id}'}}) " +
-                $"-[edge :LINK {{guid: '{edgeWithChanges.Id}'}}]-> " + 
+                $"-[edge :LINK {{guid: '{edgeWithChanges.Id}'}}]-> " +
                 $" (:NODE {{guid: '{edgeWithChanges.Child.Id}'}})" +
                 $" SET edge.title = '{edgeWithChanges.Title}', " +
                 $" edge.body = '{edgeWithChanges.Body}' ";
-            
+
             WriteQuery(query);
         }
 
 
-// ==================== DESTROY
+        // ==================== DESTROY
         /// <summary> Destroys the supplied node, along with all edges from which the node is either a parent or child.
         public void DestroyNode(GraphNode node)
         {
-            string query = $"MATCH (node :NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}'}}) " + 
+            string query = $"MATCH (node :NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Body}'}}) " +
                 $"DETACH DELETE (node)";
-            
+
             WriteQuery(query);
         }
 
         public void DestroyEdge(GraphEdge edge)
         {
-            string query = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " + 
-                $" -[edge :LINK {{guid: '{edge.Id}'}}]-> " + 
-                $" (:NODE {{guid: '{edge.Child.Id}'}}) " + 
+            string query = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
+                $" -[edge :LINK {{guid: '{edge.Id}'}}]-> " +
+                $" (:NODE {{guid: '{edge.Child.Id}'}}) " +
                 $" DELETE edge";
-            
+
+            WriteQuery(query);
+        }
+
+        public void DestroyLogHistoryEdge(GraphProject project)
+        {
+            string query = $"MATCH ({{title: '{project.ProjectTitle}'}}) " +
+                " -[r:LOG_HISTORY]->(n) " +
+                " DELETE r";
+
             WriteQuery(query);
         }
 

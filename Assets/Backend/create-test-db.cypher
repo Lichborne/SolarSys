@@ -8,6 +8,10 @@ CREATE
 // ================================== adding project to user
 (foo_user) -[:OWNS_PROJECT]->(project_root),
 
+// ================================== create log history linked list
+(project_root) -[:LOG_HISTORY]-> (a :LOG_NODE {guid: '2f6e4433-6aeb-4072-8949-1b2da6e9eb59', change: 'INSERT', body: 'body', timestamp : '123'}),
+(a) -[:LOG_LINK]-> (b :LOG_NODE {guid: 'fd22adc2-45eb-48f7-a4e7-e1836af257cf', change: 'INSERT', body: 'body', timestamp : '123'});
+
 // ================================== nodes in project_root
 (project_root) -[:CONTAINS]-> (ro:NODE {
     title: 'Rowen', 
