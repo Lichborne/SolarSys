@@ -22,6 +22,7 @@ pipeline {
 		sh 'docker build -t solarsystem-docker .'
 		sh 'docker-compose down'
 		sh 'docker-compose up --detach'
+		sh 'rm -rf WebGL-Dist/'
 		}
 	}
     }
@@ -34,7 +35,7 @@ pipeline {
 // Use default recipients
     }
     always {
-	cleanWs()
+//	cleanWs()
 	emailext body: 'The SolarSystem works :).',
 	    subject: 'The SolarSystem works :).',
 	    to: 'jh1521@ic.ac.uk'
