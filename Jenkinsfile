@@ -34,6 +34,7 @@ pipeline {
 // Use default recipients
     }
     always {
+	cleanWs()
 	emailext body: 'The SolarSystem works :).',
 	    subject: 'The SolarSystem works :).',
 	    to: 'jh1521@ic.ac.uk'
