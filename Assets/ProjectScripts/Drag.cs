@@ -65,9 +65,8 @@ class Drag : MonoBehaviour
             Debug.Log("No available position found");
         }
 
-        // we think this spawns in a new node and tries to save it??
+        // Create new database node and store it in the newly created gameObject
         Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
-        // updated your code, pls fix -- what the hecks going on here???
         GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
         nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(newDatabaseNode);
 
