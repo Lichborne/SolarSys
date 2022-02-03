@@ -14,10 +14,5 @@ public class ModifyTextField : MonoBehaviour
         Debug.Log("Text input = " + textEntry);
     }
 
-    // private void getNodeOfSelectedPlanet()
-    // {
-
-    // }
-
-    // private void
+    
 }

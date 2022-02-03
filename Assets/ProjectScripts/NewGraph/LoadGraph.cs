@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,16 +31,15 @@ public class LoadGraph : MonoBehaviour
 
             //custom cosntructors to initialize game obejcts are ill-advised in unity; so initialization is separated
             // into default cosntruction and initialization either via the start method or in imm. succession.
-            FrontEndNode NewNode = new FrontEndNode();
-            
-            NewNode.InstantiateNode(_nodePrefab, node, pos, Quaternion.identity);
-
-            NewNode.nodeObject.transform.position = pos; // redundant 
-
-            ChangeText.ChangeInputFieldText(NewNode.nodeObject, node.Text);
-
-            graphNodes.Add(NewNode);
-            
+                        
+            GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
+            FrontEndNode nodeComponent = nodeObject.GetComponent<FrontEndNode>();
+            if (nodeComponent == null)
+                Debug.LogWarning("oops this is null");
+            nodeObject.GetComponent<FrontEndNode>().databaseNode = node;
+            nodeObject.GetComponent<FrontEndNode>().nodeObject = nodeObject;
+            ChangeText.ChangeInputFieldText(nodeObject, node.Text);
+            graphNodes.Add(nodeObject.GetComponent<FrontEndNode>());
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
         // remember to add self-reference.

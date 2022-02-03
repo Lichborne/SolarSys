@@ -9,6 +9,7 @@ using Backend;
 class Drag : MonoBehaviour
 {
     public GameObject _edgePrefab;
+    public GameObject _nodePrefab;
     public GameObject _selfReferencePreFab;
     private Color mouseOverColor = Color.blue;
     private Color originalColor = Color.grey;
@@ -64,15 +65,17 @@ class Drag : MonoBehaviour
             Debug.Log("No available position found");
         }
 
+        // we think this spawns in a new node and tries to save it??
         Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
-        FrontEndNode NewNode = new FrontEndNode();
-        NewNode.InstantiateNode(gameObject, newDatabaseNode, NewPosition, Quaternion.identity);
+        // updated your code, pls fix -- what the hecks going on here???
+        GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
+        nodeObject.GetComponent<FrontEndNode>().databaseNode = newDatabaseNode;
 
         /**/
 
         FrontEndEdge graphEdge = gameObject.AddComponent<FrontEndEdge>();
         Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<GraphNode>(), newDatabaseNode);
-        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, newDatabaseEdge, gameObject, NewNode.nodeObject);
+        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, newDatabaseEdge, gameObject, nodeObject);
             
     }
 }
