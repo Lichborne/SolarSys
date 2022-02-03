@@ -5,9 +5,13 @@ using UnityEngine;
 public class FrontEndNode : MonoBehaviour
 {
     // to keep track of the equivalent database node so we know to delete or update it
-    public Backend.GraphNode databaseNode = null;
-    //the object itself
+    private Backend.GraphNode databaseNode = null;
 
-    [HideInInspector]
-    public GameObject nodeObject = null;
+    public void setDatabaseNode(Backend.GraphNode graphNode) {
+        databaseNode = graphNode;
+    }
+
+    public Backend.GraphNode getDatabaseNode() {
+        return databaseNode;
+    }
 }

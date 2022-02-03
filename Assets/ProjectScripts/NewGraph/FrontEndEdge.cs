@@ -4,76 +4,53 @@ using UnityEngine;
 
 public class FrontEndEdge : MonoBehaviour
 {
-
-    private GameObject _edgePrefab = null;
-
-    private GameObject _selfReferencePrefab = null;
-
-    public Backend.GraphEdge _databaseEdge = null;
+    private Backend.GraphEdge _databaseEdge = null;
 
     public GameObject _parent { get; set; } = null;
 
     public GameObject _child {get; set; } = null;
 
-    // the game object itslef, no underscore to distinguish 
-    public GameObject edge = null;
-
-    void Start()
-    {
-        //empty because we have an instantiator (not exactly a constructor, but like it)
-    }
-
     // Instead of update; moving called by funct in node.
     void Update()
     {   
-        //if we are missing something, i e the object has not yet been initialized, we do nothing
-        if(edge == null  || _edgePrefab == null || _selfReferencePrefab == null)
+        if (_databaseEdge == null) {
             return;
-
+        }
         //if it's a self reference edge, we just update its position in a more simple manner and return
         if (_parent == _child) {
-            edge.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
-            edge.transform.LookAt(_parent.transform);
+            gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
+            gameObject.transform.LookAt(_parent.transform);
             return;
         }
 
-        edge.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        gameObject.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
         // rotate towards child
-        edge.transform.LookAt(_child.transform);
+        gameObject.transform.LookAt(_child.transform);
 
         //for scaling
-        Vector3 ls = edge.transform.localScale;
+        Vector3 ls = gameObject.transform.localScale;
 
         // get scaling measure
-        ls.z = Vector3.Distance(edge.transform.position, _child.transform.position);
+        ls.z = Vector3.Distance(gameObject.transform.position, _child.transform.position);
 
         //scale
-        edge.transform.localScale = ls;
+        gameObject.transform.localScale = ls;
 
         //move into position
-        edge.transform.position = new Vector3(
-              (_child.transform.position.x+_parent.transform.position.x)/2,
-					    (_child.transform.position.y+_parent.transform.position.y)/2,
-					    (_child.transform.position.z+_parent.transform.position.z)/2);
+        gameObject.transform.position = new Vector3(
+            (_child.transform.position.x+_parent.transform.position.x)/2,
+            (_child.transform.position.y+_parent.transform.position.y)/2,
+            (_child.transform.position.z+_parent.transform.position.z)/2);
   }
+    // constructors are ill advised, so we use this instead
+    public void InstantiateEdge(Backend.GraphEdge graphEdge, GameObject p, GameObject c) { 
 
-    public void InstantiateEdge(GameObject epf, GameObject srpf, Backend.GraphEdge graphEdge, GameObject p, GameObject c) { 
-        _edgePrefab = epf;
-        _selfReferencePrefab = srpf;
         _databaseEdge = graphEdge;
         _parent = p;
         _child = c;
 
-        if (_parent == _child) {
-                edge = Instantiate(_selfReferencePrefab, _parent.transform.position, _parent.transform.rotation);
-                edge.GetComponent<StoreParentChild>().parent = _parent;
-                edge.GetComponent<StoreParentChild>().child = _child;
-                return;
-            }
-
-        edge = Instantiate(_edgePrefab, _parent.transform.position, _parent.transform.rotation);
-        edge.GetComponent<StoreParentChild>().parent = _parent;
-        edge.GetComponent<StoreParentChild>().child = _child;
+        gameObject.GetComponent<StoreParentChild>().parent = _parent;
+        gameObject.GetComponent<StoreParentChild>().child = _child;
     }
 }

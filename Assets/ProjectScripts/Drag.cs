@@ -69,13 +69,12 @@ class Drag : MonoBehaviour
         Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
         // updated your code, pls fix -- what the hecks going on here???
         GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
-        nodeObject.GetComponent<FrontEndNode>().databaseNode = newDatabaseNode;
+        nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(newDatabaseNode);
 
         /**/
-
-        FrontEndEdge graphEdge = gameObject.AddComponent<FrontEndEdge>();
-        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<FrontEndNode>().databaseNode, newDatabaseNode);
-        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, newDatabaseEdge, gameObject, nodeObject);
+        GameObject edgeObject = new GameObject();
+        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<FrontEndNode>().getDatabaseNode(), newDatabaseNode);
+        edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(newDatabaseEdge, gameObject, nodeObject);
             
     }
 }

@@ -17,9 +17,9 @@ public class LoadGraph : MonoBehaviour
 
     private Backend.Graph graph = new Backend.Graph();
 
-    private List<FrontEndNode> graphNodes = new List<FrontEndNode>();
+    private List<GameObject> graphNodes = new List<GameObject>();
 
-    private List<FrontEndEdge> graphEdges = new List<FrontEndEdge>();
+    private List<GameObject> graphEdges = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -33,28 +33,33 @@ public class LoadGraph : MonoBehaviour
             // into default cosntruction and initialization either via the start method or in imm. succession.
                         
             GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
-            nodeObject.GetComponent<FrontEndNode>().databaseNode = node;
-            nodeObject.GetComponent<FrontEndNode>().nodeObject = nodeObject;
+            nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(node);
             ChangeText.ChangeInputFieldText(nodeObject, node.Text);
-            graphNodes.Add(nodeObject.GetComponent<FrontEndNode>());
+            graphNodes.Add(nodeObject);
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
         // remember to add self-reference.
        
-       // hash map to do
         foreach (GraphEdge edge in graph.Edges) {
-            int parent_index = (graph.Nodes).IndexOf(edge.Parent);
-            int child_index = (graph.Nodes).IndexOf(edge.Child);
-            FrontEndEdge graphEdge = graphNodes[parent_index].nodeObject.AddComponent<FrontEndEdge>();
-            graphEdge.InstantiateEdge(_edgePreFab, _selfReferencePreFab, edge, graphNodes[parent_index].nodeObject, graphNodes[child_index].nodeObject);
-            }
-            
-    }
+            int parentIndex = (graph.Nodes).IndexOf(edge.Parent);
+            int childIndex = (graph.Nodes).IndexOf(edge.Child);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+
+            // this is needed so that edgeObject will be instantiated in the right context
+            GameObject rightPrefab = _edgePreFab;
+
+            // if it is a self reference, we need a self reference edge, otherwise a normal edge
+            if (parentIndex == childIndex) {
+                rightPrefab = _selfReferencePreFab;
+            }
+
+            Debug.Log("weeeeee");
+
+            GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
+            
+            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(edge, graphNodes[parentIndex], graphNodes[childIndex]);
+        }   
     }
 
 }

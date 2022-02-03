@@ -57,7 +57,7 @@ public class ClickOn : MonoBehaviour
     public void getNodeOfSelectedPlanet()
     {
         FrontEndNode node = GetComponent<FrontEndNode>();
-        Debug.Log(node.databaseNode.Text);
+        Debug.Log(node.getDatabaseNode().Text);
     }
    
 }
