@@ -74,7 +74,7 @@ class Drag : MonoBehaviour
         /**/
 
         FrontEndEdge graphEdge = gameObject.AddComponent<FrontEndEdge>();
-        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<GraphNode>(), newDatabaseNode);
+        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<FrontEndNode>().databaseNode, newDatabaseNode);
         graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, newDatabaseEdge, gameObject, nodeObject);
             
     }

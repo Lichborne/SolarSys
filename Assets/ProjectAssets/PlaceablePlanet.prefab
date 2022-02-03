@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _edgePrefab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
-  _nodePrefab: {fileID: 0}
+  _nodePrefab: {fileID: 4974278123316600395}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
 --- !u!114 &4479089368949881827
 MonoBehaviour:

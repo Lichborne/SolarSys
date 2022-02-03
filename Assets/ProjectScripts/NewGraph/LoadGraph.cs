@@ -33,9 +33,6 @@ public class LoadGraph : MonoBehaviour
             // into default cosntruction and initialization either via the start method or in imm. succession.
                         
             GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
-            FrontEndNode nodeComponent = nodeObject.GetComponent<FrontEndNode>();
-            if (nodeComponent == null)
-                Debug.LogWarning("oops this is null");
             nodeObject.GetComponent<FrontEndNode>().databaseNode = node;
             nodeObject.GetComponent<FrontEndNode>().nodeObject = nodeObject;
             ChangeText.ChangeInputFieldText(nodeObject, node.Text);
