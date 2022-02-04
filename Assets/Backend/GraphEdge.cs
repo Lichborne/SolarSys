@@ -6,21 +6,27 @@ namespace Backend
 {
     public class GraphEdge : IEquatable<GraphEdge>
     {
-        public string Text { get; private set; }
+        public string Title { get; private set; }
+        public string Description {get; private set; }
+
         public Guid Id { get; private set; }
+
+        public GraphProject Project { get; private set; }
+
         public GraphNode Parent { get; private set; }
         public GraphNode Child { get; private set; }
 
-        public GraphEdge(string text, Guid id, GraphNode parent, GraphNode child)
+        public GraphEdge(Guid id, string title, string body, GraphNode parent, GraphNode child)
         {
-            Text = text;
+            Title = title;
+            Description = body;
             Id = id;
             Parent = parent;
             Child = child;
         }
 
-        public GraphEdge(string text, GraphNode parent, GraphNode child) :
-            this(text, Guid.NewGuid(), parent, child)
+        public GraphEdge(string title, string body, GraphNode parent, GraphNode child) :
+            this(Guid.NewGuid(), title, body, parent, child)
         { }
 
         public GraphNode GetAttachedNode(GraphNode node) // return node on other side of edge
@@ -33,20 +39,44 @@ namespace Backend
             {
                 return Parent;
             }
-            else{
+            else {
                 throw new ArgumentException("Node not attached to edge");
             }
         }
 
         public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
         {
-            string text = dbRelationship.Properties["text"].As<string>();
+            string title = dbRelationship.Properties["title"].As<string>();
+            string description = dbRelationship.Properties["description"].As<string>();
             string guidText = dbRelationship.Properties["guid"].As<string>();
-            return new GraphEdge(text, Guid.Parse(guidText), parent, child);
+            return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
+        // Writes the "parent -[edge] -> child" relationship stored in this edge to the database
+        public void CreateInDatabase()
+            => Project.Database.CreateParentChildRelationship(Parent, this, Child);
+
+        // Updates the title of the edge, writing change to database
+        public void UpdateTitle(string title)
+        {
+            Title = title;
+            Project.Database.UpdateEdgeTitle(this, title);
+        }
+
+        // updates the description of the edge, writing change to database
+        public void UpdateDescription(string description)
+        {
+            Description = description;
+            Project.Database.UpdateEdgeDescription(this, description);
+        }
+
+        // deletes the edge from the database. does not affect the edge's parent or child.
+        public void DeleteFromDatabase()
+            => Project.Database.DestroyEdge(this);
+
+
         public override string ToString()
-            => $"--[{Id.ToString().Truncate(5)}: {Text.Truncate(20)}]-->";
+            => $"--[{Id.ToString().Truncate(5)}: {Title.Truncate(20)}]-->";
 
         
         public bool Equals(GraphEdge other)

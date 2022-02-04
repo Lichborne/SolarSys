@@ -8,53 +8,80 @@ namespace Backend
 {
     public class GraphNode : IEquatable<GraphNode>
     {
-        public string Text { get; private set; }
+        public string Title { get; private set; }
+        public string Description { get; private set; }
         public Guid Id { get; private set; }
 
-        public (float X, float Y, float Z) Coordinates { get; private set; }
+        public (double X, double Y, double Z) Coordinates { get; private set; }
 
-        public IReadOnlyList<GraphEdge> Edges 
+        public GraphProject Project {get; private set; }
+        public List<GraphEdge> Edges = new List<GraphEdge>();
+
+        public GraphNode(Guid id, GraphProject project, string title, string body, (double x, double y, double z) coordinates)
         {
-            get => _edges.AsReadOnly();
-        }
-
-        public bool IsIsolated 
-        {
-            get => _edges.Count == 0;
-        }
-
-        private List<GraphEdge> _edges = new List<GraphEdge>();
-
-        public GraphNode(string text, Guid id, (float x, float y, float z) coordinates)
-        {
-            Text = text;
+            Title = title;
+            Description = body;
             Id = id;
+            Coordinates = coordinates;
+            Project = project;
+        }
+
+        public GraphNode(GraphProject project, string title, string body, (double x, double y, double z) coordinates) :
+            this(Guid.NewGuid(), project, title, body, coordinates)
+        { }
+
+        public static GraphNode FromINode(GraphProject project, INode dbNode)
+        {
+            string title = dbNode.Properties["title"].As<string>();
+            string description = dbNode.Properties["description"].As<string>();
+            string guidText = dbNode.Properties["guid"].As<string>();
+            Guid guid = Guid.Parse(guidText);
+            List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
+
+            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+        }
+
+        //  Writes the node, with no edges, to the database
+        public void CreateInDatabase()
+            =>  Project.Database.CreateUnlinkedNode(this);
+
+        // Adds an extra edge to the node, writing it to the database
+        public void AddEdge(GraphEdge edge)
+        {
+            Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
+            Edges.Add(edge);
+        }       
+
+        // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
+        public void RemoveEdge(GraphEdge edge)
+            => Edges.Remove(edge);
+        
+
+        public void UpdateTitle(string title)
+        {
+            Project.Database.UpdateNodeTitle(this, title);
+            Title = title;
+        }
+
+        public void UpdateDescription(string description)
+        {
+            Project.Database.UpdateNodeDescription(this, description);
+            Description = description;
+        }
+
+        public void UpdateCoordinates((double x, double y, double z) coordinates)
+        {
+            Project.Database.UpdateNodeCoordinates(this, coordinates);
             Coordinates = coordinates;
         }
 
-        public GraphNode(string text, (float x, float y, float z) coordinates) :
-            this(text, new Guid(), coordinates)
-        { }
-
-        public static GraphNode FromINode(INode dbNode)
-        {
-            string text = dbNode.Properties["text"].As<string>();
-            string guidText = dbNode.Properties["guid"].As<string>();
-            Guid guid = Guid.Parse(guidText);
-            List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
-
-            return new GraphNode(text, guid, (coords[0], coords[1], coords[2]));
-        }
-
-        public void AddEdge(GraphEdge edge)
-            => _edges.Add(edge);
-           
-        public void RemoveEdge(GraphEdge edge)
-            => _edges.Remove(edge);
+        // deletes the node from the database. does not affect the node's edges or children
+        public void DeleteFromDatabase()
+            => Project.Database.DestroyNode(this);
         
 
         public override string ToString()
-            => $"({Id.ToString().Truncate(5)}: {Text.Truncate(20)})";
+            => $"({Id.ToString().Truncate(5)}: {Title.Truncate(20)})";
 
         public bool Equals(GraphNode other)
             => Id == other.Id;
