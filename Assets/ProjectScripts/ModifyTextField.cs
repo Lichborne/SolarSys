@@ -18,7 +18,7 @@ public class ModifyTextField : MonoBehaviour
         textEntry = inputField.GetComponent<TMPro.TextMeshProUGUI>().text;
         GameObject currentlySelectedGameObject = findCurrentlySelectedNode();
         try{
-            Debug.Log(currentlySelectedGameObject.GetComponent<FrontEndNode>().databaseNode.Text);
+            Debug.Log(currentlySelectedGameObject.GetComponent<FrontEndNode>().getDatabaseNode().Text);
         }
         catch(InvalidOperationException)
         {
