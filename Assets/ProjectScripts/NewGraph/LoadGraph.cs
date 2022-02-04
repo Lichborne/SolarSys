@@ -15,7 +15,7 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _selfReferencePreFab;
 
-    private Backend.Graph graph = new Backend.Graph();
+    private Backend.GraphProject graph = new Backend.Graph();
 
     private List<GameObject> graphNodes = new List<GameObject>();
 
@@ -57,7 +57,7 @@ public class LoadGraph : MonoBehaviour
             Debug.Log("weeeeee");
 
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
-            
+
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(edge, graphNodes[parentIndex], graphNodes[childIndex]);
         }   
     }
