@@ -15,18 +15,7 @@ namespace Backend
         public (double X, double Y, double Z) Coordinates { get; private set; }
 
         public GraphProject Project {get; private set; }
-
-        public IReadOnlyList<GraphEdge> Edges 
-        {
-            get => _edges.AsReadOnly();
-        }
-
-        public bool IsIsolated 
-        {
-            get => _edges.Count == 0;
-        }
-
-        private List<GraphEdge> _edges = new List<GraphEdge>();
+        public List<GraphEdge> Edges = new List<GraphEdge>();
 
         public GraphNode(Guid id, GraphProject project, string title, string body, (double x, double y, double z) coordinates)
         {
@@ -44,12 +33,12 @@ namespace Backend
         public static GraphNode FromINode(GraphProject project, INode dbNode)
         {
             string title = dbNode.Properties["title"].As<string>();
-            string body = dbNode.Properties["body"].As<string>();
+            string description = dbNode.Properties["description"].As<string>();
             string guidText = dbNode.Properties["guid"].As<string>();
             Guid guid = Guid.Parse(guidText);
             List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
 
-            return new GraphNode(guid, project, title, body, (coords[0], coords[1], coords[2]));
+            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
 
         //  Writes the node, with no edges, to the database
@@ -60,12 +49,12 @@ namespace Backend
         public void AddEdge(GraphEdge edge)
         {
             Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
-            _edges.Add(edge);
+            Edges.Add(edge);
         }       
 
         // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
         public void RemoveEdge(GraphEdge edge)
-            => _edges.Remove(edge);
+            => Edges.Remove(edge);
         
 
         public void UpdateTitle(string title)

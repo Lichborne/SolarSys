@@ -37,6 +37,7 @@ namespace Backend
 
         private void MakeAndLogChange(GraphProject project, string changeQuery, LogNode logNode)
         {
+            Console.WriteLine($"Making change {changeQuery}");
             Guid headLogNodeId = GetHeadLogNodeId(project);
 
             if (headLogNodeId == Guid.Empty)

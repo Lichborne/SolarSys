@@ -8,7 +8,7 @@ namespace Backend
 {
     public enum ChangeEnum
     {
-        Add,
+        Create,
         Update,
         Delete
     }

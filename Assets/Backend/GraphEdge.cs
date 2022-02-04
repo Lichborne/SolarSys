@@ -47,9 +47,9 @@ namespace Backend
         public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
         {
             string title = dbRelationship.Properties["title"].As<string>();
-            string body = dbRelationship.Properties["body"].As<string>();
+            string description = dbRelationship.Properties["description"].As<string>();
             string guidText = dbRelationship.Properties["guid"].As<string>();
-            return new GraphEdge(Guid.Parse(guidText), title, body, parent, child);
+            return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
         // Writes the "parent -[edge] -> child" relationship stored in this edge to the database

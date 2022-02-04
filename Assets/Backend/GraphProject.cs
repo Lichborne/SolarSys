@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Backend
 {
-    public class GraphProject 
+    public class GraphProject : IDisposable
     {
         public IReadOnlyList<GraphNode> Nodes 
         {
@@ -34,31 +34,19 @@ namespace Backend
             _uri = uri;
             _username = dbUsername;
             _password = dbPassword;
+            Database = new DatabaseView(_uri, _username, _password);
 
-            using (var database = new DatabaseView(_uri, _username, _password))
-            {
-                /*
-                GraphNode parent = new GraphNode("parenty", "hi there parent", (0, 0, 0));                
-                GraphNode child = new GraphNode("childy", "hi there child", (0, 1, 0));
-                GraphEdge edge = new GraphEdge("edgy", "body of edge", parent, child);
-                
-                database.CreateUnlinkedNode(this, parent);
-                database.CreateUnlinkedNode(this, child);
-                database.CreateParentChildRelationship(parent, edge, child);
-
-                GraphEdge newEdge = new GraphEdge(edge.Id, "new edgy", "body of edgy ne", parent, child);
-                database.UpdateEdgeFields(newEdge); 
-
-                Console.ReadKey();
-                database.DestroyEdge(edge); */
-
-                _nodes = database.ReadNodesFromProject(this);
-                _edges = database.ReadAllEdgesFromProject(this, _nodes);
-            }
+            _nodes = Database.ReadNodesFromProject(this);
+            _edges = Database.ReadAllEdgesFromProject(this, _nodes);
 
             foreach (var edge in _edges)
-                edge.Parent.AddEdge(edge);
+                edge.Parent.Edges.Add(edge);
         }
+
+        public void Dispose()
+            => Database.Dispose();
+
+
 
         public void AddRelation(GraphNode parent, GraphEdge edge, GraphNode child)
         {
