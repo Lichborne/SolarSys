@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
     		agent {
-        		docker { image 'unityci/editor:ubuntu-2020.3.25f1-webgl-0.16.1' 
+        		docker { image 'unityci/editor:ubuntu-2020.3.27f1-webgl-0.17.0' 
 				args '-u root:root'
 //				args '-v /etc/passwd:/etc/passwd:ro'
  	        		alwaysPull false	
