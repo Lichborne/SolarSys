@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using static Backend.StringExtensions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace Backend
 {
@@ -27,7 +29,7 @@ namespace Backend
 
         // public LogNode NextNode { get; private set; } // TODO 
 
-        public string? Log;
+        public string Log;
 
         public LogNode(ChangeEnum change)
         {
@@ -52,64 +54,73 @@ namespace Backend
 
             return new LogNode(change, log, id, timeStamp);
         }
-
-    }
-
-    public class CreationLog
-    {
-        string Title;
-        string Body;
-        Guid Id;
-        (double X, double Y, double Z) Coordinates;
-
-        public CreationLog(string title, string body, Guid id, (double X, double Y, double Z) coordinates)
+        public static void Validate<T>(T obj)
         {
-            Title = title;
-            Body = body;
-            Id = id;
-            Coordinates = coordinates;
+            var results = new List<ValidationResult>();
+
+            var validate = Validator.TryValidateObject(obj, new ValidationContext(obj), results, true);
+
+            if (!validate)
+            {
+                Console.WriteLine(String.Join("\n", results.Select(o => o.ErrorMessage)));
+                throw new InvalidDataException();
+            }
         }
     }
 
     public class NodeCreationLog : LogNode
     {
-        public NodeCreationLog(CreationLog log) : base(ChangeEnum.AddNode)
+        public NodeCreationLog(NodeCreationSchema log) : base(ChangeEnum.AddNode)
         {
+            Validate(log);
             Log = JsonSerializer.Serialize(log);
         }
     }
 
-    public class NullableNodeSchema
+    public class EdgeCreationLog : LogNode
     {
-        // not feasible, can still create instance w/o guid
-        string? Title;
-        string? Body;
-        Guid Id;
-        (double X, double Y, double Z)? Coordinates;
-    }
-    public class UpdateLog
-    {
-        NullableNodeSchema NewValues;
-        NullableNodeSchema OldValues;
-
-        public UpdateLog(NullableNodeSchema newValues, NullableNodeSchema oldValues)
+        public EdgeCreationLog(EdgeCreationSchema log) : base(ChangeEnum.AddEdge)
         {
-            NewValues = newValues;
-            OldValues = oldValues;
+            Validate(log);
+            Log = JsonSerializer.Serialize(log);
         }
     }
 
     public class NodeUpdateLog : LogNode
     {
-
-        public NodeUpdateLog(UpdateLog log) : base(ChangeEnum.UpdateNode)
+        public NodeUpdateLog(NodeUpdateSchema log) : base(ChangeEnum.UpdateNode)
         {
+            Validate(log);
             var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             Log = JsonSerializer.Serialize(log, options);
         }
     }
 
+    public class EdgeUpdateLog : LogNode
+    {
+        public EdgeUpdateLog(EdgeUpdateSchema log) : base(ChangeEnum.UpdateEdge)
+        {
+            Validate(log);
+            var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+            Log = JsonSerializer.Serialize(log, options);
+        }
+    }
 
+    public class NodeDeletionLog : LogNode
+    {
+        public NodeDeletionLog(NodeCreationSchema log) : base(ChangeEnum.DeleteNode)
+        {
+            Validate(log);
+            Log = JsonSerializer.Serialize(log);
+        }
+    }
 
-
+    public class EdgeDeletionLog : LogNode
+    {
+        public EdgeDeletionLog(EdgeCreationSchema log) : base(ChangeEnum.DeleteEdge)
+        {
+            Validate(log);
+            Log = JsonSerializer.Serialize(log);
+        }
+    }
 }
