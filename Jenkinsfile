@@ -14,15 +14,16 @@ pipeline {
                 sh 'ret=0; unity-editor -quit -batchmode -projectPath ./ -executeMethod WebGLBuilder.build -logFile log.txt || ret=1 | true; cat log.txt; exit $ret'
 		sh 'chown -R 117 ./; chgrp -R 122 ./'
 		stash includes: 'WebGL-Dist/**', name: 'Build'
+		sh 'rm -rf WebGL-Dist/'
 		}
         }
 	stage('Deploy'){
 		steps{
+		sh 'rm -rf WebGL-Dist/'
 		unstash 'Build'
 		sh 'docker build -t solarsystem-docker .'
 		sh 'docker-compose down'
 		sh 'docker-compose up --detach'
-		sh 'rm -rf WebGL-Dist/'
 		}
 	}
     }
