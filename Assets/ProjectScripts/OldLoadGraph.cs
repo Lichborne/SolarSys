@@ -6,7 +6,7 @@ using TMPro;
 
 using Backend;
 
-public class LoadGraph : MonoBehaviour
+public class OldLoadGraph : MonoBehaviour
 {
     public GameObject _planet;
 

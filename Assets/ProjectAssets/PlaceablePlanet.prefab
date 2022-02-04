@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 8081068204467829478}
   - component: {fileID: 677231329430238084}
   - component: {fileID: 4479089368949881827}
+  - component: {fileID: 4641689165713196049}
   m_Layer: 3
   m_Name: PlaceablePlanet
   m_TagString: Node
@@ -295,7 +296,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 100
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &8432814057563205319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,6 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _edgePrefab: {fileID: 2006701754031461468, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
+  _nodePrefab: {fileID: 4974278123316600395}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
 --- !u!114 &4479089368949881827
 MonoBehaviour:
@@ -363,6 +365,19 @@ MonoBehaviour:
   selected: {fileID: 2100000, guid: 2cdf802e143afcc489210e9a74a21309, type: 2}
   currentlySelected: 0
   currentlyHidden: 0
+--- !u!114 &4641689165713196049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974278123316600395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48aeae96df824c942a077e85c29e112a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeObject: {fileID: 0}
 --- !u!1001 &4433291504053779210
 PrefabInstance:
   m_ObjectHideFlags: 0

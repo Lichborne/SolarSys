@@ -3,10 +3,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using Backend;
  
 class Drag : MonoBehaviour
 {
     public GameObject _edgePrefab;
+    public GameObject _nodePrefab;
     public GameObject _selfReferencePreFab;
     private Color mouseOverColor = Color.blue;
     private Color originalColor = Color.grey;
@@ -62,10 +65,15 @@ class Drag : MonoBehaviour
             Debug.Log("No available position found");
         }
 
-        GameObject NewNode = Instantiate(gameObject, NewPosition, Quaternion.identity);
+        // Create new database node and store it in the newly created gameObject
+        Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
+        GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
+        nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(newDatabaseNode);
 
-        NewEdge graphEdge = gameObject.AddComponent<NewEdge>();
-        graphEdge.InstantiateEdge(_edgePrefab, _selfReferencePreFab, gameObject, NewNode);
+        /**/
+        GameObject edgeObject = new GameObject();
+        Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<FrontEndNode>().getDatabaseNode(), newDatabaseNode);
+        edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(newDatabaseEdge, gameObject, nodeObject);
             
     }
 }

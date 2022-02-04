@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Backend;
+
 
 public class ClickOn : MonoBehaviour
 {   
@@ -14,6 +16,8 @@ public class ClickOn : MonoBehaviour
     [HideInInspector]
     public bool currentlyHidden = false;
 
+    private Backend.Graph graph = new Backend.Graph();
+
     private MeshRenderer myRend;
     // Start is called before the first frame update
     void Start()
@@ -23,6 +27,7 @@ public class ClickOn : MonoBehaviour
 
     }
 
+    //Function that gets called by Click class in order to change planet materail
     public void ClickMe() 
     {
         if (currentlySelected == false) 
@@ -31,11 +36,13 @@ public class ClickOn : MonoBehaviour
         }
         else
         {
+            getNodeOfSelectedPlanet();
             myRend.material = selected;
         }
 
     }
 
+    //Function that gets called by Click class in order to hide/unhide objects
     public void HideUnhideMe() 
     {
         if (currentlyHidden == false) 
@@ -47,6 +54,13 @@ public class ClickOn : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+    }
+
+    //Josh's function
+    public void getNodeOfSelectedPlanet()
+    {
+        FrontEndNode node = GetComponent<FrontEndNode>();
+        Debug.Log(node.getDatabaseNode().Text);
     }
    
 }
