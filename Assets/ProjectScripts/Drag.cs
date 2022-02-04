@@ -64,17 +64,17 @@ class Drag : MonoBehaviour
         if(tries == 100) {
             Debug.Log("No available position found");
         }
-
+        /*
         // Create new database node and store it in the newly created gameObject
         Backend.GraphNode newDatabaseNode = new GraphNode("New Node", (NewPosition.x, NewPosition.y, NewPosition.z));
         GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
         nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(newDatabaseNode);
 
-        /**/
+            
         GameObject edgeObject = new GameObject();
         Backend.GraphEdge newDatabaseEdge = new GraphEdge("New Edge",  GetComponent<FrontEndNode>().getDatabaseNode(), newDatabaseNode);
         edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(newDatabaseEdge, gameObject, nodeObject);
-            
+        */    
     }
 }
  

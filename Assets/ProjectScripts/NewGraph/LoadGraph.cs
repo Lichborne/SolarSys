@@ -15,7 +15,7 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _selfReferencePreFab;
 
-    private Backend.GraphProject graph = new Backend.Graph();
+    private Backend.GraphProject graph = new Backend.GraphProject();
 
     private List<GameObject> graphNodes = new List<GameObject>();
 
@@ -34,7 +34,7 @@ public class LoadGraph : MonoBehaviour
                         
             GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
             nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(node);
-            ChangeText.ChangeInputFieldText(nodeObject, node.Text);
+            ChangeText.ChangeInputFieldText(nodeObject, node.Title);
             graphNodes.Add(nodeObject);
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.

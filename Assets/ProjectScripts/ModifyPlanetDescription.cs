@@ -18,7 +18,7 @@ public class ModifyPlanetDescription : MonoBehaviour
         // Get entry from description box and update corresponding selected node
         descriptionEntry = inputField.GetComponent<TMPro.TextMeshProUGUI>().text;
         GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
-        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getAttachedNode();
+        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
         attachedNode.UpdateDescription(descriptionEntry);
     }
 

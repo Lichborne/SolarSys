@@ -16,7 +16,7 @@ public class ClickOn : MonoBehaviour
     [HideInInspector]
     public bool currentlyHidden = false;
 
-    private Backend.GraphProject graph = new Backend.Graph();
+    private Backend.GraphProject graph = new Backend.GraphProject();
 
     private MeshRenderer myRend;
     // Start is called before the first frame update
@@ -60,7 +60,7 @@ public class ClickOn : MonoBehaviour
     public void getNodeOfSelectedPlanet()
     {
         FrontEndNode node = GetComponent<FrontEndNode>();
-        Debug.Log(node.getDatabaseNode().Text);
+        //Debug.Log(node.getDatabaseNode().Text);
     }
    
 }
