@@ -58,6 +58,21 @@ public class LoadGraph : MonoBehaviour
 
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
 
+            if (graphNodes[parentIndex] == null) {
+                Debug.Log(" Parent null weeeeee \n");
+            }
+
+            if (graphNodes[childIndex] == null) {
+                Debug.Log(" child null weeeeee \n");
+            }
+
+            if (edgeObject == null) {
+                Debug.Log(" edge weeeeee \n");
+            }
+
+             if (edgeObject.GetComponent<FrontEndEdge>()== null) {
+                 Debug.Log(" edge comp go brrrrweeeeee \n");
+             }
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(edge, graphNodes[parentIndex], graphNodes[childIndex]);
         }   
     }

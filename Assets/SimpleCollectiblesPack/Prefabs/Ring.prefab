@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 82399120985686150}
   - component: {fileID: 135415070846369410}
   - component: {fileID: 429486620090039894}
+  - component: {fileID: 6564982509017538328}
   m_Layer: 2
   m_Name: Ring
   m_TagString: Edge
@@ -225,3 +226,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
   child: {fileID: 0}
+--- !u!114 &6564982509017538328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015780934767744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d729c98c7859a2e428fdf517e5d2f351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
