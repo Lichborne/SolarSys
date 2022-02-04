@@ -8,6 +8,9 @@ namespace UnityTemplateProjects
 {
     public class SimpleCameraController : MonoBehaviour
     {
+        bool is_zoomed_on_planet = false;
+        bool is_zooming = false;
+
         class CameraState
         {
             public float yaw;
@@ -36,6 +39,17 @@ namespace UnityTemplateProjects
                 z += rotatedTranslation.z;
             }
 
+            public void ModifyTargetState(Vector3 newposition, Vector3 eulerangles)
+            {
+
+                pitch = eulerangles.x;
+                yaw = eulerangles.y;
+                roll = eulerangles.z;
+                x = newposition.x;
+                y = newposition.y;
+                z = newposition.z;
+            }
+
             public void LerpTowards(CameraState target, float positionLerpPct, float rotationLerpPct)
             {
                 yaw = Mathf.Lerp(yaw, target.yaw, rotationLerpPct);
@@ -47,16 +61,43 @@ namespace UnityTemplateProjects
                 z = Mathf.Lerp(z, target.z, positionLerpPct);
             }
 
+            public bool Equals(CameraState target)
+            {
+                if (Mathf.Abs(target.x-x)<0.001 &&
+                    Mathf.Abs(target.y-y)<0.001 &&
+                    Mathf.Abs(target.z-z)<0.001 &&
+                    Mathf.Abs(target.pitch-pitch)<0.001 &&
+                    Mathf.Abs(target.yaw-yaw)<0.001 &&
+                    Mathf.Abs(target.roll-roll)<0.001)
+                {
+                    return true;
+                }
+                    return false;
+                }
+
             public void UpdateTransform(Transform t)
             {
                 t.eulerAngles = new Vector3(pitch, yaw, roll);
                 t.position = new Vector3(x, y, z);
+            }
+
+            public void CopyCameraState(CameraState cameraState)
+            {
+                pitch = cameraState.pitch;
+                yaw = cameraState.yaw;
+                roll = cameraState.roll;
+                x = cameraState.x;
+                y = cameraState.y;
+                z = cameraState.z;
+
             }
         }
 
         const float k_MouseSensitivityMultiplier = 0.01f;
 
         CameraState m_TargetCameraState = new CameraState();
+        CameraState m_StartOfUpdateCameraState = new CameraState();
+        CameraState m_BeforeZoomCameraState = new CameraState();
         CameraState m_InterpolatingCameraState = new CameraState();
 
         [Header("Movement Settings")]
@@ -167,6 +208,7 @@ namespace UnityTemplateProjects
         void Update()
         {
             // Exit Sample  
+            m_StartOfUpdateCameraState.CopyCameraState(m_InterpolatingCameraState);
 
             if (IsEscapePressed())
             {
@@ -179,15 +221,20 @@ namespace UnityTemplateProjects
             // Hide and lock cursor when right mouse button pressed
             if (IsRightMouseButtonDown())
             {
+                is_zoomed_on_planet = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
+
 
             // Unlock and show cursor when right mouse button released
             if (IsRightMouseButtonUp())
             {
+                is_zoomed_on_planet = false;
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             }
+
+
 
             // Rotation
             if (IsCameraRotationAllowed())
@@ -221,9 +268,71 @@ namespace UnityTemplateProjects
             // Calculate the lerp amount, such that we get 99% of the way to our target in the specified time
             var positionLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / positionLerpTime) * Time.deltaTime);
             var rotationLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / rotationLerpTime) * Time.deltaTime);
-            m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
 
+            var positionLerpPctZoom = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / positionLerpTime) * 0.8f*Time.deltaTime);
+            var rotationLerpPctZoom = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / rotationLerpTime) * 0.014f*Time.deltaTime);
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && (IsLeftMouseButtonDown()))
+            {
+                RaycastHit hit;
+                Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(cameraRay, out hit) && hit.collider.name == "Sphere")
+                {
+                    if (!is_zoomed_on_planet) // If not currently zoomed in on planet
+                    {
+                        m_BeforeZoomCameraState.CopyCameraState(m_InterpolatingCameraState); //Store previous camera state before zooming
+                        Vector3 newPosition = GetPositionAlongRay(cameraRay, hit, 6f);  
+                        Vector3 newAngles = GetEulerAngles(cameraRay, hit);
+                        m_TargetCameraState.ModifyTargetState(newPosition, newAngles);
+                        is_zoomed_on_planet = true;
+                        is_zooming = true;
+                    }
+                    else // If already zoomed in on planet
+                    {
+                        m_TargetCameraState.CopyCameraState(m_BeforeZoomCameraState);
+                        is_zoomed_on_planet = false;
+                        is_zooming = true;
+                    }
+                }
+            }
+            // Debug.Log("Is Zooming = " + is_zooming);
+            // Debug.Log("Target camera state: x,y,z = " + m_TargetCameraState.x + m_TargetCameraState.y + m_TargetCameraState.z);
+            if (is_zooming)
+            {
+                m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPctZoom, rotationLerpPctZoom);
+            }
+            else
+            {
+                m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
+            }
             m_InterpolatingCameraState.UpdateTransform(transform);
+
+            if (translation != Vector3.zero) //Moving with arrow keys will break zoom
+            {
+                is_zooming= false;
+                is_zoomed_on_planet = false;
+            }
+            if (m_StartOfUpdateCameraState.Equals(m_InterpolatingCameraState))
+            {
+                is_zooming= false;
+            }
+        }
+
+        Vector3 GetPositionAlongRay(Ray cameraray, RaycastHit hit, float offsetFactor) // Generate position right before planet (given by offset)
+        {
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center; // Find center of sphere
+            Vector3 translation = new Vector3(centerOfSphere.x - cameraray.origin.x,
+                                              centerOfSphere.y - cameraray.origin.y,
+                                              centerOfSphere.z - cameraray.origin.z);
+            Vector3 offset = offsetFactor*cameraray.direction;
+            return translation+cameraray.origin-offset;
+        }
+
+        Vector3 GetEulerAngles(Ray cameraray, RaycastHit hit)
+        {
+            Vector3 centerOfSphere = hit.transform.gameObject.GetComponent<Renderer>().bounds.center;                
+            Quaternion q = Quaternion.FromToRotation(Vector3.forward, centerOfSphere - cameraray.origin);
+            return q.eulerAngles;
         }
 
         float GetBoostFactor()
@@ -298,6 +407,23 @@ namespace UnityTemplateProjects
 #endif
         }
 
+        bool IsLeftMouseButtonDown()
+        {
+#if ENABLE_INPUT_SYSTEM
+                return Mouse.current != null ? Mouse.current.leftButton.isPressed : false;
+#else
+                return Input.GetMouseButtonDown(0);
+#endif
+        }
+    
+        bool IsLeftMouseButtonUp()
+        {
+#if ENABLE_INPUT_SYSTEM
+            return Mouse.current != null ? Mouse.current.leftButton.isPressed : false;
+#else
+            return Input.GetMouseButtonUp(0);
+#endif
+        }
     }
 
 }
