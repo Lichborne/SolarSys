@@ -62,8 +62,8 @@ namespace Backend
         /// <summary> Writes the node to the database, without any links </summary>
         public void CreateUnlinkedNode(GraphNode node)
         {
-            string query = $" MATCH (:USER {{email: '{node.Project.UserEmail}'}}) " +
-                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectTitle}'}}) " +
+            string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectId.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
@@ -74,8 +74,8 @@ namespace Backend
 
         /// <summary> Writes to the database a log node that is linked to a project, but not linked to other log nodes </summary>
         private static string CreateUnlinkedLogNodeQuery(GraphProject project, LogNode node)
-            => $" MATCH (:USER {{email: '{project.UserEmail}'}}) " +
-                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
+            => $" MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
                             $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
@@ -137,8 +137,8 @@ namespace Backend
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
         public List<GraphNode> ReadNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.UserEmail}'}}) " + 
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 $" -[:CONTAINS]->(node :NODE) " + 
                 $" RETURN node";
             
@@ -160,8 +160,8 @@ namespace Backend
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
         public List<LogNode> ReadLogNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.UserEmail}'}}) " + 
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " + 
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
                 $" -[:LOG_HISTORY]->(node :LOG_NODE) " + 
                 $" RETURN node";
 
@@ -182,8 +182,8 @@ namespace Backend
 
         public Guid GetHeadLogNodeId(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.UserEmail}'}}) " +
-                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                             "-[:LOG_HISTORY]-> (node) RETURN node";
 
             using (var session = _driver.Session())
@@ -208,10 +208,10 @@ namespace Backend
         }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
-        public List<GraphEdge> ReadAllEdgesFromProject(GraphProject project, List<GraphNode> allNodes)
+        public List<GraphEdge> ReadAllEdgesFromProject((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes)
         {
-            string query = $"MATCH (:USER {{email: '{project.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectTitle}'}}) " + 
+            string query = $"MATCH (:USER {{email: '{projectId.userEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " + 
                 $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " + 
                 $" RETURN parent, edge, child";
             using var session = _driver.Session();
@@ -336,7 +336,7 @@ namespace Backend
         }
 
         private static string DestroyLogHistoryEdgeQuery(GraphProject project)
-            => $"MATCH ({{title: '{project.ProjectTitle}'}}) " +
+            => $"MATCH ({{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 " -[r:LOG_HISTORY]->(n) " +
                 " DELETE r";
 

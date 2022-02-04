@@ -12,12 +12,12 @@ namespace Backend
         public string Description { get; private set; }
         public Guid Id { get; private set; }
 
-        public (double X, double Y, double Z) Coordinates { get; private set; }
+        public (float X, float Y, float Z) Coordinates { get; private set; }
 
         public GraphProject Project {get; private set; }
         public List<GraphEdge> Edges = new List<GraphEdge>();
 
-        public GraphNode(Guid id, GraphProject project, string title, string body, (double x, double y, double z) coordinates)
+        public GraphNode(Guid id, GraphProject project, string title, string body, (float x, float y, float z) coordinates)
         {
             Title = title;
             Description = body;
@@ -26,7 +26,7 @@ namespace Backend
             Project = project;
         }
 
-        public GraphNode(GraphProject project, string title, string body, (double x, double y, double z) coordinates) :
+        public GraphNode(GraphProject project, string title, string body, (float x, float y, float z) coordinates) :
             this(Guid.NewGuid(), project, title, body, coordinates)
         { }
 
@@ -36,7 +36,7 @@ namespace Backend
             string description = dbNode.Properties["description"].As<string>();
             string guidText = dbNode.Properties["guid"].As<string>();
             Guid guid = Guid.Parse(guidText);
-            List<double> coords = dbNode.Properties["coordinates"].As<List<double>>();
+            List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
 
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
@@ -69,7 +69,7 @@ namespace Backend
             Description = description;
         }
 
-        public void UpdateCoordinates((double x, double y, double z) coordinates)
+        public void UpdateCoordinates((float x, float y, float z) coordinates)
         {
             Project.Database.UpdateNodeCoordinates(this, coordinates);
             Coordinates = coordinates;
