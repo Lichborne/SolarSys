@@ -3,23 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Backend;
 public class ModifyPlanetDescription : MonoBehaviour
 {
-    // This script will allow the user to change the text associated with a planet gameObject by making calls to the 
+    // This script will allow the user to change the description associated with a planet gameObject by making calls to the 
     // GraphProject class
     [HideInInspector]
     public string descriptionEntry;
     public GameObject inputField;
-    // Start is called before the first frame update
 
     public void updateInput()
     {
         // Get entry from description box and update corresponding selected node
-        descriptionEntry = inputField.GetComponent<TMPro.TextMeshProUGUI>().text;
-        GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
-        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-        attachedNode.UpdateDescription(descriptionEntry);
+        descriptionEntry = inputField.GetComponent<TMP_InputField>().text;
+        if (descriptionEntry != "") // Users cannot input null entries
+        {
+            GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
+            try
+            {
+                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
+                attachedNode.UpdateDescription(descriptionEntry);
+                inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
+            }
+            catch(InvalidOperationException)
+            {
+                Debug.Log("Please select a planet first");
+            }
+        } 
     }
 
     private GameObject findCurrentlySelectedPlanet()
