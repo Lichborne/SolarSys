@@ -474,9 +474,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   selectedObject: {fileID: 0}
-  UIPanel: {fileID: 0}
-  UIPanelPath: {fileID: 0}
-  UIPanelMultiple: {fileID: 0}
+  UIPanel: {fileID: 941591993497452965}
+  UIPanelPath: {fileID: 3492458473271019277}
+  UIPanelMultiple: {fileID: 3492458474247872956}
 --- !u!1 &941591991764558470
 GameObject:
   m_ObjectHideFlags: 0
