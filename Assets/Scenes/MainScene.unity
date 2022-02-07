@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0025978456, g: 0.018169886, b: 0.07748409, a: 1}
+  m_IndirectSpecularColor: {r: 0.0025865214, g: 0.018158766, b: 0.077492416, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -736,6 +736,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+      - m_Target: {fileID: 4573723581086729125}
+        m_TargetAssemblyTypeName: DisplayNodeDesciption, Assembly-CSharp
+        m_MethodName: displayDescription
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &941591991793583149
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5410,7 +5422,6 @@ GameObject:
   - component: {fileID: 4573723580657456588}
   - component: {fileID: 4573723580657456586}
   - component: {fileID: 4573723580657456587}
-  - component: {fileID: 4573723580657456590}
   m_Layer: 5
   m_Name: Text_Description
   m_TagString: Untagged
@@ -5418,18 +5429,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &4573723580657456590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4573723580657456589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fb11305d9483cc4dbabd9b275f99b18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &4573723580931193418
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5634,13 +5633,28 @@ GameObject:
   - component: {fileID: 4573723581086729123}
   - component: {fileID: 4573723581086729121}
   - component: {fileID: 4573723581086729122}
+  - component: {fileID: 4573723581086729125}
   m_Layer: 5
   m_Name: TextDisplayPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
+--- !u!114 &4573723581086729125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4573723581086729124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb11305d9483cc4dbabd9b275f99b18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleField: {fileID: 4573723580931193421}
+  descriptionField: {fileID: 4573723580657456589}
 --- !u!1 &8908797314494589616
 GameObject:
   m_ObjectHideFlags: 0
@@ -5658,7 +5672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &8908797314494589621
 CanvasRenderer:
   m_ObjectHideFlags: 0
