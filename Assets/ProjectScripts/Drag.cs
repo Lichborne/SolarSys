@@ -78,25 +78,34 @@ class Drag : MonoBehaviour
     }
 }
  
-    void OnMouseDown()
+    void OnMouseDown() // On mouse down will be called when ever mouse is pressed down while over the colider
     {
         distance = Vector3.Distance(transform.position, Camera.main.transform.position);
         dragging = true;
     }
  
     void OnMouseUp()
-    {
+    { // On mouse u is called whenever the mouse is released from the planet that it was initially dragging
         dragging = false;
+        updatePlanetPosition();
     }
  
     void Update()
     {
         if (dragging)
-        {
+        { // Get position of input mouse and update planet position accordingly
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Vector3 rayPoint = ray.GetPoint(distance);
             transform.position = rayPoint;
         }
+    }
+
+    private void updatePlanetPosition() 
+    {
+        GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
+        Vector3 currentPosition = transform.position;
+        attachedNode.UpdateCoordinates((currentPosition.x, currentPosition.y, currentPosition.z));
+        Debug.Log("Updating planet " + attachedNode.Title + "'s coordinates to " + currentPosition);
     }
 }
  
