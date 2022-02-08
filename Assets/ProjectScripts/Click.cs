@@ -166,11 +166,11 @@ public class Click : MonoBehaviour
             //hide edges which are not between nodes
             foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Edge")) 
             {
-                if (obj.GetComponent<StoreParentChild>().parent.activeSelf == false || obj.GetComponent<StoreParentChild>().child.activeSelf == false)
-                {
-                    hiddenEdges.Add(obj);
-                    obj.SetActive(false);
-                }
+//                if (obj.GetComponent<StoreParentChild>().parent.activeSelf == false || obj.GetComponent<StoreParentChild>().child.activeSelf == false)
+//                {
+//                    hiddenEdges.Add(obj);
+//                    obj.SetActive(false);
+//                }
                 
             }
 
