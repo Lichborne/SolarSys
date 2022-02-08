@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Backend;
+//using Backend;
 public class ModifyPlanetTitle: MonoBehaviour
 {
     // This script will allow the user to change the title associated with a planet gameObject by making calls to the 
@@ -23,8 +23,8 @@ public class ModifyPlanetTitle: MonoBehaviour
             GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
             try
             {
-                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-                attachedNode.UpdateTitle(titleEntry);
+//                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
+//                attachedNode.UpdateTitle(titleEntry);
                 inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
             }
             catch(InvalidOperationException)

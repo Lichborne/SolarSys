@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Backend;
+//using Backend;
  
 class Drag : MonoBehaviour
 {
@@ -102,10 +102,10 @@ class Drag : MonoBehaviour
 
     private void updatePlanetPosition() 
     {
-        GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
+//        GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
         Vector3 currentPosition = transform.position;
-        attachedNode.UpdateCoordinates((currentPosition.x, currentPosition.y, currentPosition.z));
-        Debug.Log("Updating planet " + attachedNode.Title + "'s coordinates to " + currentPosition);
+//        attachedNode.UpdateCoordinates((currentPosition.x, currentPosition.y, currentPosition.z));
+//        Debug.Log("Updating planet " + attachedNode.Title + "'s coordinates to " + currentPosition);
     }
 }
  

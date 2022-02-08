@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Backend;
+//using Backend;
 
 public class DisplayNodeDesciption : MonoBehaviour
 {
@@ -20,13 +20,13 @@ public class DisplayNodeDesciption : MonoBehaviour
     public void displayDescription()
     {
         GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
-        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
+//        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
 
         m_TitleText = titleField.GetComponent<TMP_Text>();
         m_DescriptionText = descriptionField.GetComponent<TMP_Text>();
 
-        m_TitleText.text = attachedNode.Title;
-        m_DescriptionText.text = attachedNode.Description;
+//        m_TitleText.text = attachedNode.Title;
+//        m_DescriptionText.text = attachedNode.Description;
     }
     private GameObject findCurrentlySelectedPlanet()
     {

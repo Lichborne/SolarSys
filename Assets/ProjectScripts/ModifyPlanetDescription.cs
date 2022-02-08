@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Backend;
+//using Backend;
 public class ModifyPlanetDescription : MonoBehaviour
 {
     // This script will allow the user to change the description associated with a planet gameObject by making calls to the 
@@ -22,8 +22,8 @@ public class ModifyPlanetDescription : MonoBehaviour
             GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
             try
             {
-                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-                attachedNode.UpdateDescription(descriptionEntry);
+//                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
+//                attachedNode.UpdateDescription(descriptionEntry);
                 inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
             }
             catch(InvalidOperationException)

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Backend;
+//using Backend;
 
 
 public class ClickOn : MonoBehaviour
@@ -16,7 +16,7 @@ public class ClickOn : MonoBehaviour
     [HideInInspector]
     public bool currentlyHidden = false;
 
-    private Backend.GraphProject graph = new Backend.GraphProject();
+//    private Backend.GraphProject graph = new Backend.GraphProject();
 
     private MeshRenderer myRend;
     // Start is called before the first frame update
@@ -59,7 +59,7 @@ public class ClickOn : MonoBehaviour
     //Josh's function
     public void getNodeOfSelectedPlanet()
     {
-        FrontEndNode node = GetComponent<FrontEndNode>();
+//        FrontEndNode node = GetComponent<FrontEndNode>();
         //Debug.Log(node.getDatabaseNode().Text);
     }
    
