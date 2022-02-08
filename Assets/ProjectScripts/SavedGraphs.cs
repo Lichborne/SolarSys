@@ -12,6 +12,10 @@ public class SavedGraphs : MonoBehaviour
     public Transform savedGraphsPanel;
     public Transform savedGraphContainer;
     public TextMeshProUGUI textDisplay;
+    public GameObject newProjectName;
+    public GameObject createNewProjectPanel;
+
+
 
     
     void Start() 
@@ -89,5 +93,14 @@ public class SavedGraphs : MonoBehaviour
         }
 
     }
+
+    public void CreateProjectButtonClicked()
+    {   
+        createNewProjectPanel.SetActive(false);
+        AddProject(newProjectName.GetComponent<TMP_InputField>().text);
+        RefreshSavedGraphs();
+        
+    }
+    
 
 }
