@@ -23,6 +23,9 @@ public class Click : MonoBehaviour
         selectedObjects = new List<GameObject>();
         hiddenNodes = new List<GameObject>();
         hiddenEdges = new List<GameObject>();
+        UIPanel.SetActive(false);
+        UIPanelMultiple.SetActive(false);
+        UIPanelPath.SetActive(false);
     }
 
     // Update is called once per frame
@@ -103,8 +106,11 @@ public class Click : MonoBehaviour
             if (selectedObjects.Count == 1)
             {
                 selectedObject = selectedObjects[0];
+                UIPanel.SetActive(true);
+                UIPanelMultiple.SetActive(false);
+                UIPanelPath.SetActive(false);
             }
-            else if (selectedObjects.Count == 0) {
+            else {
                 selectedObject = null;
             }
 
@@ -184,7 +190,7 @@ public class Click : MonoBehaviour
         isShowingPath = false;
         UIPanelPath.SetActive(false);
         UIPanelMultiple.SetActive(false);
-        UIPanel.SetActive(true);
+        UIPanel.SetActive(false);
 
         //deselect everything
         foreach (GameObject obj in selectedObjects) 

@@ -9,7 +9,7 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject infoDisplay;
     public GameObject textInput;
     public GameObject UI;
-
+    public GameObject savedGraphs;
    
    
     public void Toggle_infoDisplay()
@@ -46,6 +46,11 @@ public class ShowHideChildren : MonoBehaviour
         {
             UI.SetActive(true);
         }
+    }
+
+    public void DisplaySavedGraphs()
+    {
+        savedGraphs.SetActive(true);
     }
 
    
