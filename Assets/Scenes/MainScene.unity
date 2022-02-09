@@ -736,7 +736,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4573723581086729125}
         m_TargetAssemblyTypeName: DisplayNodeDesciption, Assembly-CSharp
         m_MethodName: displayDescription
         m_Mode: 1
@@ -5703,8 +5703,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fb11305d9483cc4dbabd9b275f99b18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleField: {fileID: 0}
-  descriptionField: {fileID: 0}
+  titleField: {fileID: 4573723580931193421}
+  descriptionField: {fileID: 4573723580657456589}
 --- !u!1 &8908797314494589616
 GameObject:
   m_ObjectHideFlags: 0
@@ -5722,7 +5722,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &8908797314494589621
 CanvasRenderer:
   m_ObjectHideFlags: 0
