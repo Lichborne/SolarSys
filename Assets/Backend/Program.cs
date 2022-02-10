@@ -35,13 +35,24 @@ namespace Backend
 
         public static void Main()
         {
-            ShowPoints(7);
+            // var graphUser = new GraphUser("foo.bar@doc.ic.ac.uk");
+            
+            // foreach (var project in graphUser.userGraphProjects)
+            // {
+            //     Console.WriteLine("Nodes attached to" + project.ProjectId.ProjectTitle);
+            //     foreach (var node in project.Nodes)
+            //     {
+            //         Console.WriteLine("Node title = " + node.Title);
+            //     }
+            // }
 
-            GraphProject project = new GraphProject();
-            // DatabaseView database = new DatabaseView("bolt://localhost:7687", "neo4j", "password");
+            // ShowPoints(7);
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "body");
-            project.Database.AppendLogNode(project, logNode);
+            // GraphProject project = new GraphProject();
+            // // DatabaseView database = new DatabaseView("bolt://localhost:7687", "neo4j", "password");
+
+            // LogNode logNode = new LogNode(ChangeEnum.Update, "body");
+            // project.Database.AppendLogNode(project, logNode);
 
 
             /*
