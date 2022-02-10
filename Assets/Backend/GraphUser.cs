@@ -18,12 +18,18 @@ namespace Backend
             this.userEmail = userEmail;
             var Database = new DatabaseView(dbUri, dbUsername, dbPassword);
             var projectTitles = Database.ReadAllProjectTitlesAttachedToUser(userEmail);
+        }
 
+        public List<GraphProject> returnProjectsWithTitle(List<String> projectTitles)
+        {
+            List<GraphProject> projects = new List<GraphProject>();
             foreach (var projectTitle in projectTitles)
             {
                 GraphProject newGraphProject = new GraphProject(userEmail, projectTitle);
-                userGraphProjects.Add(newGraphProject);
+                projects.Add(newGraphProject);
+                userGraphProjects.Add(newGraphProject); // Store in class as well for future access
             }
+            return projects;
         }
     }
 }

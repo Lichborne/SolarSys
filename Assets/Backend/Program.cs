@@ -35,16 +35,19 @@ namespace Backend
 
         public static void Main()
         {
-            // var graphUser = new GraphUser("foo.bar@doc.ic.ac.uk");
+            var graphUser = new GraphUser("foo.bar@doc.ic.ac.uk");
+            List<GraphProject> userGraphProjects = new List<GraphProject>();
             
-            // foreach (var project in graphUser.userGraphProjects)
-            // {
-            //     Console.WriteLine("Nodes attached to" + project.ProjectId.ProjectTitle);
-            //     foreach (var node in project.Nodes)
-            //     {
-            //         Console.WriteLine("Node title = " + node.Title);
-            //     }
-            // }
+            List<String> myTitles = new List<String>();
+            myTitles.Add("Test Project");
+            myTitles.Add("Dummy Project");
+
+            userGraphProjects = graphUser.returnProjectsWithTitle(myTitles);
+
+            foreach (var project in userGraphProjects)
+            {
+                Console.WriteLine("Project head = " + project.ProjectId.ProjectTitle);
+            }
 
             // ShowPoints(7);
 
