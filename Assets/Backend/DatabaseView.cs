@@ -181,6 +181,20 @@ namespace Backend
         }
 
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
+        public IEnumerator ReadAllProjectTitlesAttachedToUserCo(string userEmail, Action<List<string>> processTitles)
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
+                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
+                $" RETURN project";
+            
+			List<Dictionary<string, JToken>> table = null;
+            yield return SendReadTransaction(query,  t => table = t);
+
+			// this stuff
+			List<string> projectTitles = new List<string>();
+        }
+
+
         public List<String> ReadAllProjectTitlesAttachedToUser(String userEmail)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
@@ -199,7 +213,6 @@ namespace Backend
                     return projectTitles;
                 });
             }
-        
         }
 
 
