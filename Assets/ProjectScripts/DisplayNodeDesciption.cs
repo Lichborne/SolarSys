@@ -28,9 +28,11 @@ public class DisplayNodeDesciption : MonoBehaviour
         m_TitleText.text = attachedNode.Title;
         m_DescriptionText.text = attachedNode.Description;
     }
+    
     private GameObject findCurrentlySelectedPlanet()
     {
         GameObject currentlySelectedGameObject = Camera.main.GetComponent<Click>().selectedObject;
         return currentlySelectedGameObject;
     }
+
 }

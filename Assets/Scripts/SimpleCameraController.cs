@@ -305,7 +305,8 @@ namespace UnityTemplateProjects
             {
                 m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
             }
-            m_InterpolatingCameraState.UpdateTransform(transform);
+
+                m_InterpolatingCameraState.UpdateTransform(transform);
 
             if (translation != Vector3.zero) //Moving with arrow keys will break zoom
             {
@@ -424,6 +425,7 @@ namespace UnityTemplateProjects
             return Input.GetMouseButtonUp(0);
 #endif
         }
+
     }
 
 }
