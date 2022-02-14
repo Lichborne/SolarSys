@@ -9,7 +9,8 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject infoDisplay;
     public GameObject textInput;
     public GameObject UI;
-    public GameObject savedGraphs;
+    public GameObject savedProjects;
+    public GameObject savedPathViews;
     public GameObject createNewGraphPopUp;
    
    
@@ -49,15 +50,27 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
-    public void Toggle_SavedGraphs()
+    public void Toggle_SavedProjects()
     {
-        if (savedGraphs.activeSelf == true) 
+        if (savedProjects.activeSelf == true) 
         {
-            savedGraphs.SetActive(false);
+            savedProjects.SetActive(false);
         }
         else 
         {
-            savedGraphs.SetActive(true);
+            savedProjects.SetActive(true);
+        }
+    }
+
+    public void Toggle_SavedPathViews()
+    {
+        if (savedPathViews.activeSelf == true) 
+        {
+            savedPathViews.SetActive(false);
+        }
+        else 
+        {
+            savedPathViews.SetActive(true);
         }
     }
 
