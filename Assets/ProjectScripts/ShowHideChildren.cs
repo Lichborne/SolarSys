@@ -50,7 +50,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
-    public void Toggle_Projects()
+    public void Toggle_SavedProjects()
     {
         if (savedProjects.activeSelf == true) 
         {
