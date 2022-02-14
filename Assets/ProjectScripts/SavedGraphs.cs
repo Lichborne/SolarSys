@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using Backend;
+
 public class SavedGraphs : MonoBehaviour
 {
     //list of saved graphs by a user
@@ -29,31 +31,40 @@ public class SavedGraphs : MonoBehaviour
         pathViewList = new List<string>();
 
         //for now put this in contructor, just to test
-        string project1 = "Project1";
-        string project2 = "Project2";
-        string project3 = "Project3";
-        string project4 = "Project4";
-        string project5 = "Project5";
-        string project6 = "Project6";
-        string project7 = "Project7";
-        AddProject(project1);
-        AddProject(project2);
-        AddProject(project3);
-        AddProject(project4);
-        AddProject(project5);
-        AddProject(project6);
-        AddProject(project7);
-        Debug.Log(projectList.Count);
-        RefreshSavedGraphs(projectList, savedProjectContainer, savedProjectsPanel, projectText);
 
-         //for now put this in contructor, just to test
-        string pathView1 = "PathView1";
-        string pathView2 = "PathView2";
-        string pathView3 = "PathView3";
-        AddPathView(pathView1);
-        AddPathView(pathView2);
-        AddPathView(pathView3);
-        RefreshSavedGraphs(pathViewList, savedPathContainer, savedPathViewsPanel, pathViewText);
+        // Commenting out Olivia's code
+        // string project1 = "Project1";
+        // string project2 = "Project2";
+        // string project3 = "Project3";
+        // string project4 = "Project4";
+        // string project5 = "Project5";
+        // string project6 = "Project6";
+        // string project7 = "Project7";
+        // AddProject(project1);
+        // AddProject(project2);
+        // AddProject(project3);
+        // AddProject(project4);
+        // AddProject(project5);
+        // AddProject(project6);
+        // AddProject(project7);
+        // Debug.Log(projectList.Count);
+        // RefreshSavedGraphs(projectList, savedProjectContainer, savedProjectsPanel, projectText); 
+
+        //  //for now put this in contructor, just to test
+        // string pathView1 = "PathView1";
+        // string pathView2 = "PathView2";
+        // string pathView3 = "PathView3";
+        // AddPathView(pathView1);
+        // AddPathView(pathView2);
+        // AddPathView(pathView3);
+        // RefreshSavedGraphs(pathViewList, savedPathContainer, savedPathViewsPanel, pathViewText); 
+
+        // Adding my own Coroutine code
+        DatabaseView database = new DatabaseView(); // constructor that doesnt get Neo4J stuff ready
+        string userEmail = "foo.bar@doc.ic.ac.uk";
+        StartCoroutine(
+            database.ReadUsersProjectTitlesCo(userEmail, DisplayProjectTitles)
+        );
     }
 
     //function to append to list of graphs
@@ -61,6 +72,14 @@ public class SavedGraphs : MonoBehaviour
     {
         projectList.Add(newProject);
         RefreshSavedGraphs(projectList, savedProjectContainer, savedProjectsPanel, projectText);
+    }
+
+    private void DisplayProjectTitles(List<string> projectTitles)
+    {
+        Debug.Log($"DisplayProjectTitles() saying hi \nWriting {projectTitles.Count} project titles");
+        foreach (string title in projectTitles)
+
+        RefreshSavedGraphs(projectTitles, savedProjectContainer, savedProjectsPanel, projectText); 
     }
 
     //function to append to list of graphs
@@ -94,11 +113,13 @@ public class SavedGraphs : MonoBehaviour
         float savedGraphCellSize = 130f;
         for (int index = 0; index < chosenList.Count; index++) 
         {
-            
+            Debug.Log($"RefreshSavedGraphs() updating text: {chosenTextDisplay.text} --> {chosenList[index]}");
+            // TextMeshProUGUI textDisplay = Instantiate(chosenTextDisplay, chosenContainer).GetComponent<TextMeshProUGUI>();
             RectTransform savedGraphRectTransform = Instantiate(chosenContainer, ChosenParentPanel).GetComponent<RectTransform>();
+            TextMeshProUGUI textComponent = savedGraphRectTransform.GetComponentInChildren<TextMeshProUGUI>();
             savedGraphRectTransform.gameObject.SetActive(true);
            
-            chosenTextDisplay.text = chosenList[index];
+            textComponent.text = chosenList[index];
            
             
             savedGraphRectTransform.anchoredPosition = new Vector3(x_displacement + x * savedGraphCellSize, y_displacement -y* savedGraphCellSize, 0);
@@ -109,7 +130,6 @@ public class SavedGraphs : MonoBehaviour
                 x = 0;
                 y++;
             }
-
         }
 
     }
