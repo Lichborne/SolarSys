@@ -111,7 +111,7 @@ namespace Backend
 
         // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
-        public List<GraphNode> ReadNodesFromProject(GraphProject project, Action<List<GraphNode>> processGraphNodes)
+        public IEnumerator ReadNodesFromProjectCo(GraphProject project, Action<List<GraphNode>> processGraphNodes)
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
@@ -131,7 +131,7 @@ namespace Backend
         }
 
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
-        public List<LogNode> ReadLogNodesFromProject(GraphProject project, Action<List<LogNode>> processLogNodes)
+        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes)
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
