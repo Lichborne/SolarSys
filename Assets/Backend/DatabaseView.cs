@@ -92,14 +92,14 @@ namespace Backend
                             $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
-        public void CreateParentChildRelationship(GraphNode parent, GraphEdge edge, GraphNode child)
+        public List<String> CreateParentChildRelationshipQuery(GraphNode parent, GraphEdge edge, GraphNode child)
         {
             string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " +
                             $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
                             $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (child)";
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
-            MakeAndLogChangeQuery(parent.Project, query, logNode);
+            return MakeAndLogChangeQuery(parent.Project, query, logNode);
         }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
