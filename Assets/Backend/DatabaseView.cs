@@ -108,12 +108,6 @@ namespace Backend
                             $" (child :LOG_NODE {{guid: '{childId}'}}) " +
                             " CREATE (parent) -[:LOG_LINK]-> (child)";
 
-        public void CreateLogLink(Guid parentId, Guid childId)
-        {
-            string query = CreateLogLinkQuery(parentId, childId);
-            WriteQuery(query);
-        }
-
 
         // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
