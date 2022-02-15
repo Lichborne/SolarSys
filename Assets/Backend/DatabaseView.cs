@@ -91,31 +91,6 @@ namespace Backend
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
                             $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
-
-        /// <summary> Add new log node to chain of log nodes </summary>
-        public void AppendLogNode(GraphProject project, LogNode node)
-        {
-            // identify current log head, and remove its links to project node
-
-            var guidHead = GetHeadLogNodeId(project);
-
-            if (!guidHead.Equals(Guid.Empty))
-            {
-                DestroyLogHistoryEdge(project);
-
-                // make node the new log head 
-                CreateUnlinkedLogNode(project, node);
-
-                // attach new log head node to previous log head node
-                CreateLogLink(node.Id, guidHead);
-            }
-            else
-            {
-                // make node the new log head 
-                CreateUnlinkedLogNode(project, node);
-            }
-        }
-
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child nodes that are contained in the same project root. </summary>
         public void CreateParentChildRelationship(GraphNode parent, GraphEdge edge, GraphNode child)
         {
