@@ -30,7 +30,7 @@ public class SavedGraphs : MonoBehaviour
         projectList = new List<string>();
         pathViewList = new List<string>();
 
-        //for now put this in contructor, just to test
+        //for now put this in Start(), just to test
 
         // Commenting out Olivia's code
         // string project1 = "Project1";
@@ -60,7 +60,7 @@ public class SavedGraphs : MonoBehaviour
         // RefreshSavedGraphs(pathViewList, savedPathContainer, savedPathViewsPanel, pathViewText); 
 
         // Adding my own Coroutine code
-        DatabaseView database = new DatabaseView(); // constructor that doesnt get Neo4J stuff ready
+        DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
         string userEmail = "foo.bar@doc.ic.ac.uk";
         StartCoroutine(
             database.ReadUsersProjectTitlesCo(userEmail, DisplayProjectTitles)
@@ -76,9 +76,11 @@ public class SavedGraphs : MonoBehaviour
 
     private void DisplayProjectTitles(List<string> projectTitles)
     {
-        Debug.Log($"DisplayProjectTitles() saying hi \nWriting {projectTitles.Count} project titles");
+        // someone pls remove these debug.logs
+        Debug.Log($"Writing {projectTitles.Count} project titles");
         foreach (string title in projectTitles)
-
+            Debug.Log($"Writing project title {title}");
+        
         RefreshSavedGraphs(projectTitles, savedProjectContainer, savedProjectsPanel, projectText); 
     }
 
@@ -113,17 +115,13 @@ public class SavedGraphs : MonoBehaviour
         float savedGraphCellSize = 130f;
         for (int index = 0; index < chosenList.Count; index++) 
         {
-            Debug.Log($"RefreshSavedGraphs() updating text: {chosenTextDisplay.text} --> {chosenList[index]}");
-            // TextMeshProUGUI textDisplay = Instantiate(chosenTextDisplay, chosenContainer).GetComponent<TextMeshProUGUI>();
             RectTransform savedGraphRectTransform = Instantiate(chosenContainer, ChosenParentPanel).GetComponent<RectTransform>();
             TextMeshProUGUI textComponent = savedGraphRectTransform.GetComponentInChildren<TextMeshProUGUI>();
-            savedGraphRectTransform.gameObject.SetActive(true);
-           
             textComponent.text = chosenList[index];
-           
             
+            savedGraphRectTransform.gameObject.SetActive(true);
             savedGraphRectTransform.anchoredPosition = new Vector3(x_displacement + x * savedGraphCellSize, y_displacement -y* savedGraphCellSize, 0);
-            // savedGraphsList.Add(savedGraph);
+
             x++;
             if(x > 4)
             {
@@ -131,7 +129,6 @@ public class SavedGraphs : MonoBehaviour
                 y++;
             }
         }
-
     }
 
     //This function is called when we select create new project in pop-up panel
@@ -140,8 +137,5 @@ public class SavedGraphs : MonoBehaviour
         createNewProjectPanel.SetActive(false);
         AddProject(newProjectName.GetComponent<TMP_InputField>().text);
         RefreshSavedGraphs(projectList, savedProjectContainer, savedProjectsPanel, projectText);
-        
     }
-    
-
 }
