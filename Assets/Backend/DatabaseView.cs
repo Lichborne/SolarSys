@@ -46,28 +46,33 @@ namespace Backend
         }
 
 
-        private List<String> MakeAndLogChangeQuery(GraphProject project, string changeQuery, LogNode logNode)
-        {
-            Console.WriteLine($"Making change {changeQuery}");
-            Guid headLogNodeId = GetHeadLogNodeId(project);
+        // Feb 15 2022: Don't create log nodes for the time being 
+        // GetHeadLogNodeId calls the database and needs to be a coroutine
+        // We cannot start a coroutine on unity here, as we need to be in a class
+        // that extends from monobehaviour
 
-            List<String> queries = new List<String>();
+        // private List<String> MakeAndLogChangeQuery(GraphProject project, string changeQuery, LogNode logNode)
+        // {
+        //     Console.WriteLine($"Making change {changeQuery}");
+        //     Guid headLogNodeId = GetHeadLogNodeId(project);
 
-            if (headLogNodeId == Guid.Empty)
-            {
+        //     List<String> queries = new List<String>();
 
-                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
-                queries.Add(changeQuery);
-            }
-            else
-            {
-                queries.Add(DestroyLogHistoryEdgeQuery(project));
-                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
-                queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
-                queries.Add(changeQuery);
-            }
-            return queries;
-        }
+        //     if (headLogNodeId == Guid.Empty)
+        //     {
+
+        //         queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+        //         queries.Add(changeQuery);
+        //     }
+        //     else
+        //     {
+        //         queries.Add(DestroyLogHistoryEdgeQuery(project));
+        //         queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+        //         queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
+        //         queries.Add(changeQuery);
+        //     }
+        //     return queries;
+        // }
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
@@ -174,66 +179,74 @@ namespace Backend
         }
 
 
-        public Guid GetHeadLogNodeId(GraphProject project)
-        {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
-                            "-[:LOG_HISTORY]-> (node) RETURN node";
+        // public Guid GetHeadLogNodeId(GraphProject project)
+        // {
+        //     string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+        //                     $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+        //                     "-[:LOG_HISTORY]-> (node) RETURN node";
 
-            using (var session = _driver.Session())
-            {
-                return session.ReadTransaction(tx =>
-                {
-                    var result = tx.Run(query);
+        //     using (var session = _driver.Session())
+        //     {
+        //         return session.ReadTransaction(tx =>
+        //         {
+        //             var result = tx.Run(query);
 
-                    try
-                    {
-                        String guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
-                        return Guid.Parse(guidString);
-                    }
-                    catch (System.InvalidOperationException)
-                    {
-                        // No results in query
-                        return Guid.Empty;
-                    }
+        //             try
+        //             {
+        //                 String guidString = result.Single()["node"].As<INode>().Properties["guid"].As<string>();
+        //                 return Guid.Parse(guidString);
+        //             }
+        //             catch (System.InvalidOperationException)
+        //             {
+        //                 // No results in query
+        //                 return Guid.Empty;
+        //             }
 
-                });
-            }
-        }
+        //         });
+        //     }
+        // }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
-        public List<GraphEdge> ReadAllEdgesFromProject((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes)
+        public IEnumerator ReadAllEdgesFromProjectCo((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes, Action<List<GraphEdge>> processEdgeNodes)
         {
             string query = $"MATCH (:USER {{email: '{projectId.userEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " +
                 $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " +
                 $" RETURN parent, edge, child";
-            using var session = _driver.Session();
 
-            return session.ReadTransaction(tx =>
+            List<GraphEdge> edges = new List<GraphEdge>();
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+            foreach (Dictionary<string, JToken> row in table)
             {
-                var result = tx.Run(query);
-                List<GraphEdge> edges = new List<GraphEdge>();
-                foreach (var record in result)
-                {
-                    Guid parentId = Guid.Parse(record["parent"].As<INode>().Properties["guid"].As<string>());
-                    Guid childId = Guid.Parse(record["child"].As<INode>().Properties["guid"].As<string>());
+                JObject parentObj = row["parent"] as JObject;
+                Guid parentId = Guid.Parse(parentObj["guid"].As<string>());
 
-                    GraphNode parent = allNodes.Find(node => node.Id == parentId);
-                    if (parent == null)
-                        throw new Exception($"Could not find parent node with id = {parentId}");
+                JObject childObj = row["child"] as JObject;
+                Guid childId = Guid.Parse(childObj["guid"].As<string>());
 
 
-                    GraphNode child = allNodes.Find(node => node.Id == childId);
-                    if (child == null)
-                        throw new Exception($"Could not find child with id = {childId}");
+                // Find parent and child graph node object from list of all nodes
+                GraphNode parentNode = allNodes.Find(node => node.Id == parentId);
+                if (parentNode == null)
+                    throw new Exception($"Could not find parent node with id = {parentId}");
 
-                    GraphEdge edge = GraphEdge.FromIRelationship(record["edge"].As<IRelationship>(), parent, child);
+                GraphNode childNode = allNodes.Find(node => node.Id == childId);
+                if (childNode == null)
+                    throw new Exception($"Could not find child with id = {childId}");
 
-                    edges.Add(edge);
-                }
-                return edges;
-            });
+
+                // Create GraphEdge object
+                JObject edgeObj = row["edge"] as JObject;
+
+                GraphEdge edge = GraphEdge.FromJObject(edgeObj, parentNode, childNode);
+
+                edges.Add(edge);
+
+            }
+            processEdgeNodes(edges);
+
         }
 
         // =========================== UPDATE

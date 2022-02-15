@@ -7,7 +7,7 @@ namespace Backend
     public class GraphEdge : IEquatable<GraphEdge>
     {
         public string Title { get; private set; }
-        public string Description {get; private set; }
+        public string Description { get; private set; }
 
         public Guid Id { get; private set; }
 
@@ -39,7 +39,8 @@ namespace Backend
             {
                 return Parent;
             }
-            else {
+            else
+            {
                 throw new ArgumentException("Node not attached to edge");
             }
         }
@@ -49,6 +50,14 @@ namespace Backend
             string title = dbRelationship.Properties["title"].As<string>();
             string description = dbRelationship.Properties["description"].As<string>();
             string guidText = dbRelationship.Properties["guid"].As<string>();
+            return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
+        }
+
+        public static GraphEdge FromJObject(JObject obj, GraphNode parent, GraphNode child)
+        {
+            string title = obj["title"].As<string>();
+            string description = obj["description"].As<string>();
+            string guidText = obj["guid"].As<string>();
             return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
@@ -78,7 +87,7 @@ namespace Backend
         public override string ToString()
             => $"--[{Id.ToString().Truncate(5)}: {Title.Truncate(20)}]-->";
 
-        
+
         public bool Equals(GraphEdge other)
             => Id == other.Id;
 
@@ -86,10 +95,10 @@ namespace Backend
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
-            
+
             return Equals(obj as GraphEdge);
         }
-        
+
         public override int GetHashCode()
             => Id.GetHashCode();
     }

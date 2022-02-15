@@ -14,12 +14,7 @@ namespace Backend
         {
             ProjectId = (userEmail, projectTitle);
             Database = new DatabaseView(dbUri, dbUsername, dbPassword);
-
-            Nodes = Database.ReadNodesFromProject(this);
-            Edges = Database.ReadAllEdgesFromProject(ProjectId, Nodes);
-
-            foreach (var edge in Edges)
-                edge.Parent.Edges.Add(edge);
+            InitialiseProject();
         }
 
         public void Dispose()
@@ -30,6 +25,25 @@ namespace Backend
             parent.AddEdge(edge);
 
             // write all this to database
+        }
+
+        public IEnumerator InitialiseProject()
+        {
+            yield return Database.ReadNodesFromProjectCo(this, processGraphNodes);
+            yield return Database.ReadAllEdgesFromProjectCo(ProjectId, Nodes, processEdges);
+
+            foreach (var edge in Edges)
+                edge.Parent.Edges.Add(edge); // why do you make the parent recognise its children at this point, and not when the edge is created?
+        }
+
+        private void processGraphNodes(List<GraphNode> graphNodes)
+        {
+            Nodes = graphNodes;
+        }
+
+        private void processEdges(List<GraphEdge> graphEdges)
+        {
+            Edges = graphEdges;
         }
     }
 }
