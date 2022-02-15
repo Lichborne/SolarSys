@@ -91,11 +91,6 @@ namespace Backend
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
                             $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
-        public void CreateUnlinkedLogNode(GraphProject project, LogNode node)
-        {
-            string query = CreateUnlinkedLogNodeQuery(project, node);
-            WriteQuery(query);
-        }
 
         /// <summary> Add new log node to chain of log nodes </summary>
         public void AppendLogNode(GraphProject project, LogNode node)
