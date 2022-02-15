@@ -174,27 +174,6 @@ namespace Backend
         }
 
 
-        public List<String> ReadAllProjectTitlesAttachedToUser(String userEmail)
-        {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
-                $" RETURN project";
-
-            using (var session = _driver.Session())
-            {
-                return session.ReadTransaction(tx =>
-                {
-                    var result = tx.Run(query);
-                    List<String> projectTitles = new List<String>();
-
-                    foreach (var record in result)
-                        projectTitles.Add(record["project"].As<INode>().Properties["title"].As<string>());
-                    return projectTitles;
-                });
-            }
-        }
-
-
         public Guid GetHeadLogNodeId(GraphProject project)
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
