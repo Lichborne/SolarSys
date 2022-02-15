@@ -1,7 +1,10 @@
 ﻿using Neo4j.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Backend
 {
@@ -9,12 +12,19 @@ namespace Backend
     {
         private bool _disposed = false;
         private IDriver _driver;
+        private DatabaseConnection connection = new DatabaseConnection();
 
         ~DatabaseView()
             => Dispose(false);
 
         public DatabaseView(string uri, string username, string password)
-            => _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(username, password));
+        {
+            _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(username, password));
+        }
+
+        // the constructor for when we dont want to use Neo4J drivers -- this will replace the old constructor
+        public DatabaseView()
+        { }
 
         /// <summary> Closes the database connection. </summary>
         public void Dispose()
@@ -181,6 +191,28 @@ namespace Backend
         }
 
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
+        public IEnumerator ReadUsersProjectTitlesCo(string userEmail, Action<List<string>> processTitles)
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
+                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
+                $" RETURN project";
+            
+			List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query,  t => table = t);
+
+            List<string> projectTitles = new List<string>();
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject project = row["project"] as JObject;
+                string title = (string) project["title"];
+                projectTitles.Add(title);
+            }
+
+            yield return "waiting for next frame :) the next function might take a while to run lol";
+            processTitles(projectTitles);
+        }
+
+
         public List<String> ReadAllProjectTitlesAttachedToUser(String userEmail)
         {
             string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
@@ -199,7 +231,6 @@ namespace Backend
                     return projectTitles;
                 });
             }
-        
         }
 
 
