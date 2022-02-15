@@ -12,27 +12,30 @@ public class Test : MonoBehaviour
 
     void Start()
     {
-        connection = new DatabaseConnection();
-        // GraphProject project = new GraphProject();
+        //connection = new DatabaseConnection();
+        //GraphProject project = new GraphProject();
 
-        StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
+        //GraphNode attachedNode = new GraphNode(new GraphProject(), "alpha", "bravo", (1, 1, 1));
+        //Debug.Log(attachedNode.Project.ProjectId.UserEmail);
 
-        StartCoroutine(connection.SendReadTransaction("MATCH (parent :NODE) -[edge :LINK]-> (child :NODE) return parent, edge, child", 
-            entries => 
-            {
-                Debug.Log($"Start() found {entries.Count} entries\n");
-                foreach (Dictionary<string, JToken> entry in entries)
-                {
-                    Debug.Log("Start() found a new entry");
-                    foreach (string key in entry.Keys)
-                        Debug.Log($"Start() found {key} = {entry[key]}");
-                }
-            }
-        ));
-    }
+        //Debug.Log($"Start() with node oif Id {attachedNode.Id}");
+        //StartCoroutine(attachedNode.CreateInDatabase());
 
-    void Update()
-    {
-        
+        //StartCoroutine(attachedNode.UpdateTitle("hello"));
+
+        // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
+
+        // StartCoroutine(connection.SendReadTransaction("MATCH (parent :NODE) -[edge :LINK]-> (child :NODE) return parent, edge, child", 
+        //     entries => 
+        //     {
+        //         Debug.Log($"Start() found {entries.Count} entries\n");
+        //         foreach (Dictionary<string, JToken> entry in entries)
+        //         {
+        //             Debug.Log("Start() found a new entry");
+        //             foreach (string key in entry.Keys)
+        //                 Debug.Log($"Start() found {key} = {entry[key]}");
+        //         }
+        //     }
+        // ));
     }
 }

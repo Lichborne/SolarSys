@@ -3,8 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
+
 
 namespace Backend
 {
@@ -45,32 +46,32 @@ namespace Backend
         }
 
 
-        private void MakeAndLogChange(GraphProject project, string changeQuery, LogNode logNode)
+        private List<String> MakeAndLogChangeQuery(GraphProject project, string changeQuery, LogNode logNode)
         {
             Console.WriteLine($"Making change {changeQuery}");
             Guid headLogNodeId = GetHeadLogNodeId(project);
 
+            List<String> queries = new List<String>();
+
             if (headLogNodeId == Guid.Empty)
             {
-                WriteQueries(
-                    CreateUnlinkedLogNodeQuery(project, logNode),
-                    changeQuery
-                );
+
+                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+                queries.Add(changeQuery);
             }
             else
             {
-                WriteQueries(
-                    DestroyLogHistoryEdgeQuery(project),
-                    CreateUnlinkedLogNodeQuery(project, logNode),
-                    CreateLogLinkQuery(logNode.Id, headLogNodeId),
-                    changeQuery
-                );
+                queries.Add(DestroyLogHistoryEdgeQuery(project));
+                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+                queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
+                queries.Add(changeQuery);
             }
+            return queries;
         }
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
-        public void CreateUnlinkedNode(GraphNode node)
+        public IEnumerator CreateUnlinkedNode(GraphNode node)
         {
             string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectId.ProjectTitle}'}}) " +
@@ -78,8 +79,9 @@ namespace Backend
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
 
-            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
-            MakeAndLogChange(node.Project, query, logNode);
+            // LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
+            // string[] queries = MakeAndLogChangeQuery(node.Project, query, logNode).ToArray();
+            yield return connection.SendWriteTransactions(query);
         }
 
         /// <summary> Writes to the database a log node that is linked to a project, but not linked to other log nodes </summary>
@@ -127,7 +129,7 @@ namespace Backend
                             $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (child)";
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
-            MakeAndLogChange(parent.Project, query, logNode);
+            MakeAndLogChangeQuery(parent.Project, query, logNode);
         }
 
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
@@ -147,11 +149,11 @@ namespace Backend
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
         public List<GraphNode> ReadNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
-                $" -[:CONTAINS]->(node :NODE) " + 
+                $" -[:CONTAINS]->(node :NODE) " +
                 $" RETURN node";
-            
+
             using (var session = _driver.Session())
             {
                 return session.ReadTransaction(tx =>
@@ -170,9 +172,9 @@ namespace Backend
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
         public List<LogNode> ReadLogNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
-                $" -[:LOG_HISTORY]->(node :LOG_NODE) " + 
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+                $" -[:LOG_HISTORY]->(node :LOG_NODE) " +
                 $" RETURN node";
 
             using (var session = _driver.Session())
@@ -193,18 +195,18 @@ namespace Backend
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
         public IEnumerator ReadUsersProjectTitlesCo(string userEmail, Action<List<string>> processTitles)
         {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
                 $" RETURN project";
-            
-			List<Dictionary<string, JToken>> table = null;
-            yield return connection.SendReadTransaction(query,  t => table = t);
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
 
             List<string> projectTitles = new List<string>();
             foreach (Dictionary<string, JToken> row in table)
             {
                 JObject project = row["project"] as JObject;
-                string title = (string) project["title"];
+                string title = (string)project["title"];
                 projectTitles.Add(title);
             }
 
@@ -215,10 +217,10 @@ namespace Backend
 
         public List<String> ReadAllProjectTitlesAttachedToUser(String userEmail)
         {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " + 
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
                 $" RETURN project";
-            
+
             using (var session = _driver.Session())
             {
                 return session.ReadTransaction(tx =>
@@ -265,8 +267,8 @@ namespace Backend
         public List<GraphEdge> ReadAllEdgesFromProject((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes)
         {
             string query = $"MATCH (:USER {{email: '{projectId.userEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " + 
-                $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " + 
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " +
+                $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " +
                 $" RETURN parent, edge, child";
             using var session = _driver.Session();
 
@@ -311,31 +313,32 @@ namespace Backend
             WriteQuery(query);
         } */
 
-        public void UpdateNodeTitle(GraphNode node, string title)
+        public IEnumerator UpdateNodeTitle(GraphNode node, string title)
         {
-            string updateTitleQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
+            string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.title = '{title}'";
-            
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
-            MakeAndLogChange(node.Project, updateTitleQuery, logNode);
+
+            //LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            // List<String> queries = MakeAndLogChangeQuery(node.Project, updateTitleQuery, logNode);
+            yield return connection.SendWriteTransactions(query);
         }
 
         public void UpdateNodeDescription(GraphNode node, string description)
         {
             string updateDescQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.description = '{description}'";
-            
+
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
-            MakeAndLogChange(node.Project, updateDescQuery, logNode);
+            MakeAndLogChangeQuery(node.Project, updateDescQuery, logNode);
         }
 
         public void UpdateNodeCoordinates(GraphNode node, (double x, double y, double z) coordinates)
         {
             string updateCoordsQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.coordinates = [{coordinates.x}, {coordinates.y}, {coordinates.z}]";
-            
+
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
-            MakeAndLogChange(node.Project, updateCoordsQuery, logNode);
+            MakeAndLogChangeQuery(node.Project, updateCoordsQuery, logNode);
         }
 
 
@@ -351,7 +354,7 @@ namespace Backend
                 $" SET edge.title = '{title}'";
 
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
-            MakeAndLogChange(edge.Project, updateTitleQuery, logNode);
+            MakeAndLogChangeQuery(edge.Project, updateTitleQuery, logNode);
         }
 
 
@@ -361,9 +364,9 @@ namespace Backend
                 $"-[edge :LINK {{guid: '{edge.Id}'}}]-> " +
                 $" (:NODE {{guid: '{edge.Child.Id}'}})" +
                 $" SET edge.description = '{description}'";
-            
+
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
-            MakeAndLogChange(edge.Project, updateDescQuery, logNode);
+            MakeAndLogChangeQuery(edge.Project, updateDescQuery, logNode);
         }
 
 
@@ -375,7 +378,7 @@ namespace Backend
                 $"DETACH DELETE (node)";
 
             LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
-            MakeAndLogChange(node.Project, deleteQuery, logNode);
+            MakeAndLogChangeQuery(node.Project, deleteQuery, logNode);
         }
 
         public void DestroyEdge(GraphEdge edge)
@@ -386,7 +389,7 @@ namespace Backend
                 $" DELETE edge";
 
             LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
-            MakeAndLogChange(edge.Project, deleteEdgeQuery, logNode);
+            MakeAndLogChangeQuery(edge.Project, deleteEdgeQuery, logNode);
         }
 
         private static string DestroyLogHistoryEdgeQuery(GraphProject project)
@@ -412,7 +415,7 @@ namespace Backend
         {
             using (var session = _driver.Session())
             {
-                session.WriteTransaction(tx => 
+                session.WriteTransaction(tx =>
                 {
                     IResultSummary summary = null;
                     foreach (string query in queries)

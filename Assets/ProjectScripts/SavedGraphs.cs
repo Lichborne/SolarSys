@@ -66,7 +66,6 @@ public class SavedGraphs : MonoBehaviour
             database.ReadUsersProjectTitlesCo(userEmail, DisplayProjectTitles)
         );
     }
-
     //function to append to list of graphs
     public void AddProject(string newProject) 
     {

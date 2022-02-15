@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using Neo4j.Driver;
+using System.Collections;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
+using UnityEngine;
 
 namespace Backend
 {
@@ -14,7 +16,7 @@ namespace Backend
 
         public (float X, float Y, float Z) Coordinates { get; private set; }
 
-        public GraphProject Project {get; private set; }
+        public GraphProject Project { get; private set; }
         public List<GraphEdge> Edges = new List<GraphEdge>();
 
         public GraphNode(Guid id, GraphProject project, string title, string description, (float x, float y, float z) coordinates)
@@ -42,25 +44,28 @@ namespace Backend
         }
 
         //  Writes the node, with no edges, to the database
-        public void CreateInDatabase()
-            =>  Project.Database.CreateUnlinkedNode(this);
+        public IEnumerator CreateInDatabase()
+        {
+            yield return Project.Database.CreateUnlinkedNode(this);
+        }
+
 
         // Adds an extra edge to the node, writing it to the database
         public void AddEdge(GraphEdge edge)
         {
             Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
             Edges.Add(edge);
-        }       
+        }
 
         // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
         public void RemoveEdge(GraphEdge edge)
             => Edges.Remove(edge);
-        
 
-        public void UpdateTitle(string title)
+
+        public IEnumerator UpdateTitle(string title)
         {
-            Project.Database.UpdateNodeTitle(this, title);
             Title = title;
+            yield return Project.Database.UpdateNodeTitle(this, title);
         }
 
         public void UpdateDescription(string description)
@@ -78,7 +83,7 @@ namespace Backend
         // deletes the node from the database. does not affect the node's edges or children
         public void DeleteFromDatabase()
             => Project.Database.DestroyNode(this);
-        
+
 
         public override string ToString()
             => $"({Id.ToString().Truncate(5)}: {Title.Truncate(20)})";
@@ -90,10 +95,10 @@ namespace Backend
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
-            
+
             return Equals(obj as GraphNode);
         }
-        
+
         public override int GetHashCode()
             => Id.GetHashCode();
     }
