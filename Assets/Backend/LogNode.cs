@@ -49,5 +49,15 @@ namespace Backend
             return new LogNode(change, body, guid, timeStamp);
         }
 
+        public static GraphNode FromJObject(GraphProject project, JObject obj)
+        {
+            string title = obj["title"].As<string>();
+            string description = obj["description"].As<string>();
+            string guidText = obj["guid"].As<string>();
+            Guid guid = Guid.Parse(guidText);
+            List<float> coords = obj["coordinates"].As<List<float>>();
+            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+        }
+
     }
 }

@@ -111,49 +111,44 @@ namespace Backend
 
         // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
-        public List<GraphNode> ReadNodesFromProject(GraphProject project)
+        public List<GraphNode> ReadNodesFromProject(GraphProject project, Action<List<GraphNode>> processGraphNodes)
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 $" -[:CONTAINS]->(node :NODE) " +
                 $" RETURN node";
 
-            using (var session = _driver.Session())
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<GraphNode> nodes = new List<GraphNode>();
+            foreach (Dictionary<string, JToken> row in table)
             {
-                return session.ReadTransaction(tx =>
-                {
-                    var result = tx.Run(query);
-                    List<GraphNode> nodes = new List<GraphNode>();
-
-                    foreach (var record in result)
-                        nodes.Add(GraphNode.FromINode(project, record["node"].As<INode>()));
-
-                    return nodes;
-                });
+                JObject node = row["node"] as JObject;
+                nodes.Add(GraphNode.FromJObject(project, node));
             }
+            processGraphNodes(nodes);
         }
 
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
-        public List<LogNode> ReadLogNodesFromProject(GraphProject project)
+        public List<LogNode> ReadLogNodesFromProject(GraphProject project, Action<List<LogNode>> processLogNodes)
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 $" -[:LOG_HISTORY]->(node :LOG_NODE) " +
                 $" RETURN node";
 
-            using (var session = _driver.Session())
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<LogNode> nodes = new List<LogNode>();
+            foreach (Dictionary<string, JToken> row in table)
             {
-                return session.ReadTransaction(tx =>
-                {
-                    var result = tx.Run(query);
-                    List<LogNode> nodes = new List<LogNode>();
-
-                    foreach (var record in result)
-                        nodes.Add(LogNode.FromINode(record["node"].As<INode>()));
-
-                    return nodes;
-                });
+                JObject node = row["node"] as JObject;
+                nodes.Add(LogNode.FromJObject(project, node));
             }
+            processLogNodes(nodes);
+
         }
 
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
