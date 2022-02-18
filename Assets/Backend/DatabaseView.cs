@@ -203,6 +203,26 @@ namespace Backend
             }
         }
 
+        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes)
+        {
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+                $" -[:LOG_HISTORY]->(node :LOG_NODE) " +
+                $" RETURN node";
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<LogNode> nodes = new List<LogNode>();
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject node = row["node"] as JObject;
+                nodes.Add(LogNode.FromJObject(project, node));
+            }
+            processLogNodes(nodes);
+
+        }
+
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
         public IEnumerator ReadUsersProjectTitlesCo(string userEmail, Action<List<string>> processTitles)
         {
@@ -307,6 +327,47 @@ namespace Backend
                 }
                 return edges;
             });
+        }
+
+        public IEnumerator ReadAllEdgesFromProjectCo((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes, Action<List<GraphEdge>> processEdgeNodes)
+        {
+            string query = $"MATCH (:USER {{email: '{projectId.userEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " +
+                $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " +
+                $" RETURN parent, edge, child";
+
+            List<GraphEdge> edges = new List<GraphEdge>();
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject parentObj = row["parent"] as JObject;
+                Guid parentId = Guid.Parse(parentObj["guid"].As<string>());
+
+                JObject childObj = row["child"] as JObject;
+                Guid childId = Guid.Parse(childObj["guid"].As<string>());
+
+
+                // Find parent and child graph node object from list of all nodes
+                GraphNode parentNode = allNodes.Find(node => node.Id == parentId);
+                if (parentNode == null)
+                    throw new Exception($"Could not find parent node with id = {parentId}");
+
+                GraphNode childNode = allNodes.Find(node => node.Id == childId);
+                if (childNode == null)
+                    throw new Exception($"Could not find child with id = {childId}");
+
+
+                // Create GraphEdge object
+                JObject edgeObj = row["edge"] as JObject;
+
+                GraphEdge edge = GraphEdge.FromJObject(edgeObj, parentNode, childNode);
+
+                edges.Add(edge);
+
+            }
+            processEdgeNodes(edges);
         }
 
         // =========================== UPDATE
