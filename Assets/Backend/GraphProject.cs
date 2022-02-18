@@ -10,7 +10,7 @@ namespace Backend
         public List<GraphEdge> Edges = new List<GraphEdge>();
         public (string UserEmail, string ProjectTitle) ProjectId { get; private set; }
         public DatabaseView Database { get; private set; }
-        public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string dbUri = "bolt://localhost:7687" /*  "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687"*/, string dbUsername = "neo4j", string dbPassword = "neo4j")
+        public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string dbUri = /* "bolt://localhost:7687" */ "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string dbUsername = "neo4j", string dbPassword = "s3cr3t")
         {
             ProjectId = (userEmail, projectTitle);
             Database = new DatabaseView(dbUri, dbUsername, dbPassword);

@@ -15,9 +15,10 @@ public class Test : MonoBehaviour
 
         connection = new DatabaseConnection();
         GraphProject project = new GraphProject();
-        GraphNode attachedNode = new GraphNode(new GraphProject(), "alpha", "bravo", (1, 1, 1));
+        GraphNode attachedNode = new GraphNode(new GraphProject(), "Test", "Node", (1, 1, 1));
+        Debug.Log("Starting coroutine to create node in database");
         StartCoroutine(attachedNode.CreateInDatabaseCo());
-
+        Debug.Log("Finished");
         // // GraphProject project = new GraphProject();
 
         // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
