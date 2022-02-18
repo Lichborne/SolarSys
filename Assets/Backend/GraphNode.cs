@@ -3,6 +3,7 @@ using System.Linq;
 using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
+using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
@@ -38,6 +39,18 @@ namespace Backend
             Guid guid = Guid.Parse(guidText);
             List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
 
+            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+        }
+
+        public static GraphNode FromJObject(GraphProject project, JObject json)
+        {
+            string title = (string) json["title"];
+            string description = (string) json["description"];
+            Guid guid = Guid.Parse((string) json["guid"]);
+            List<float> coords = (json["coordinates"] as JArray)
+                .Select(c => (float) c)
+                .ToList();
+            
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
 

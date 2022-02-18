@@ -304,6 +304,26 @@ namespace Backend
             });
         }
 
+        public IEnumerator ReadGraphNodesInPath(PathRoot path, Action<List<GraphNode>> processGraphNodes)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})" +
+                $"-[:VIEWS]-> (node :NODE)" + 
+                $"RETURN node";
+            
+            List<GraphNode> graphNodes = new List<GraphNode>();
+            yield return connection.SendReadTransaction(query, table => 
+            {
+                foreach (Dictionary<string, JToken> row in table)
+                {
+                    JObject json = row["node"] as JObject;
+                    graphNodes.Add(GraphNode.FromJObject(path.Project, json));
+                }
+            });
+
+            yield return "waiting for next frame :)";
+            processGraphNodes(graphNodes);
+        }
+
         // =========================== UPDATE
 
         /// <summary> Updates database by making sure that the node with GUID `nodeWithChanges.Id` has the same fields as `nodeWithChanges`. 

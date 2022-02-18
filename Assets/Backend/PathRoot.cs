@@ -30,6 +30,14 @@ namespace Backend
             PathNodes.Add(node);
             yield return Project.Database.AddNodeToPath(this, node);
         }
+
+        public IEnumerator ReadNodesInPath()
+        {
+            List<GraphNode> nodes = new List<GraphNode>();
+            yield return Project.Database.ReadGraphNodesInPath(this, nodesRead => nodes = nodesRead);
+            
+            PathNodes.AddRange(nodes);
+        }
         
         public void Export()
         {
