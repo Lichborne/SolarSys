@@ -124,7 +124,7 @@ namespace Backend
         {
             string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " +
                             $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
-                            $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (child)";
+                            $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', description: '{edge.Description}'}}]-> (child)";
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
             MakeAndLogChange(parent.Project, query, logNode);
@@ -371,7 +371,7 @@ namespace Backend
         /// <summary> Destroys the supplied node, along with all edges from which the node is either a parent or child.
         public void DestroyNode(GraphNode node)
         {
-            string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Description}'}}) " +
+            string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $"DETACH DELETE (node)";
 
             LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
