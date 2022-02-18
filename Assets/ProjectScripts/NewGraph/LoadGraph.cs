@@ -13,7 +13,11 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _edgePreFab;
 
+    public GameObject _curvedPrefab;
+
     public GameObject _selfReferencePreFab;
+
+    public GameObject _textObject;
 
     private Backend.GraphProject graph = new Backend.GraphProject();
 
@@ -40,9 +44,10 @@ public class LoadGraph : MonoBehaviour
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
         // remember to add self-reference.
        
-        foreach (GraphEdge edge in graph.Edges) {
-            int parentIndex = (graph.Nodes).IndexOf(edge.Parent);
-            int childIndex = (graph.Nodes).IndexOf(edge.Child);
+        foreach (GraphEdge databaseEdge in graph.Edges) {
+            bool isCurvedEdge = false;
+            int parentIndex = (graph.Nodes).IndexOf(databaseEdge.Parent);
+            int childIndex = (graph.Nodes).IndexOf(databaseEdge.Child);
 
             UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
 
@@ -52,29 +57,28 @@ public class LoadGraph : MonoBehaviour
             // if it is a self reference, we need a self reference edge, otherwise a normal edge
             if (parentIndex == childIndex) {
                 rightPrefab = _selfReferencePreFab;
-            }
+            } 
 
-            Debug.Log("weeeeee");
+            if (graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(graphNodes[childIndex])) {
+                rightPrefab = _curvedPrefab;
+                graphNodes[parentIndex].GetComponent<FrontEndNode>().changeEdge(graphNodes[childIndex], _curvedPrefab);
+                isCurvedEdge = true;
+            } 
+
+            if (graphNodes[childIndex].GetComponent<FrontEndNode>().from.Contains(graphNodes[parentIndex])) {
+                rightPrefab = _curvedPrefab;
+                graphNodes[childIndex].GetComponent<FrontEndNode>().changeEdge(graphNodes[parentIndex], _curvedPrefab);
+                isCurvedEdge = true;
+            }
 
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
 
-            if (graphNodes[parentIndex] == null) {
-                Debug.Log(" Parent null weeeeee \n");
-            }
+            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, _textObject, graphNodes[parentIndex], graphNodes[childIndex], 90);
 
-            if (graphNodes[childIndex] == null) {
-                Debug.Log(" child null weeeeee \n");
-            }
-
-            if (edgeObject == null) {
-                Debug.Log(" edge weeeeee \n");
-            }
-
-             if (edgeObject.GetComponent<FrontEndEdge>()== null) {
-                 Debug.Log(" edge comp go brrrrweeeeee \n");
-             }
-            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(edge, graphNodes[parentIndex], graphNodes[childIndex]);
+            graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(graphNodes[childIndex]);
+            graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
+            graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);
+            graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
         }   
     }
-
 }
