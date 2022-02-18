@@ -208,6 +208,25 @@ namespace Backend
             }
         }
 
+        public IEnumerator ReadNodesFromProjectCo(GraphProject project, Action<List<GraphNode>> processGraphNodes)
+        {
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+                $" -[:CONTAINS]->(node :NODE) " +
+                $" RETURN node";
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<GraphNode> nodes = new List<GraphNode>();
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject node = row["node"] as JObject;
+                nodes.Add(GraphNode.FromJObject(project, node));
+            }
+            processGraphNodes(nodes);
+        }
+
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
         public List<LogNode> ReadLogNodesFromProject(GraphProject project)
         {
