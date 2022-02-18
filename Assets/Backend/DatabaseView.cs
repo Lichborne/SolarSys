@@ -333,6 +333,16 @@ namespace Backend
             MakeAndLogChange(node.Project, updateTitleQuery, logNode);
         }
 
+        public IEnumerator UpdateNodeTitleCo(GraphNode node, string title)
+        {
+            string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
+                $" SET node.title = '{title}'";
+
+            //LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            // List<String> queries = MakeAndLogChangeQuery(node.Project, updateTitleQuery, logNode);
+            yield return connection.SendWriteTransactions(query);
+        }
+
         public void UpdateNodeDescription(GraphNode node, string description)
         {
             string updateDescQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
