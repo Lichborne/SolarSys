@@ -15,11 +15,16 @@ public class Test : MonoBehaviour
 
         var connection = new DatabaseConnection();
         GraphProject project = new GraphProject();
-        GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
-        // StartCoroutine(project.Database.ReadAllEdgesFromProjectCo(""))
-        yield return attachedNode.CreateInDatabaseCo();
-        yield return attachedNode.UpdateTitleCo("New title");
-        Debug.Log("Finished");
+
+        /* Make a new node and update it */
+        // GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
+        // // StartCoroutine(project.Database.ReadAllEdgesFromProjectCo(""))
+        // yield return attachedNode.CreateInDatabaseCo();
+        // yield return attachedNode.UpdateTitleCo("New title");
+        // Debug.Log("Finished");
+
+        /* Read all nodes from a project */
+        //yield return project.Database.ReadLogNodesFromProjectCo(project, processLogNodes);
 
         // // GraphProject project = new GraphProject();
 
@@ -38,6 +43,15 @@ public class Test : MonoBehaviour
         //     }
         // ));
     }
+
+    // void processLogNodes(List<LogNode> nodes)
+    // {
+    //     // Debug.Log(nodes[0].Body);
+    //     foreach (LogNode node in nodes)
+    //     {
+    //         Debug.Log($"Timestamp is {node.TimeStamp}");
+    //     }
+    // }
 
     void Update()
     {

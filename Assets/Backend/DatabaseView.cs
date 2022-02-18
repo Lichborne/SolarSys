@@ -260,11 +260,11 @@ namespace Backend
             }
         }
 
-        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes) // TODO
+        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes) // works
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
-                $" -[:LOG_HISTORY]->(node :LOG_NODE) " +
+                $" -[*]->(node :LOG_NODE) " +
                 $" RETURN node";
 
             List<Dictionary<string, JToken>> table = null;
