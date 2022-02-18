@@ -139,9 +139,17 @@ namespace Backend
         public void CreateLogLink(Guid parentId, Guid childId)
         {
             string query = CreateLogLinkQuery(parentId, childId);
-            WriteQuery(query);
+            WriteQuery(query); 
         }
 
+        public IEnumerator CreatePathRoot(GraphProject project, PathRoot path)
+        {
+            string query = $" MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
+                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
+                $"CREATE (path_root :PATH_ROOT {{guid: '{path.Id}', title: {path.Title}, description: {path.Description}}})";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
 
         // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
@@ -366,6 +374,15 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateDescQuery, logNode);
         }
 
+        public IEnumerator AddNodeToPath(PathRoot path, GraphNode node)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})," + 
+                $"(node :NODE {{guid: '{node.Id}'}})" +
+                $"CREATE (path_root) -[:VIEWS]-> (node)";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
+
 
         // ==================== DESTROY
         /// <summary> Destroys the supplied node, along with all edges from which the node is either a parent or child.
@@ -398,6 +415,16 @@ namespace Backend
         {
             string query = DestroyLogHistoryEdgeQuery(project);
             WriteQuery(query);
+        }
+
+        public IEnumerator RemoveNodeFromPath(PathRoot path, GraphNode node)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
+                $"-[edge :VIEWS]->" + 
+                $"(node :NODE {{guid: '{node.Id}'}})" + 
+                $"DELETE edge";
+            
+            yield return connection.SendWriteTransactions(query);
         }
 
         private void WriteQuery(string query)
