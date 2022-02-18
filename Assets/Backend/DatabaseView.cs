@@ -68,6 +68,34 @@ namespace Backend
             }
         }
 
+        // Feb 15 2022: Don't create log nodes for the time being 
+        // GetHeadLogNodeId calls the database and needs to be a coroutine
+        // We cannot start a coroutine on unity here, as we need to be in a class
+        // that extends from monobehaviour
+
+        // private List<String> MakeAndLogChangeQuery(GraphProject project, string changeQuery, LogNode logNode)
+        // {
+        //     Console.WriteLine($"Making change {changeQuery}");
+        //     Guid headLogNodeId = GetHeadLogNodeId(project);
+
+        //     List<String> queries = new List<String>();
+
+        //     if (headLogNodeId == Guid.Empty)
+        //     {
+
+        //         queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+        //         queries.Add(changeQuery);
+        //     }
+        //     else
+        //     {
+        //         queries.Add(DestroyLogHistoryEdgeQuery(project));
+        //         queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+        //         queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
+        //         queries.Add(changeQuery);
+        //     }
+        //     return queries;
+        // }
+
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
         public void CreateUnlinkedNode(GraphNode node)
