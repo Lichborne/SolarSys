@@ -179,7 +179,7 @@ namespace Backend
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
             yield return MakeAndLogChangeQueryCo(parent.Project, query, logNode);
-            
+
         }
         /// <summary> Creates a parent-child edge bewteen the already-existing parent and child log nodes that are contained in the same project root. </summary>
         private static string CreateLogLinkQuery(Guid parentId, Guid childId)
@@ -218,7 +218,7 @@ namespace Backend
             }
         }
 
-        public IEnumerator ReadNodesFromProjectCo(GraphProject project, Action<List<GraphNode>> processGraphNodes)
+        public IEnumerator ReadNodesFromProjectCo(GraphProject project, Action<List<GraphNode>> processGraphNodes) // TODO
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
@@ -260,7 +260,7 @@ namespace Backend
             }
         }
 
-        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes)
+        public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes) // TODO
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
@@ -361,9 +361,9 @@ namespace Backend
             yield return connection.SendReadTransaction(query, t => table = t);
 
             JObject headLogNode = table.First()["node"] as JObject;
-            var guidString = (string) headLogNode["guid"];
+            var guidString = (string)headLogNode["guid"];
             processGuid(Guid.Parse(guidString));
-        }        
+        }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
         public List<GraphEdge> ReadAllEdgesFromProject((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes)
@@ -415,10 +415,10 @@ namespace Backend
             foreach (Dictionary<string, JToken> row in table)
             {
                 JObject parentObj = row["parent"] as JObject;
-                Guid parentId = Guid.Parse((string) parentObj["guid"]);
+                Guid parentId = Guid.Parse((string)parentObj["guid"]);
 
                 JObject childObj = row["child"] as JObject;
-                Guid childId = Guid.Parse((string) childObj["guid"]);
+                Guid childId = Guid.Parse((string)childObj["guid"]);
 
 
                 // Find parent and child graph node object from list of all nodes
@@ -491,7 +491,7 @@ namespace Backend
 
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
-        }       
+        }
 
         public void UpdateNodeCoordinates(GraphNode node, (double x, double y, double z) coordinates)
         {
@@ -527,7 +527,7 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateTitleQuery, logNode);
         }
 
-        public IEnumerator UpdateEdgeTitleCo(GraphEdge edge, string title)
+        public IEnumerator UpdateEdgeTitleCo(GraphEdge edge, string title) // TODO
         {
             string updateTitleQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
                 $"-[edge :LINK {{guid: '{edge.Id}'}}]-> " +
@@ -549,7 +549,7 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateDescQuery, logNode);
         }
 
-        public IEnumerator UpdateEdgeDescriptionCo(GraphEdge edge, string description)
+        public IEnumerator UpdateEdgeDescriptionCo(GraphEdge edge, string description) // TODO
         {
             string updateDescQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
                 $"-[edge :LINK {{guid: '{edge.Id}'}}]-> " +
@@ -582,12 +582,12 @@ namespace Backend
             MakeAndLogChange(edge.Project, deleteEdgeQuery, logNode);
         }
 
-        private static string DestroyLogHistoryEdgeQuery(GraphProject project)
+        private static string DestroyLogHistoryEdgeQuery(GraphProject project) // TODO
             => $"MATCH ({{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 " -[r:LOG_HISTORY]->(n) " +
                 " DELETE r";
 
-        public void DestroyLogHistoryEdge(GraphProject project)
+        public void DestroyLogHistoryEdge(GraphProject project) // TODO
         {
             string query = DestroyLogHistoryEdgeQuery(project);
             WriteQuery(query);
