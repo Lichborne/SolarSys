@@ -427,6 +427,14 @@ namespace Backend
             yield return connection.SendWriteTransactions(query);
         }
 
+        public IEnumerator DeletePath(PathRoot path)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
+                $"DETACH DELETE path_root";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
+
         private void WriteQuery(string query)
         {
             using (var session = _driver.Session())
