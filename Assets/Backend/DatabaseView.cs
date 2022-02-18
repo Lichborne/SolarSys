@@ -527,7 +527,7 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateTitleQuery, logNode);
         }
 
-        public IEnumerator UpdateEdgeTitleCo(GraphEdge edge, string title) // TODO
+        public IEnumerator UpdateEdgeTitleCo(GraphEdge edge, string title)
         {
             string updateTitleQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
                 $"-[edge :LINK {{guid: '{edge.Id}'}}]-> " +
@@ -549,7 +549,7 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateDescQuery, logNode);
         }
 
-        public IEnumerator UpdateEdgeDescriptionCo(GraphEdge edge, string description) // TODO
+        public IEnumerator UpdateEdgeDescriptionCo(GraphEdge edge, string description)
         {
             string updateDescQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
                 $"-[edge :LINK {{guid: '{edge.Id}'}}]-> " +
