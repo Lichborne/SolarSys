@@ -75,7 +75,7 @@ namespace Backend
             string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectId.ProjectTitle}'}}) " +
                             $" CREATE (project_root) -[:CONTAINS]-> " +
-                            $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', body: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
+                            $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
