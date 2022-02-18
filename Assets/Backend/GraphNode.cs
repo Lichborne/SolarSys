@@ -17,17 +17,17 @@ namespace Backend
         public GraphProject Project {get; private set; }
         public List<GraphEdge> Edges = new List<GraphEdge>();
 
-        public GraphNode(Guid id, GraphProject project, string title, string body, (float x, float y, float z) coordinates)
+        public GraphNode(Guid id, GraphProject project, string title, string description, (float x, float y, float z) coordinates)
         {
             Title = title;
-            Description = body;
+            Description = description;
             Id = id;
             Coordinates = coordinates;
             Project = project;
         }
 
-        public GraphNode(GraphProject project, string title, string body, (float x, float y, float z) coordinates) :
-            this(Guid.NewGuid(), project, title, body, coordinates)
+        public GraphNode(GraphProject project, string title, string description, (float x, float y, float z) coordinates) :
+            this(Guid.NewGuid(), project, title, description, coordinates)
         { }
 
         public static GraphNode FromINode(GraphProject project, INode dbNode)

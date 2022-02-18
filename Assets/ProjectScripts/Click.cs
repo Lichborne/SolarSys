@@ -23,6 +23,9 @@ public class Click : MonoBehaviour
         selectedObjects = new List<GameObject>();
         hiddenNodes = new List<GameObject>();
         hiddenEdges = new List<GameObject>();
+        UIPanel.SetActive(false);
+        UIPanelMultiple.SetActive(false);
+        UIPanelPath.SetActive(false);
     }
 
     // Update is called once per frame
@@ -95,41 +98,53 @@ public class Click : MonoBehaviour
                         //clear list
                         selectedObjects.Clear();
                     }
+                   
                 }
+                    
                 
             }
 
-            //if selectedObjects only countatins one selected node, might be useful to Josh
-            if (selectedObjects.Count == 1)
+           
+            //If is showing path
+            if(isShowingPath)
             {
-                selectedObject = selectedObjects[0];
-            }
-            else if (selectedObjects.Count == 0) {
-                selectedObject = null;
-            }
-
-            //if more than one selected objects - change UI view
-            if (selectedObjects.Count > 1) 
-            {
+                UIPanelPath.SetActive(true);
                 UIPanel.SetActive(false);
-                UIPanelPath.SetActive(false);
-                UIPanelMultiple.SetActive(true);
-            }
-            //if less or equal to one object selected - change UI view
-            else
-            {
                 UIPanelMultiple.SetActive(false);
-                if(isShowingPath)
+
+            }
+            //If is not showing path
+            else{
+                //if selectedObjects is empty when not in path mode
+                if (selectedObjects.Count == 0)
                 {
-                    UIPanelPath.SetActive(true);
                     UIPanel.SetActive(false);
-                }
-                else{
-                    UIPanel.SetActive(true);
+                    UIPanelMultiple.SetActive(false);
                     UIPanelPath.SetActive(false);
                 }
-                
+
+                //if selectedObjects only countatins one selected node, might be useful to Josh
+                if (selectedObjects.Count == 1)
+                {
+                    selectedObject = selectedObjects[0];
+                    UIPanel.SetActive(true);
+                    UIPanelMultiple.SetActive(false);
+                    UIPanelPath.SetActive(false);
+                }
+                else {
+                    selectedObject = null;
+                }
+
+                //if more than one selected objects - change UI view
+                if (selectedObjects.Count > 1) 
+                {
+                    UIPanel.SetActive(false);
+                    UIPanelPath.SetActive(false);
+                    UIPanelMultiple.SetActive(true);
+                }
             }
+                
+            
         }
 
     }
@@ -184,7 +199,7 @@ public class Click : MonoBehaviour
         isShowingPath = false;
         UIPanelPath.SetActive(false);
         UIPanelMultiple.SetActive(false);
-        UIPanel.SetActive(true);
+        UIPanel.SetActive(false);
 
         //deselect everything
         foreach (GameObject obj in selectedObjects) 

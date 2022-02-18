@@ -24,7 +24,7 @@ public class ModifyPlanetDescription : MonoBehaviour
             {
                 GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
                 attachedNode.UpdateDescription(descriptionEntry);
-                inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
+                // inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
             }
             catch(InvalidOperationException)
             {
@@ -37,5 +37,12 @@ public class ModifyPlanetDescription : MonoBehaviour
     {
         GameObject currentlySelectedGameObject = Camera.main.GetComponent<Click>().selectedObject;
         return currentlySelectedGameObject;
+    }
+
+    public void displayDescription()
+    {// To be called when "Edit Text is called", will update description to 
+        GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
+        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
+        inputField.GetComponent<TMP_InputField>().text = attachedNode.Description;
     }
 }
