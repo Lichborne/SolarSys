@@ -26,6 +26,8 @@ public class Test : MonoBehaviour
         /* Read all nodes from a project */
         //yield return project.Database.ReadLogNodesFromProjectCo(project, processLogNodes);
 
+        //yield return project.Database.ReadNodesFromProjectCo(project, prcoessGraphNodes);
+
         // // GraphProject project = new GraphProject();
 
         // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
@@ -53,6 +55,14 @@ public class Test : MonoBehaviour
     //     }
     // }
 
+    // void prcoessGraphNodes(List<GraphNode> nodes)
+    // {
+    //     // Debug.Log(nodes[0].Body);
+    //     foreach (GraphNode node in nodes)
+    //     {
+    //         Debug.Log($"Timestamp is {node.Title}");
+    //     }
+    // }
     void Update()
     {
 
