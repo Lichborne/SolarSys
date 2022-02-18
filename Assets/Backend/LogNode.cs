@@ -53,10 +53,10 @@ namespace Backend
 
         public static LogNode FromJObject(GraphProject project, JObject obj)
         {
-            Enum.TryParse(obj["change"].As<string>(), out ChangeEnum change);
-            string body = obj["body"].As<string>();
-            Guid guid = Guid.Parse(obj["guid"].As<string>());
-            DateTime timeStamp = DateTime.Parse(obj["timestamp"].As<string>());
+            Enum.TryParse((string) obj["change"], out ChangeEnum change);
+            string body = (string) obj["body"];
+            Guid guid = Guid.Parse((string) obj["guid"]);
+            DateTime timeStamp = DateTime.Parse((string) obj["timestamp"]);
 
             return new LogNode(change, body, guid, timeStamp);
         }

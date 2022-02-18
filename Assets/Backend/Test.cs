@@ -10,15 +10,17 @@ public class Test : MonoBehaviour
 {
     public DatabaseConnection connection;
 
-    void Start()
+    IEnumerator Start()
     {
 
-        connection = new DatabaseConnection();
+        var connection = new DatabaseConnection();
         GraphProject project = new GraphProject();
-        GraphNode attachedNode = new GraphNode(new GraphProject(), "Test", "Node", (1, 1, 1));
-        Debug.Log("Starting coroutine to create node in database");
-        StartCoroutine(attachedNode.CreateInDatabaseCo());
+        GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
+        // StartCoroutine(project.Database.ReadAllEdgesFromProjectCo(""))
+        yield return attachedNode.CreateInDatabaseCo();
+        yield return attachedNode.UpdateTitleCo("New title");
         Debug.Log("Finished");
+
         // // GraphProject project = new GraphProject();
 
         // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
@@ -38,6 +40,11 @@ public class Test : MonoBehaviour
     }
 
     void Update()
+    {
+
+    }
+
+    void updateTitleTest()
     {
 
     }

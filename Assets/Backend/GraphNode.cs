@@ -3,7 +3,7 @@ using System.Linq;
 using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
-
+using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 
@@ -45,11 +45,11 @@ namespace Backend
         }
         public static GraphNode FromJObject(GraphProject project, JObject obj)
         {
-            string title = obj["title"].As<string>();
-            string description = obj["description"].As<string>();
-            string guidText = obj["guid"].As<string>();
+            string title = (string) obj["title"];
+            string description = (string) obj["description"];
+            string guidText = (string) obj["guid"];
             Guid guid = Guid.Parse(guidText);
-            List<float> coords = obj["coordinates"].As<List<float>>();
+            List<float> coords = (obj["coordinates"] as JArray).Select(c => (float) c).ToList();
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
 
@@ -81,10 +81,10 @@ namespace Backend
             Title = title;
         }
 
-        public IEnumerator UpdateTitleCo(string title)
+        public IEnumerator UpdateTitleCo(string title) // Works!
         {
-            Title = title;
             yield return Project.Database.UpdateNodeTitleCo(this, title);
+            Title = title;
         }
 
         public void UpdateDescription(string description)
@@ -93,9 +93,22 @@ namespace Backend
             Description = description;
         }
 
+        public IEnumerator UpdateDescriptionCo(string description) // Works!
+        {
+            yield return Project.Database.UpdateNodeDescriptionCo(this, description);
+            Description = description;
+
+        }
+
         public void UpdateCoordinates((float x, float y, float z) coordinates)
         {
             Project.Database.UpdateNodeCoordinates(this, coordinates);
+            Coordinates = coordinates;
+        }
+        
+        public IEnumerator UpdateCoordinatesCo((float x, float y, float z) coordinates) // Works!
+        {
+            yield return Project.Database.UpdateNodeCoordinatesCo(this, coordinates);
             Coordinates = coordinates;
         }
 
