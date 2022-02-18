@@ -51,14 +51,14 @@ namespace Backend
             return new LogNode(change, body, guid, timeStamp);
         }
 
-        public static GraphNode FromJObject(GraphProject project, JObject obj)
+        public static LogNode FromJObject(GraphProject project, JObject obj)
         {
-            string title = obj["title"].As<string>();
-            string description = obj["description"].As<string>();
-            string guidText = obj["guid"].As<string>();
-            Guid guid = Guid.Parse(guidText);
-            List<float> coords = obj["coordinates"].As<List<float>>();
-            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+            Enum.TryParse(obj["change"].As<string>(), out ChangeEnum change);
+            string body = obj["body"].As<string>();
+            Guid guid = Guid.Parse(obj["guid"].As<string>());
+            DateTime timeStamp = DateTime.Parse(obj["timestamp"].As<string>());
+
+            return new LogNode(change, body, guid, timeStamp);
         }
 
     }
