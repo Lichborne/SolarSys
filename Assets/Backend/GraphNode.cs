@@ -4,6 +4,8 @@ using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
 
+using Newtonsoft.Json.Linq;
+
 namespace Backend
 {
     public class GraphNode : IEquatable<GraphNode>
