@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using static Backend.StringExtensions;
 
 using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace Backend
 {
@@ -59,7 +60,7 @@ namespace Backend
 
         public IEnumerator CreateInDatabaseCo()
         {
-            yield return Project.Database.CreateUnlinkedNode(this);
+            yield return Project.Database.CreateUnlinkedNodeCo(this);
         }
 
         // Adds an extra edge to the node, writing it to the database
@@ -83,7 +84,7 @@ namespace Backend
         public IEnumerator UpdateTitleCo(string title)
         {
             Title = title;
-            yield return Project.Database.UpdateNodeTitle(this, title);
+            yield return Project.Database.UpdateNodeTitleCo(this, title);
         }
 
         public void UpdateDescription(string description)
