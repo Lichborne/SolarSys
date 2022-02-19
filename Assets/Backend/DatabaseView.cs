@@ -171,7 +171,7 @@ namespace Backend
             MakeAndLogChange(parent.Project, query, logNode);
         }
 
-        public IEnumerator CreateParentChildRelationshipCo(GraphNode parent, GraphEdge edge, GraphNode child)
+        public IEnumerator CreateParentChildRelationshipCo(GraphNode parent, GraphEdge edge, GraphNode child) // works
         {
             string query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}), " +
                 $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
