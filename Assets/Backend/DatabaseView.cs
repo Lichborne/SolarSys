@@ -400,10 +400,10 @@ namespace Backend
             });
         }
 
-        public IEnumerator ReadAllEdgesFromProjectCo((string userEmail, string projectTitle) projectId, List<GraphNode> allNodes, Action<List<GraphEdge>> processEdgeNodes)
+        public IEnumerator ReadAllEdgesFromProjectCo(GraphProject project, List<GraphNode> allNodes, Action<List<GraphEdge>> processGraphEdges) // works
         {
-            string query = $"MATCH (:USER {{email: '{projectId.userEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{projectId.projectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " +
                 $" RETURN parent, edge, child";
 
@@ -439,7 +439,7 @@ namespace Backend
                 edges.Add(edge);
 
             }
-            processEdgeNodes(edges);
+            processGraphEdges(edges);
         }
 
         // =========================== UPDATE

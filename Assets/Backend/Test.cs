@@ -10,23 +10,29 @@ public class Test : MonoBehaviour
 {
     public DatabaseConnection connection;
 
+    List<GraphNode> GraphNodes;
+
     IEnumerator Start()
     {
 
         var connection = new DatabaseConnection();
         GraphProject project = new GraphProject();
 
-        /* Make a new node and update it */
+        /* --------- Make a new node and update it -----------*/
         // GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
         // // StartCoroutine(project.Database.ReadAllEdgesFromProjectCo(""))
         // yield return attachedNode.CreateInDatabaseCo();
         // yield return attachedNode.UpdateTitleCo("New title");
         // Debug.Log("Finished");
 
-        /* Read all nodes from a project */
+        /* ----- Read all nodes from a project --------------- */
         //yield return project.Database.ReadLogNodesFromProjectCo(project, processLogNodes);
 
         //yield return project.Database.ReadNodesFromProjectCo(project, prcoessGraphNodes);
+
+        /* ----- Read all edges from project ----------------- */
+        // yield return project.Database.ReadNodesFromProjectCo(project, saveGraphNodes);
+        // yield return project.Database.ReadAllEdgesFromProjectCo(project, GraphNodes, processGraphEdges);
 
         // // GraphProject project = new GraphProject();
 
@@ -45,6 +51,19 @@ public class Test : MonoBehaviour
         //     }
         // ));
     }
+
+    // void processGraphEdges(List<GraphEdge> edges)
+    // {
+    //     foreach (GraphEdge edge in edges)
+    //     {
+    //         Debug.Log($"Processing edge: {edge.Title}");
+    //     }
+    // }
+
+    // void saveGraphNodes(List<GraphNode> nodes)
+    // {
+    //     GraphNodes = nodes;
+    // }
 
     // void processLogNodes(List<LogNode> nodes)
     // {
