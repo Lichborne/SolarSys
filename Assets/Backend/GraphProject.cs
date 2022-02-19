@@ -31,6 +31,8 @@ namespace Backend
         //     yield return Database.ReadNodesFromProjectCo(this, processNodes);
         //     yield return Database.ReadAllEdgesFromProjectCo(this, Nodes, processEdges);
 
+        //     foreach (var edge in Edges)
+        //         edge.Parent.Edges.Add(edge);
         // }
 
         private void processNodes(List<GraphNode> nodes)
