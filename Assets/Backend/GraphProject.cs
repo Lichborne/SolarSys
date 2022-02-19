@@ -16,10 +16,15 @@ namespace Backend
             Database = new DatabaseView(dbUri, dbUsername, dbPassword);
 
             Nodes = Database.ReadNodesFromProject(this);
-            Edges = Database.ReadAllEdgesFromProject(ProjectId, Nodes);
 
-            foreach (var edge in Edges)
-                edge.Parent.Edges.Add(edge);
+            // Commented out; will throw an error because GraphEdge.FromIRelationship
+            // Some edges in the database dont have title, description and id 
+            // TODO fix 
+
+            //Edges = Database.ReadAllEdgesFromProject(ProjectId, Nodes);
+
+            // foreach (var edge in Edges)
+            //     edge.Parent.Edges.Add(edge);
         }
 
         // constructor using coroutines
