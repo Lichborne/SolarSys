@@ -56,6 +56,7 @@ public class Test : MonoBehaviour
         //         }
         //     }
         // ));
+        yield return "";
     }
 
     // void processGraphEdges(List<GraphEdge> edges)
