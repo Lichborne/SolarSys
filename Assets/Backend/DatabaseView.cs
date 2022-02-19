@@ -582,12 +582,12 @@ namespace Backend
             MakeAndLogChange(edge.Project, deleteEdgeQuery, logNode);
         }
 
-        private static string DestroyLogHistoryEdgeQuery(GraphProject project) // TODO
+        private static string DestroyLogHistoryEdgeQuery(GraphProject project)
             => $"MATCH ({{title: '{project.ProjectId.ProjectTitle}'}}) " +
                 " -[r:LOG_HISTORY]->(n) " +
                 " DELETE r";
 
-        public void DestroyLogHistoryEdge(GraphProject project) // TODO
+        public void DestroyLogHistoryEdge(GraphProject project)
         {
             string query = DestroyLogHistoryEdgeQuery(project);
             WriteQuery(query);
