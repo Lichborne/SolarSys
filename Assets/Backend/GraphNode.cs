@@ -45,11 +45,11 @@ namespace Backend
         }
         public static GraphNode FromJObject(GraphProject project, JObject obj)
         {
-            string title = (string) obj["title"];
-            string description = (string) obj["description"];
-            string guidText = (string) obj["guid"];
+            string title = (string)obj["title"];
+            string description = (string)obj["description"];
+            string guidText = (string)obj["guid"];
             Guid guid = Guid.Parse(guidText);
-            List<float> coords = (obj["coordinates"] as JArray).Select(c => (float) c).ToList();
+            List<float> coords = (obj["coordinates"] as JArray).Select(c => (float)c).ToList();
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
 
@@ -105,7 +105,7 @@ namespace Backend
             Project.Database.UpdateNodeCoordinates(this, coordinates);
             Coordinates = coordinates;
         }
-        
+
         public IEnumerator UpdateCoordinatesCo((float x, float y, float z) coordinates) // Works!
         {
             yield return Project.Database.UpdateNodeCoordinatesCo(this, coordinates);
@@ -115,6 +115,11 @@ namespace Backend
         // deletes the node from the database. does not affect the node's edges or children
         public void DeleteFromDatabase()
             => Project.Database.DestroyNode(this);
+
+        public IEnumerator DeleteFromDatabaseCo() // works
+        {
+            yield return Project.Database.DestroyNodeCo(this);
+        }
 
 
         public override string ToString()

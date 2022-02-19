@@ -571,6 +571,14 @@ namespace Backend
             MakeAndLogChange(node.Project, deleteQuery, logNode);
         }
 
+        public IEnumerator DestroyNodeCo(GraphNode node) // works
+        {
+            string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
+                $"DETACH DELETE (node)";
+
+            LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
+            yield return MakeAndLogChangeQueryCo(node.Project, deleteQuery, logNode);
+        }
         public void DestroyEdge(GraphEdge edge)
         {
             string deleteEdgeQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +

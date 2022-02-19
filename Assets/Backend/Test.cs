@@ -34,6 +34,13 @@ public class Test : MonoBehaviour
         // yield return project.Database.ReadNodesFromProjectCo(project, saveGraphNodes);
         // yield return project.Database.ReadAllEdgesFromProjectCo(project, GraphNodes, processGraphEdges);
 
+        /* ----- Remove a node from project ---------------- */
+        // GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
+        GraphNode newNode = new GraphNode(project, "new node", "description goes here", (0, 0, 0));
+
+        yield return newNode.CreateInDatabaseCo();
+        yield return newNode.DeleteFromDatabaseCo();
+
         // // GraphProject project = new GraphProject();
 
         // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
