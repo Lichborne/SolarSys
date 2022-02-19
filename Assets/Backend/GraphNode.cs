@@ -70,6 +70,12 @@ namespace Backend
             Edges.Add(edge);
         }
 
+        public IEnumerator AddEdgeCo(GraphEdge edge) // works
+        {
+            yield return Project.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
+            Edges.Add(edge);
+        }
+
         // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
         public void RemoveEdge(GraphEdge edge)
             => Edges.Remove(edge);
