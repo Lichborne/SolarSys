@@ -21,8 +21,8 @@ public class SavedGraphs : MonoBehaviour
 
 
 
-    
-    void Start() 
+
+    void Start()
     {
         // savedGraphsList = new List<GameObject>();
         projectList = new List<string>();
@@ -70,36 +70,32 @@ public class SavedGraphs : MonoBehaviour
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
         string userEmail = "foo.bar@doc.ic.ac.uk";
         StartCoroutine(
-            database.ReadUsersProjectTitlesCo(userEmail, DisplayProjectTitles)
+            database.ReadAllProjectTitlesAttachedToUserCo(userEmail, DisplayProjectTitles)
         );
     }
 
     //function to append to list of graphs
-    public void AddProject(string newProjectName, Transform chosenContainer, Transform ChosenParentPanel) 
+    public void AddProject(string newProjectName, Transform chosenContainer, Transform ChosenParentPanel)
     {
         projectList.Add(newProjectName);
         RectTransform savedGraphRectTransform = Instantiate(chosenContainer, ChosenParentPanel).GetComponent<RectTransform>();
         TextMeshProUGUI textComponent = savedGraphRectTransform.GetComponentInChildren<TextMeshProUGUI>();
         textComponent.text = newProjectName;
-        Debug.Log(newProjectName);
         savedGraphRectTransform.gameObject.SetActive(true);
-      
+
     }
 
     private void DisplayProjectTitles(List<string> projectTitles)
     {
-        // someone pls remove these debug.logs
-        Debug.Log($"Writing {projectTitles.Count} project titles");
-        foreach (string title in projectTitles) 
+        foreach (string title in projectTitles)
         {
-            Debug.Log($"Writing project title {title}");
             AddProject(title, savedProjectContainer, savedProjectsPanel);
         }
-        
+
     }
 
     //function to append to list of graphs
-    public void AddPathView(string newPathView) 
+    public void AddPathView(string newPathView)
     {
         pathViewList.Add(newPathView);
     }
@@ -108,7 +104,7 @@ public class SavedGraphs : MonoBehaviour
 
     //This function is called when we select create new project in pop-up panel
     public void CreateProjectButtonClicked()
-    {   
+    {
         createNewProjectPanel.SetActive(false);
         AddProject(newProjectName.GetComponent<TMP_InputField>().text, savedProjectContainer, savedProjectsPanel);
     }

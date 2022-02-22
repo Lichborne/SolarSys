@@ -4,6 +4,8 @@ using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
 
+using Newtonsoft.Json.Linq;
+
 namespace Backend
 {
     public enum ChangeEnum
@@ -45,6 +47,16 @@ namespace Backend
             string body = dbNode.Properties["body"].As<string>();
             Guid guid = Guid.Parse(dbNode.Properties["guid"].As<string>());
             DateTime timeStamp = DateTime.Parse(dbNode.Properties["timestamp"].As<string>());
+
+            return new LogNode(change, body, guid, timeStamp);
+        }
+
+        public static LogNode FromJObject(GraphProject project, JObject obj)
+        {
+            Enum.TryParse((string) obj["change"], out ChangeEnum change);
+            string body = (string) obj["body"];
+            Guid guid = Guid.Parse((string) obj["guid"]);
+            DateTime timeStamp = DateTime.Parse((string) obj["timestamp"]);
 
             return new LogNode(change, body, guid, timeStamp);
         }
