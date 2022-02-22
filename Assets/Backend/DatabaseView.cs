@@ -152,11 +152,12 @@ namespace Backend
             WriteQuery(query); 
         }
 
-        public IEnumerator CreatePathRoot(GraphProject project, PathRoot path)
+        public IEnumerator CreateBlankPathRoot(GraphProject project, PathRoot path)
         {
             string query = $" MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
                 $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
-                $"CREATE (path_root :PATH_ROOT {{guid: '{path.Id}', title: {path.Title}, description: {path.Description}}})";
+                $"MERGE (project_root) -[:HAS_PATH]-> " + 
+                $" (path_root :PATH_ROOT {{guid: '{path.Id}', title: '{path.Title}', description: '{path.Description}'}})";
             
             yield return connection.SendWriteTransactions(query);
         }
@@ -408,7 +409,7 @@ namespace Backend
         {
             string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})," + 
                 $"(node :NODE {{guid: '{node.Id}'}})" +
-                $"CREATE (path_root) -[:VIEWS]-> (node)";
+                $"MERGE (path_root) -[:VIEWS]-> (node)";
             
             yield return connection.SendWriteTransactions(query);
         }

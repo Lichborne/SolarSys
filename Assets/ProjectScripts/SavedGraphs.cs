@@ -81,7 +81,6 @@ public class SavedGraphs : MonoBehaviour
         RectTransform savedGraphRectTransform = Instantiate(chosenContainer, ChosenParentPanel).GetComponent<RectTransform>();
         TextMeshProUGUI textComponent = savedGraphRectTransform.GetComponentInChildren<TextMeshProUGUI>();
         textComponent.text = newProjectName;
-        Debug.Log(newProjectName);
         savedGraphRectTransform.gameObject.SetActive(true);
       
     }

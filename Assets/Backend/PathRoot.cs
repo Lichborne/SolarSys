@@ -4,6 +4,7 @@ using Neo4j.Driver;
 using System.Collections.Generic;
 using System.Collections;
 using static Backend.StringExtensions;
+using UnityEngine;
 
 namespace Backend 
 {
@@ -15,7 +16,7 @@ namespace Backend
 
         public GraphProject Project {get; private set; }
 
-        public List<GraphNode> PathNodes { get; private set; }
+        public List<GraphNode> PathNodes { get; private set; } = new List<GraphNode>();
 
         public PathRoot(GraphProject project, Guid id, string title, string description)
         {
@@ -25,10 +26,20 @@ namespace Backend
             Description = description;
         }
 
-        public IEnumerator AddNode(GraphNode node)
+        public PathRoot(GraphProject project, string title, string description) :
+            this(project, Guid.NewGuid(), title, description)
+        { }
+
+        public void AddNode(GraphNode node)
+            => PathNodes.Add(node);
+        
+        public IEnumerator CreateInDatabase()
         {
-            PathNodes.Add(node);
-            yield return Project.Database.AddNodeToPath(this, node);
+            yield return Project.Database.CreateBlankPathRoot(Project, this);
+            foreach (GraphNode node in PathNodes)
+                yield return Project.Database.AddNodeToPath(this, node);
+            
+            Debug.Log($"Created path {Title} in database");
         }
 
         public IEnumerator ReadNodesInPath()
@@ -40,9 +51,8 @@ namespace Backend
         }
         
         // Doesnt actually work yet. Waiting for Rowen + Josh to restructure GraphProject
-        public GraphProject CopyToNewProject(string projectTitle)
+        public GraphProject AsGraphProject(string projectTitle)
         {
-            // replace this with something sensible
             GraphProject projectCopy = new GraphProject(userEmail: Project.ProjectId.UserEmail, projectTitle: projectTitle);
             
             // creating copies of each old node, keeping track of which old node corresponds to which copy
