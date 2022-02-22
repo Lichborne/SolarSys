@@ -98,6 +98,16 @@ namespace Backend
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
+        public void CreateBlankGraphProject(GraphProject project)
+        {
+            string query = $"MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}})" + 
+                $"MERGE (user) -[:OWNS_PROJECT]-> " + 
+                $"(project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}})";
+            
+            connection.SendWriteTransactions(query);
+        }
+
+        // TODO: Replace CREATE with MERGE!
         public void CreateUnlinkedNode(GraphNode node)
         {
             string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
@@ -190,9 +200,18 @@ namespace Backend
         public void CreateLogLink(Guid parentId, Guid childId)
         {
             string query = CreateLogLinkQuery(parentId, childId);
-            WriteQuery(query);
+            WriteQuery(query); 
         }
 
+        public IEnumerator CreateBlankPathRoot(GraphProject project, PathRoot path)
+        {
+            string query = $" MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
+                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
+                $"MERGE (project_root) -[:HAS_PATH]-> " + 
+                $" (path_root :PATH_ROOT {{guid: '{path.Id}', title: '{path.Title}', description: '{path.Description}'}})";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
 
         // ===================================== READ
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
@@ -400,6 +419,26 @@ namespace Backend
             });
         }
 
+        public IEnumerator ReadGraphNodesInPath(PathRoot path, Action<List<GraphNode>> processGraphNodes)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})" +
+                $"-[:VIEWS]-> (node :NODE)" + 
+                $"RETURN node";
+            
+            List<GraphNode> graphNodes = new List<GraphNode>();
+            yield return connection.SendReadTransaction(query, table => 
+            {
+                foreach (Dictionary<string, JToken> row in table)
+                {
+                    JObject json = row["node"] as JObject;
+                    graphNodes.Add(GraphNode.FromJObject(path.Project, json));
+                }
+            });
+
+            yield return "waiting for next frame :)";
+            processGraphNodes(graphNodes);
+        }
+        
         public IEnumerator ReadAllEdgesFromProjectCo(GraphProject project, List<GraphNode> allNodes, Action<List<GraphEdge>> processGraphEdges) // works
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
@@ -549,6 +588,15 @@ namespace Backend
             MakeAndLogChange(edge.Project, updateDescQuery, logNode);
         }
 
+        public IEnumerator AddNodeToPath(PathRoot path, GraphNode node)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})," + 
+                $"(node :NODE {{guid: '{node.Id}'}})" +
+                $"MERGE (path_root) -[:VIEWS]-> (node)";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
+
         public IEnumerator UpdateEdgeDescriptionCo(GraphEdge edge, string description)
         {
             string updateDescQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
@@ -564,7 +612,7 @@ namespace Backend
         /// <summary> Destroys the supplied node, along with all edges from which the node is either a parent or child.
         public void DestroyNode(GraphNode node)
         {
-            string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}}}) " +
+            string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $"DETACH DELETE (node)";
 
             LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
@@ -610,6 +658,24 @@ namespace Backend
         {
             string query = DestroyLogHistoryEdgeQuery(project);
             WriteQuery(query);
+        }
+
+        public IEnumerator RemoveNodeFromPath(PathRoot path, GraphNode node)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
+                $"-[edge :VIEWS]->" + 
+                $"(node :NODE {{guid: '{node.Id}'}})" + 
+                $"DELETE edge";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
+
+        public IEnumerator DeletePath(PathRoot path)
+        {
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
+                $"DETACH DELETE path_root";
+            
+            yield return connection.SendWriteTransactions(query);
         }
 
         private void WriteQuery(string query)

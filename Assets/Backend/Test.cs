@@ -12,51 +12,42 @@ public class Test : MonoBehaviour
 
     List<GraphNode> GraphNodes;
 
-    IEnumerator Start()
+    void Start()
     {
-
-        var connection = new DatabaseConnection();
+        connection = new DatabaseConnection();
         GraphProject project = new GraphProject();
+        PathRoot path = new PathRoot(project, "new pathy", "hi");
 
-        /* --------- Make a new node and update it -----------*/
-        // GraphNode attachedNode = new GraphNode(project, "title hello", "description goes here", (0, 0, 0));
-        // // StartCoroutine(project.Database.ReadAllEdgesFromProjectCo(""))
-        // yield return attachedNode.CreateInDatabaseCo();
-        // yield return attachedNode.UpdateTitleCo("New title");
-        // Debug.Log("Finished");
+        GraphNode parent = project.Nodes.Where(node => node.Edges.Any()).First();
+        GraphNode child = parent.Edges.First().Child;
+        
+        Debug.Log($"Adding parent {parent} and child {child} to path");
+        path.AddNode(parent);
+        path.AddNode(child);
+        StartCoroutine(path.CreateInDatabase());
 
-        /* ----- Read all nodes from a project --------------- */
-        //yield return project.Database.ReadLogNodesFromProjectCo(project, processLogNodes);
+        foreach (GraphNode node in path.PathNodes)
+            Debug.Log($"Path now has node {node}");
+        
+        GraphProject newProject = path.AsGraphProject("newy graphy");
+        newProject.CreateInDatabase();
+        Debug.Log("Saved path as graphproject in database");
 
-        //yield return project.Database.ReadNodesFromProjectCo(project, prcoessGraphNodes);
+        /*
+        StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
 
-        /* ----- Read all edges from project ----------------- */
-        // yield return project.Database.ReadNodesFromProjectCo(project, saveGraphNodes);
-        // yield return project.Database.ReadAllEdgesFromProjectCo(project, GraphNodes, processGraphEdges);
-
-        /* ----- Remove a node from project ---------------- */
-        // GraphNode newNode = new GraphNode(project, "new node", "description goes here", (0, 0, 0));
-
-        // yield return newNode.CreateInDatabaseCo();
-        // yield return newNode.DeleteFromDatabaseCo();
-
-        // // GraphProject project = new GraphProject();
-
-        // StartCoroutine(connection.SendWriteTransactions("CREATE (x :RUBBISH {title: 'rubbish'})"));
-
-        // StartCoroutine(connection.SendReadTransaction("MATCH (parent :NODE) -[edge :LINK]-> (child :NODE) return parent, edge, child", 
-        //     entries => 
-        //     {
-        //         Debug.Log($"Start() found {entries.Count} entries\n");
-        //         foreach (Dictionary<string, JToken> entry in entries)
-        //         {
-        //             Debug.Log("Start() found a new entry");
-        //             foreach (string key in entry.Keys)
-        //                 Debug.Log($"Start() found {key} = {entry[key]}");
-        //         }
-        //     }
-        // ));
-        yield return "";
+        StartCoroutine(connection.SendReadTransaction("MATCH (parent :NODE) -[edge :LINK]-> (child :NODE) return parent, edge, child", 
+            entries => 
+            {
+                Debug.Log($"Start() found {entries.Count} entries\n");
+                foreach (Dictionary<string, JToken> entry in entries)
+                {
+                    Debug.Log("Start() found a new entry");
+                    foreach (string key in entry.Keys)
+                        Debug.Log($"Start() found {key} = {entry[key]}");
+                }
+            }
+        )); */
     }
 
     // void processGraphEdges(List<GraphEdge> edges)
