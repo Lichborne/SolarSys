@@ -10,6 +10,8 @@ public class Test : MonoBehaviour
 {
     public DatabaseConnection connection;
 
+    List<GraphNode> GraphNodes;
+
     void Start()
     {
         connection = new DatabaseConnection();
@@ -48,8 +50,43 @@ public class Test : MonoBehaviour
         )); */
     }
 
+    // void processGraphEdges(List<GraphEdge> edges)
+    // {
+    //     foreach (GraphEdge edge in edges)
+    //     {
+    //         Debug.Log($"Processing edge: {edge.Title}");
+    //     }
+    // }
+
+    // void saveGraphNodes(List<GraphNode> nodes)
+    // {
+    //     GraphNodes = nodes;
+    // }
+
+    // void processLogNodes(List<LogNode> nodes)
+    // {
+    //     // Debug.Log(nodes[0].Body);
+    //     foreach (LogNode node in nodes)
+    //     {
+    //         Debug.Log($"Timestamp is {node.TimeStamp}");
+    //     }
+    // }
+
+    // void prcoessGraphNodes(List<GraphNode> nodes)
+    // {
+    //     // Debug.Log(nodes[0].Body);
+    //     foreach (GraphNode node in nodes)
+    //     {
+    //         Debug.Log($"Timestamp is {node.Title}");
+    //     }
+    // }
     void Update()
     {
-        
+
+    }
+
+    void updateTitleTest()
+    {
+
     }
 }

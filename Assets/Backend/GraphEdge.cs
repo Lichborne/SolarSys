@@ -1,13 +1,16 @@
 using System;
 using Neo4j.Driver;
 using static Backend.StringExtensions;
+using System.Collections;
+
+using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
     public class GraphEdge : IEquatable<GraphEdge>
     {
         public string Title { get; private set; }
-        public string Description {get; private set; }
+        public string Description { get; private set; }
 
         public Guid Id { get; private set; }
 
@@ -39,7 +42,8 @@ namespace Backend
             {
                 return Parent;
             }
-            else {
+            else
+            {
                 throw new ArgumentException("Node not attached to edge");
             }
         }
@@ -52,15 +56,34 @@ namespace Backend
             return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
+        public static GraphEdge FromJObject(JObject obj, GraphNode parent, GraphNode child)
+        {
+            string title = obj["title"].As<string>();
+            string description = obj["description"].As<string>();
+            string guidText = obj["guid"].As<string>();
+            return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
+        }
+
         // Writes the "parent -[edge] -> child" relationship stored in this edge to the database
         public void CreateInDatabase()
             => Project.Database.CreateParentChildRelationship(Parent, this, Child);
+
+        public IEnumerator CreateInDatabaseCo()
+        {
+            yield return Project.Database.CreateParentChildRelationshipCo(Parent, this, Child);
+        }
 
         // Updates the title of the edge, writing change to database
         public void UpdateTitle(string title)
         {
             Title = title;
             Project.Database.UpdateEdgeTitle(this, title);
+        }
+
+        public IEnumerator UpdateTitleCo(string title)
+        {
+            Title = title;
+            yield return Project.Database.UpdateEdgeTitleCo(this, title);
         }
 
         // updates the description of the edge, writing change to database
@@ -70,15 +93,25 @@ namespace Backend
             Project.Database.UpdateEdgeDescription(this, description);
         }
 
+        public IEnumerator UpdateDescriptionCo(string description)
+        {
+            Description = description;
+            yield return Project.Database.UpdateEdgeDescriptionCo(this, description);
+        }
+
         // deletes the edge from the database. does not affect the edge's parent or child.
         public void DeleteFromDatabase()
             => Project.Database.DestroyEdge(this);
 
+        public IEnumerator DeleteFromDatabaseCo() // works
+        {
+            yield return Project.Database.DestroyEdgeCo(this);
+        }
 
         public override string ToString()
             => $"--[{Id.ToString().Truncate(5)}: {Title.Truncate(20)}]-->";
 
-        
+
         public bool Equals(GraphEdge other)
             => Id == other.Id;
 
@@ -86,10 +119,10 @@ namespace Backend
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
-            
+
             return Equals(obj as GraphEdge);
         }
-        
+
         public override int GetHashCode()
             => Id.GetHashCode();
     }
