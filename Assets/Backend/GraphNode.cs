@@ -43,15 +43,6 @@ namespace Backend
 
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
-        public static GraphNode FromJObject(GraphProject project, JObject obj)
-        {
-            string title = (string)obj["title"];
-            string description = (string)obj["description"];
-            string guidText = (string)obj["guid"];
-            Guid guid = Guid.Parse(guidText);
-            List<float> coords = (obj["coordinates"] as JArray).Select(c => (float)c).ToList();
-            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
-        }
 
         public static GraphNode FromJObject(GraphProject project, JObject json)
         {
