@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Collections;
 namespace Backend
 {
     public class GraphProject : IDisposable
@@ -14,31 +14,24 @@ namespace Backend
         {
             ProjectId = (userEmail, projectTitle);
             Database = new DatabaseView(dbUri, dbUsername, dbPassword);
-
-            Nodes = Database.ReadNodesFromProject(this);
-
-            // Commented out; will throw an error because GraphEdge.FromIRelationship
-            // Some edges in the database dont have title, description and id 
-            // TODO fix 
-
-            //Edges = Database.ReadAllEdgesFromProject(ProjectId, Nodes);
-
-            // foreach (var edge in Edges)
-            //     edge.Parent.Edges.Add(edge);
         }
 
-        // constructor using coroutines
-        // public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string dbUri = /* "bolt://localhost:7687" */ "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string dbUsername = "neo4j", string dbPassword = "s3cr3t")
-        // {
-        //     ProjectId = (userEmail, projectTitle);
-        //     Database = new DatabaseView(dbUri, dbUsername, dbPassword);
 
-        //     yield return Database.ReadNodesFromProjectCo(this, processNodes);
-        //     yield return Database.ReadAllEdgesFromProjectCo(this, Nodes, processEdges);
+        public IEnumerator readNodesAndEdges(Action<GraphProject> processReadProject = null)
+        {
+            yield return Database.ReadNodesFromProjectCo(this, processNodes);
+            yield return Database.ReadAllEdgesFromProjectCo(this, Nodes, processEdges);
 
-        //     foreach (var edge in Edges)
-        //         edge.Parent.Edges.Add(edge);
-        // }
+            foreach (var edge in Edges)
+                edge.Parent.Edges.Add(edge);
+
+            if (processReadProject != null)
+            {
+                yield return "proceed to next frame";
+                processReadProject(this);
+            }
+        }
+
 
         private void processNodes(List<GraphNode> nodes)
         {
