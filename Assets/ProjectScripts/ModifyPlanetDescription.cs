@@ -23,7 +23,7 @@ public class ModifyPlanetDescription : MonoBehaviour
             try
             {
                 GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-                attachedNode.UpdateDescription(descriptionEntry);
+                StartCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
                 // inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
             }
             catch(InvalidOperationException)

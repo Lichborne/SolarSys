@@ -281,27 +281,6 @@ namespace Backend
         }
 
         /// <summary> Returns a list of graph nodes representing project titles that linked to the user Email  </summary>
-        public IEnumerator ReadUsersProjectTitlesCo(string userEmail, Action<List<string>> processTitles) // Works!
-        {
-            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
-                $" RETURN project";
-
-            List<Dictionary<string, JToken>> table = null;
-            yield return connection.SendReadTransaction(query, t => table = t);
-
-            List<string> projectTitles = new List<string>();
-            foreach (Dictionary<string, JToken> row in table)
-            {
-                JObject project = row["project"] as JObject;
-                string title = (string)project["title"];
-                projectTitles.Add(title);
-            }
-
-            yield return "waiting for next frame :) the next function might take a while to run lol";
-            processTitles(projectTitles);
-        }
-
 
         public List<String> ReadAllProjectTitlesAttachedToUser(String userEmail)
         {
@@ -321,6 +300,27 @@ namespace Backend
                     return projectTitles;
                 });
             }
+        }
+
+        public IEnumerator ReadAllProjectTitlesAttachedToUserCo(string userEmail, Action<List<string>> processTitles) // Works!
+        {
+            string query = $"MATCH (:USER {{email: '{userEmail}'}}) " +
+                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
+                $" RETURN project";
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<string> projectTitles = new List<string>();
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject project = row["project"] as JObject;
+                string title = (string)project["title"];
+                projectTitles.Add(title);
+            }
+
+            yield return "waiting for next frame :) the next function might take a while to run lol";
+            processTitles(projectTitles);
         }
 
 
@@ -588,6 +588,17 @@ namespace Backend
 
             LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
             MakeAndLogChange(edge.Project, deleteEdgeQuery, logNode);
+        }
+
+        public IEnumerator DestroyEdgeCo(GraphEdge edge)
+        {
+            string deleteEdgeQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
+                $" -[edge :LINK {{guid: '{edge.Id}'}}]-> " +
+                $" (:NODE {{guid: '{edge.Child.Id}'}}) " +
+                $" DELETE edge";
+
+            LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
+            yield return MakeAndLogChangeQueryCo(edge.Project, deleteEdgeQuery, logNode);
         }
 
         private static string DestroyLogHistoryEdgeQuery(GraphProject project)
