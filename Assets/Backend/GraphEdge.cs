@@ -67,11 +67,22 @@ namespace Backend
         public void CreateInDatabase()
             => Project.Database.CreateParentChildRelationship(Parent, this, Child);
 
+        public IEnumerator CreateInDatabaseCo()
+        {
+            yield return Project.Database.CreateParentChildRelationshipCo(Parent, this, Child);
+        }
+
         // Updates the title of the edge, writing change to database
         public void UpdateTitle(string title)
         {
             Title = title;
             Project.Database.UpdateEdgeTitle(this, title);
+        }
+
+        public IEnumerator UpdateTitleCo(string title)
+        {
+            Title = title;
+            yield return Project.Database.UpdateEdgeTitleCo(this, title);
         }
 
         // updates the description of the edge, writing change to database
@@ -81,10 +92,20 @@ namespace Backend
             Project.Database.UpdateEdgeDescription(this, description);
         }
 
+        public IEnumerator UpdateDescriptionCo(string description)
+        {
+            Description = description;
+            yield return Project.Database.UpdateEdgeDescriptionCo(this, description);
+        }
+
         // deletes the edge from the database. does not affect the edge's parent or child.
         public void DeleteFromDatabase()
             => Project.Database.DestroyEdge(this);
 
+        public IEnumerator DeleteFromDatabaseCo() // works
+        {
+            yield return Project.Database.DestroyEdgeCo(this);
+        }
 
         public override string ToString()
             => $"--[{Id.ToString().Truncate(5)}: {Title.Truncate(20)}]-->";
