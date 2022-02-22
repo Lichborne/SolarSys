@@ -39,9 +39,41 @@ namespace Backend
             PathNodes.AddRange(nodes);
         }
         
-        public void Export()
+        // Doesnt actually work yet. Waiting for Rowen + Josh to restructure GraphProject
+        public GraphProject CopyToNewProject(string projectTitle)
         {
-            // TODO
+            // replace this with something sensible
+            GraphProject projectCopy = new GraphProject(userEmail: Project.ProjectId.UserEmail, projectTitle: projectTitle);
+            
+            // creating copies of each old node, keeping track of which old node corresponds to which copy
+            Dictionary<GraphNode, GraphNode> oldNodeToCopy = new Dictionary<GraphNode, GraphNode>();
+
+            foreach (GraphNode oldNode in PathNodes)
+            {
+                (float X, float Y, float Z) coordsCopy = oldNode.Coordinates;
+                GraphNode copy = new GraphNode(Guid.NewGuid(), projectCopy, oldNode.Title, oldNode.Description, coordsCopy);
+                oldNodeToCopy[oldNode] = copy;
+            }
+
+            // going over each edge in each old node
+            // adding a corresponding path copy to the corresponding node copy
+            List<GraphEdge> newEdges = new List<GraphEdge>();
+            foreach (GraphNode oldNode in PathNodes)
+            {
+                foreach (GraphEdge oldEdge in oldNode.Edges)
+                {
+                    GraphNode parentCopy = oldNodeToCopy[oldEdge.Parent];
+                    GraphNode childCopy = oldNodeToCopy[oldEdge.Child];
+                    GraphEdge edgeCopy = new GraphEdge(Guid.NewGuid(), oldEdge.Title, oldEdge.Description, parentCopy, childCopy);   
+
+                    newEdges.Add(edgeCopy);
+                }
+            }
+
+            // TODO: 
+            // set oldNodeToCopy.Values() as projectCopy's graph nodes
+            // set newEdges as projectCopy's list of edges
+            return projectCopy;
         }
     }
 }

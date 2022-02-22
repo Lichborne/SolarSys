@@ -70,6 +70,16 @@ namespace Backend
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
+        public void CreateBlankGraphProject(GraphProject project)
+        {
+            string query = $"MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}})" + 
+                $"MERGE (user) -[:OWNS_PROJECT]-> " + 
+                $"(project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}})";
+            
+            connection.SendWriteTransactions(query);
+        }
+
+        // TODO: Replace CREATE with MERGE!
         public void CreateUnlinkedNode(GraphNode node)
         {
             string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
