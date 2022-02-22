@@ -3,6 +3,9 @@ using System.Linq;
 using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
+using UnityEngine;
+using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace Backend
 {
@@ -14,7 +17,7 @@ namespace Backend
 
         public (float X, float Y, float Z) Coordinates { get; private set; }
 
-        public GraphProject Project {get; private set; }
+        public GraphProject Project { get; private set; }
         public List<GraphEdge> Edges = new List<GraphEdge>();
 
         public GraphNode(Guid id, GraphProject project, string title, string description, (float x, float y, float z) coordinates)
@@ -40,26 +43,53 @@ namespace Backend
 
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
+        public static GraphNode FromJObject(GraphProject project, JObject obj)
+        {
+            string title = (string)obj["title"];
+            string description = (string)obj["description"];
+            string guidText = (string)obj["guid"];
+            Guid guid = Guid.Parse(guidText);
+            List<float> coords = (obj["coordinates"] as JArray).Select(c => (float)c).ToList();
+            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+        }
 
         //  Writes the node, with no edges, to the database
         public void CreateInDatabase()
-            =>  Project.Database.CreateUnlinkedNode(this);
+            => Project.Database.CreateUnlinkedNode(this);
+
+
+        public IEnumerator CreateInDatabaseCo()
+        {
+            yield return Project.Database.CreateUnlinkedNodeCo(this);
+        }
 
         // Adds an extra edge to the node, writing it to the database
         public void AddEdge(GraphEdge edge)
         {
             Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
             Edges.Add(edge);
-        }       
+        }
+
+        public IEnumerator AddEdgeCo(GraphEdge edge) // works
+        {
+            yield return Project.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
+            Edges.Add(edge);
+        }
 
         // Removes the edge from the node. DOES NOT WRITE TO DATABASE YET
         public void RemoveEdge(GraphEdge edge)
             => Edges.Remove(edge);
-        
+
 
         public void UpdateTitle(string title)
         {
             Project.Database.UpdateNodeTitle(this, title);
+            Title = title;
+        }
+
+        public IEnumerator UpdateTitleCo(string title) // Works!
+        {
+            yield return Project.Database.UpdateNodeTitleCo(this, title);
             Title = title;
         }
 
@@ -69,16 +99,34 @@ namespace Backend
             Description = description;
         }
 
+        public IEnumerator UpdateDescriptionCo(string description) // Works!
+        {
+            yield return Project.Database.UpdateNodeDescriptionCo(this, description);
+            Description = description;
+
+        }
+
         public void UpdateCoordinates((float x, float y, float z) coordinates)
         {
             Project.Database.UpdateNodeCoordinates(this, coordinates);
             Coordinates = coordinates;
         }
 
+        public IEnumerator UpdateCoordinatesCo((float x, float y, float z) coordinates) // Works!
+        {
+            yield return Project.Database.UpdateNodeCoordinatesCo(this, coordinates);
+            Coordinates = coordinates;
+        }
+
         // deletes the node from the database. does not affect the node's edges or children
         public void DeleteFromDatabase()
             => Project.Database.DestroyNode(this);
-        
+
+        public IEnumerator DeleteFromDatabaseCo() // works
+        {
+            yield return Project.Database.DestroyNodeCo(this);
+        }
+
 
         public override string ToString()
             => $"({Id.ToString().Truncate(5)}: {Title.Truncate(20)})";
@@ -90,10 +138,10 @@ namespace Backend
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
-            
+
             return Equals(obj as GraphNode);
         }
-        
+
         public override int GetHashCode()
             => Id.GetHashCode();
     }

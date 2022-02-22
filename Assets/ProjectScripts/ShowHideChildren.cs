@@ -12,8 +12,6 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject savedProjects;
     public GameObject savedPathViews;
     public GameObject createNewGraphPopUp;
-    public GameObject savedGraphsButtonPanel;
-    public GameObject LoginPanel;
    
    
     public void Toggle_infoDisplay()
@@ -85,30 +83,6 @@ public class ShowHideChildren : MonoBehaviour
         else 
         {
             createNewGraphPopUp.SetActive(true);
-        }
-    }
-
-    public void Toggle_SavedGraphsButtonPanel()
-    {
-        if (savedGraphsButtonPanel.activeSelf == true) 
-        {
-            savedGraphsButtonPanel.SetActive(false);
-        }
-        else 
-        {
-            savedGraphsButtonPanel.SetActive(true);
-        }
-    }
-
-    public void Toggle_LoginPanel()
-    {
-        if (LoginPanel.activeSelf == true) 
-        {
-            LoginPanel.SetActive(false);
-        }
-        else 
-        {
-            LoginPanel.SetActive(true);
         }
     }
 

@@ -30,6 +30,9 @@ namespace Backend
             this.password = password;
         }
 
+        public IEnumerator SendWriteTransactions(List<string> queries)
+            => SendWriteTransactions(queries.ToArray());
+
         public IEnumerator SendWriteTransactions(params string[] queries)
         {
             string transactionUrl = $"http://{databaseUrl}:{portNumber}/db/{databaseName}/tx/";  // will need to end with transaction # after query starts
