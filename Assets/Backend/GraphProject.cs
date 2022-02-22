@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using System.Collections;
 namespace Backend
 {
@@ -19,12 +20,15 @@ namespace Backend
             Database = new DatabaseView(dbUri, dbUsername, dbPassword);
         }
 
-
         public IEnumerator readNodesAndEdges(Action<GraphProject> processReadProject = null)
         {
+            // Read in nodes and edges and process a graph project
             yield return Database.ReadNodesFromProjectCo(this, processNodes);
             yield return Database.ReadAllEdgesFromProjectCo(this, Nodes, processEdges);
 
+            // foreach( var node in Nodes){
+            //     Debug.Log("My Nodes " + node); 
+            // }
             foreach (var edge in Edges)
                 edge.Parent.Edges.Add(edge);
 

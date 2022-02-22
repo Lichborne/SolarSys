@@ -28,11 +28,15 @@ public class LoadGraph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(graph.readNodesAndEdges(displayProject));
+    }
 
-        foreach (GraphNode node in graph.Nodes) {
+    public void displayProject(GraphProject graphProject)
+    {
+        foreach (GraphNode node in graphProject.Nodes) {
             
             Vector3 pos = new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z);
-
+            // Debug.Log(node.Title);
             //custom cosntructors to initialize game obejcts are ill-advised in unity; so initialization is separated
             // into default cosntruction and initialization either via the start method or in imm. succession.
                         
@@ -44,7 +48,7 @@ public class LoadGraph : MonoBehaviour
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
         // remember to add self-reference.
        
-        foreach (GraphEdge databaseEdge in graph.Edges) {
+        foreach (GraphEdge databaseEdge in graphProject.Edges) {
             bool isCurvedEdge = false;
             int parentIndex = (graph.Nodes).IndexOf(databaseEdge.Parent);
             int childIndex = (graph.Nodes).IndexOf(databaseEdge.Child);
@@ -79,6 +83,6 @@ public class LoadGraph : MonoBehaviour
             graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
             graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);
             graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
-        }   
+        }
     }
 }
