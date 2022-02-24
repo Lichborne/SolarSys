@@ -52,14 +52,7 @@ public class SavedProjects : MonoBehaviour
         // AddProject(project11, savedProjectContainer, savedProjectsPanel);
         // AddProject(project12, savedProjectContainer, savedProjectsPanel);
 
-        //  //for now put this in contructor, just to test
-        // string pathView1 = "PathView1";
-        // string pathView2 = "PathView2";
-        // string pathView3 = "PathView3";
-        // AddPathView(pathView1);
-        // AddPathView(pathView2);
-        // AddPathView(pathView3);
-        // RefreshSavedGraphs(pathViewList, savedPathContainer, savedPathViewsPanel, pathViewText); 
+
 
         // Adding my own Coroutine code
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
