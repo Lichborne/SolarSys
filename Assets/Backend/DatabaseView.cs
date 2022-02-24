@@ -241,12 +241,12 @@ namespace Backend
         {
             string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
                 $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
-                $" -[*]->(node :NODE) " +
+                $" -[:CONTAINS]->(node :NODE) " +
                 $" RETURN node";
 
+            Debug.Log($"ReadNodesFromProjectCo() Running query \n{query}");
             List<Dictionary<string, JToken>> table = null;
             yield return connection.SendReadTransaction(query, t => table = t);
-
             List<GraphNode> nodes = new List<GraphNode>();
             foreach (Dictionary<string, JToken> row in table)
             {

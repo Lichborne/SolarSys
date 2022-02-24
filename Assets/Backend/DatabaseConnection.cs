@@ -91,6 +91,33 @@ namespace Backend
             processEntries(entries);
         }
 
+        private static bool ContainsSameElements(IEnumerable<string> first, IEnumerable<string> second)
+        {
+            if (first.Count() != second.Count()) 
+                return false;
+            
+            return first.All(f => second.Contains(f));
+        }
+        
+        // maybe make this a coroutine if it takes too long
+        /*
+        private static bool RowInResponseTable(List<Ditionary<string, JToken>> table, Dictionary<string, JToken> rowToLookFor)
+        {
+            IEnumerable<string> keysToLookFor = rowToLookFor.Keys();
+            IEnumerable<string> jsonToLookFor = rowToLookFor.Values().Select(json => json.ToString());
+
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                if (!ContainsSameElements(row.Keys(), keysToLookFor))
+                    return false;
+                
+                if (!ContainsSameElements(row.Values().Select(jtoken => jtoken.ToString()), jsonToLookFor))
+                    return false;
+            }
+
+            return true;
+        } */
+
         private static List<Dictionary<string, JToken>> EntriesFromReadResponse(JObject response)
         {
             /* response is of the form 
