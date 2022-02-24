@@ -5,10 +5,11 @@ using UnityEngine;
 public class DeactivateCamera : MonoBehaviour{
 
     public MonoBehaviour DisableScript;
-    public void toggleCamera()
+
+    void Start()
     {
-        DisableScript.enabled = !DisableScript.enabled;
-    }    
+        DisableScript.enabled = false;
+    }
     
     public void activateCamera()
     {
