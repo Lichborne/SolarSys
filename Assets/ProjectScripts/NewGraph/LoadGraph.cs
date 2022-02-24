@@ -79,6 +79,10 @@ public class LoadGraph : MonoBehaviour
 
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, _textObject, graphNodes[parentIndex], graphNodes[childIndex], 90);
 
+            //two lines of Olivia's code, if inefficient can refactor later
+            edgeObject.GetComponent<StoreParentChild>().parent = graphNodes[parentIndex];
+            edgeObject.GetComponent<StoreParentChild>().child = graphNodes[childIndex];
+
             graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(graphNodes[childIndex]);
             graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
             graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);

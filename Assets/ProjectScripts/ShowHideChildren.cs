@@ -12,6 +12,7 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject savedProjects;
     public GameObject savedPathViews;
     public GameObject createNewGraphPopUp;
+    public GameObject createNewPathViewPopUp;
     public GameObject savedGraphsButtonPanel;
     public GameObject LoginPanel;
    
@@ -85,6 +86,18 @@ public class ShowHideChildren : MonoBehaviour
         else 
         {
             createNewGraphPopUp.SetActive(true);
+        }
+    }
+
+    public void Toggle_CreateNewPathViewPopUp()
+    {
+        if (createNewPathViewPopUp.activeSelf == true) 
+        {
+            createNewPathViewPopUp.SetActive(false);
+        }
+        else 
+        {
+            createNewPathViewPopUp.SetActive(true);
         }
     }
 
