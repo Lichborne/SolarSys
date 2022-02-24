@@ -89,10 +89,10 @@ public class LoadGraph : MonoBehaviour
             graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
         }
     }
-    
+    /*
     public void displayPath(GraphProject graphProject, int pathno)
     {
-        pathToLoad = graphProject.Paths[pathno]
+        PathRoot pathToLoad = graphProject.Paths[pathno];
 
         foreach (GraphNode node in pathToLoad.Nodes) {
             
@@ -100,7 +100,7 @@ public class LoadGraph : MonoBehaviour
             // Debug.Log(node.Title);
             //custom cosntructors to initialize game obejcts are ill-advised in unity; so initialization is separated
             // into default cosntruction and initialization either via the start method or in imm. succession.
-                        
+
             GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
             nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(node);
             ChangeText.ChangeInputFieldText(nodeObject, node.Title);
@@ -150,4 +150,5 @@ public class LoadGraph : MonoBehaviour
             graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
         }
     }
+    */
 }
