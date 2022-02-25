@@ -11,11 +11,16 @@ using Newtonsoft.Json.Linq;
 
 public class AuthenticateUser : MonoBehaviour
 {
+    public GameObject savedGraphsButtonPanel;
+    public GameObject loginPanel;
+    public GameObject errorMessage;
+
+
     string authServer = "https://api-materials.doc.ic.ac.uk/auth/login";
     private IEnumerator coroutine;
 
     // Start is called before the first frame update
-    void authenticate(){
+    public void authenticate(){
         GameObject signInBox = gameObject.transform.parent.gameObject;
         Debug.Log($"Running auth for {signInBox.name}");
 
@@ -39,9 +44,15 @@ public class AuthenticateUser : MonoBehaviour
         {
             case 200:
                 // Do successful
+                errorMessage.SetActive(false);
+                loginPanel.SetActive(false);
+                savedGraphsButtonPanel.SetActive(true);
+                Camera.main.GetComponent<DeactivateCamera>().activateCamera();
                 break;
             case 401:
                 // Do not successful
+                errorMessage.SetActive(true);
+
                 break;
             default:
                 throw new Exception($"Unexpected https return code {code}");
