@@ -20,7 +20,7 @@ namespace Backend
 
         public List<GraphEdge> Edges { get; private set; } = new List<GraphEdge>();
 
-        public bool IsLoaded { get => Nodes.Any() && Edges.Any(); }
+        public bool IsEmpty { get => !Nodes.Any(); }
 
         public PathRoot(GraphProject project, Guid id, string title, string description)
         {

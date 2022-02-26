@@ -15,7 +15,7 @@ namespace Backend
 
         public List<GraphEdge> Edges { get; }
 
-        public bool IsLoaded { get; }
+        public bool IsEmpty { get; }
 
         public IEnumerator CreateInDatabase();
     }

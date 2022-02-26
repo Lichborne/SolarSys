@@ -11,7 +11,7 @@ namespace Backend
     {
         public string Email { get; private set; }
         public List<GraphProject> Projects = new List<GraphProject>();
-        public DatabaseView Database = new DatabaseView();
+        public DatabaseView Database { get; private set; } = new DatabaseView();
 
         public bool IsEmpty { get => !Projects.Any(); }
 

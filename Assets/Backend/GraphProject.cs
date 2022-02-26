@@ -13,7 +13,7 @@ namespace Backend
         public List<GraphNode> Nodes { get; private set; } = new List<GraphNode>();
         public List<GraphEdge> Edges { get; private set; }  = new List<GraphEdge>();
         public List<PathRoot> Paths { get; private set; } = new List<PathRoot>();
-        public bool IsLoaded { get => Nodes.Any() && Edges.Any(); }
+        public bool IsEmpty { get => !Nodes.Any(); }
         public GraphUser User { get; private set; }
 
         public GraphProject(GraphUser user, Guid id, string title)
