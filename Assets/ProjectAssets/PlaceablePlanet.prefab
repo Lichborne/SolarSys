@@ -284,6 +284,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4974278123316600405}
     m_Modifications:
+    - target: {fileID: 160521788419277897, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931259458905239973, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
+      propertyPath: m_text
+      value: New Node
+      objectReference: {fileID: 0}
     - target: {fileID: 2568904994686941123, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -375,6 +383,14 @@ PrefabInstance:
     - target: {fileID: 6545745962490359873, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8920892291364112124, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
+      propertyPath: m_Name
+      value: Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 9145061698792973242, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}
+      propertyPath: m_Name
+      value: Alt
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1bb212f3941ed94aa0b4c0077b63362, type: 3}

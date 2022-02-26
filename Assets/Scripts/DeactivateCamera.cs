@@ -15,4 +15,9 @@ public class DeactivateCamera : MonoBehaviour{
     {
         DisableScript.enabled = true;
     }
+
+    public void toggleCamera()
+    {
+        DisableScript.enabled = !DisableScript.enabled;
+    }
 }

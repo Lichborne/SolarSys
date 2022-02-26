@@ -75,10 +75,10 @@ namespace Backend
 
         private IEnumerator MakeAndLogChangeQueryCo(GraphProject project, string changeQuery, LogNode logNode)
         {
-            Console.WriteLine($"Making change {changeQuery}");
+            Debug.Log($"Making change {changeQuery}");
             Guid headLogNodeId = Guid.Empty;
             yield return GetHeadLogNodeIdCo(project, t => headLogNodeId = t);
-
+           
             List<String> queries = new List<String>();
 
             if (headLogNodeId == Guid.Empty)
@@ -397,10 +397,18 @@ namespace Backend
 
             List<Dictionary<string, JToken>> table = null;
             yield return connection.SendReadTransaction(query, t => table = t);
+            if (table.Any())
+            {
+                JObject headLogNode = table.First()["node"] as JObject;
+                var guidString = (string)headLogNode["guid"];
+                processGuid(Guid.Parse(guidString));
+            }
+            else
+            {
+                var guidEmpty = Guid.Empty;
+                processGuid(guidEmpty);
+            }
 
-            JObject headLogNode = table.First()["node"] as JObject;
-            var guidString = (string)headLogNode["guid"];
-            processGuid(Guid.Parse(guidString));
         }
 
         /// <summary> Returns a list of all parent -> child edges from `allNodes`. Does not link nodes passed in. </summary>
@@ -586,7 +594,7 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.coordinates = [{coordinates.x}, {coordinates.y}, {coordinates.z}]";
 
-
+            // Debug.Log("query = " + query);
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
