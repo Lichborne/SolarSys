@@ -3,34 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.Collections;
+using Newtonsoft.Json.Linq;
 namespace Backend
 {
-    public class GraphProject : IDisposable
+    public class GraphProject : IGraphRegion
     {
-        public List<GraphNode> Nodes = new List<GraphNode>();
-        public List<GraphEdge> Edges = new List<GraphEdge>();
-        public (string UserEmail, string ProjectTitle) ProjectId { get; private set; }
-        public DatabaseView Database { get; private set; }
-
+        public Guid Id { get; private set; }
+        public string Title { get; private set; }
+        public List<GraphNode> Nodes { get; private set; } = new List<GraphNode>();
+        public List<GraphEdge> Edges { get; private set; }  = new List<GraphEdge>();
+        public List<PathRoot> Paths { get; private set; } = new List<PathRoot>();
+        public bool IsLoaded { get => Nodes.Any() && Edges.Any(); }
         public GraphUser User { get; private set; }
 
-        public GraphProject(string userEmail = "foo.bar@doc.ic.ac.uk", string projectTitle = "Test Project", string dbUri = "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string dbUsername = "neo4j", string dbPassword = "s3cr3t")
+        public GraphProject(GraphUser user, Guid id, string title)
         {
-            ProjectId = (userEmail, projectTitle);
-            Database = new DatabaseView(dbUri, dbUsername, dbPassword);
+            User = user;
+            Id = id;
+            Title = title;
         }
 
-        public IEnumerator readNodesAndEdges(Action<GraphProject> processReadProject = null)
+        // Please pass in the user instead!!
+        public GraphProject(string title) :
+            this(new GraphUser("foo.bar@doc.ic.ac.uk"), Guid.NewGuid(), title)
+        { }
+
+        public GraphProject(GraphUser user, string title) : 
+            this(user, Guid.NewGuid(), title)
+        { }
+
+        // Reads nodes, edges and paths from database
+        public IEnumerator ReadFromDatabase(Action<GraphProject> processReadProject = null)
         {
             // Read in nodes and edges and process a graph project
-            yield return Database.ReadNodesFromProjectCo(this, processNodes);
-            yield return Database.ReadAllEdgesFromProjectCo(this, Nodes, processEdges);
+            yield return User.Database.ReadNodesFromProjectCo(this, nodesRead => Nodes = nodesRead);
+            yield return User.Database.ReadEdgesBetweenNodesCo(this, Nodes, edgesRead => Edges = edgesRead);
 
-            // foreach( var node in Nodes){
-            //     Debug.Log("My Nodes " + node); 
-            // }
             foreach (var edge in Edges)
                 edge.Parent.Edges.Add(edge);
+
+            yield return User.Database.ReadEmptyPathRoots(this, pathsRead => Paths = pathsRead);
 
             if (processReadProject != null)
             {
@@ -39,27 +51,12 @@ namespace Backend
             }
         }
 
-
-        private void processNodes(List<GraphNode> nodes)
+        public static GraphProject FromJObject(GraphUser user, JObject json)
         {
-            Nodes = nodes;
+            string guidString = (string) json["guid"];
+            string title = (string) json["title"];
+            return new GraphProject(user, Guid.Parse(guidString), title);
         }
-
-        private void processEdges(List<GraphEdge> edges)
-        {
-            Edges = edges;
-        }
-
-        // DO NOT use this unless you know what you're doing !!!
-        public GraphProject(GraphUser user, List<GraphNode> nodes, List<GraphEdge> edges) 
-        {
-            User = user;
-            Nodes = nodes;
-            Edges = edges;
-        }
-
-        public void Dispose()
-            => Database.Dispose();
 
         public void AddRelation(GraphNode parent, GraphEdge edge)
         {
@@ -68,15 +65,15 @@ namespace Backend
             // write all this to database
         }
 
-        public void CreateInDatabase()
+        public IEnumerator CreateInDatabase()
         {
-            Database.CreateBlankGraphProject(this);
+            yield return User.Database.CreateBlankGraphProject(this);
 
             foreach (GraphNode node in Nodes)
-                node.CreateInDatabase();
+                yield return node.CreateInDatabase();
             
             foreach (GraphEdge edge in Edges)
-                edge.CreateInDatabase();
+                yield return edge.CreateInDatabase();
         }
     }
 }

@@ -98,32 +98,32 @@ namespace Backend
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
-        public void CreateBlankGraphProject(GraphProject project)
+        public IEnumerable CreateBlankGraphProject(GraphProject project)
         {
-            string query = $"MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}})" + 
+            string query = $"MATCH (user :USER {{email: '{project.User.Email}'}})" + 
                 $"MERGE (user) -[:OWNS_PROJECT]-> " + 
-                $"(project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}})";
+                $"(project_root :PROJECT_ROOT {{title: '{project.Title}'}})";
             
-            connection.SendWriteTransactions(query);
+            yield return connection.SendWriteTransactions(query);
         }
 
         // TODO: Replace CREATE with MERGE!
-        public void CreateUnlinkedNode(GraphNode node)
+        public IEnumerator CreateUnlinkedNode(GraphNode node)
         {
-            string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
-                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectId.ProjectTitle}'}}) " +
+            string query = $" MATCH (:USER {{email: '{node.Project.User.Email}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.Title}'}}) " +
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
-            MakeAndLogChange(node.Project, query, logNode);
+            yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
         public IEnumerator CreateUnlinkedNodeCo(GraphNode node)
         {
-            string query = $" MATCH (:USER {{email: '{node.Project.ProjectId.UserEmail}'}}) " +
-                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.ProjectId.ProjectTitle}'}}) " +
+            string query = $" MATCH (:USER {{email: '{node.Project.User.Email}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.Title}'}}) " +
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
@@ -135,8 +135,8 @@ namespace Backend
 
         /// <summary> Writes to the database a log node that is linked to a project, but not linked to other log nodes </summary>
         private static string CreateUnlinkedLogNodeQuery(GraphProject project, LogNode node)
-            => $" MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            => $" MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                            $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.Title}'}}) " +
                             $" CREATE (project_root) -[:LOG_HISTORY]-> " +
                             $" (:LOG_NODE {{guid: '{node.Id}', change: '{node.Change}', body: '{node.Body}', timestamp: '{node.TimeStamp}'}})";
 
@@ -205,8 +205,8 @@ namespace Backend
 
         public IEnumerator CreateBlankPathRoot(GraphProject project, PathRoot path)
         {
-            string query = $" MATCH (user :USER {{email: '{project.ProjectId.UserEmail}'}}) " + 
-                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " + 
+            string query = $" MATCH (user :USER {{email: '{project.User.Email}'}}) " + 
+                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.Title}'}}) " + 
                 $"MERGE (project_root) -[:HAS_PATH]-> " + 
                 $" (path_root :PATH_ROOT {{guid: '{path.Id}', title: '{path.Title}', description: '{path.Description}'}})";
             
@@ -217,8 +217,8 @@ namespace Backend
         /// <summary> Returns a list of unlinked nodes from project with title `projectTitle`, owned by user with email `userEmail` </summary>
         public List<GraphNode> ReadNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 $" -[:CONTAINS]->(node :NODE) " +
                 $" RETURN node";
 
@@ -239,12 +239,11 @@ namespace Backend
 
         public IEnumerator ReadNodesFromProjectCo(GraphProject project, Action<List<GraphNode>> processGraphNodes) // works
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 $" -[:CONTAINS]->(node :NODE) " +
                 $" RETURN node";
 
-            Debug.Log($"ReadNodesFromProjectCo() Running query \n{query}");
             List<Dictionary<string, JToken>> table = null;
             yield return connection.SendReadTransaction(query, t => table = t);
             List<GraphNode> nodes = new List<GraphNode>();
@@ -259,8 +258,8 @@ namespace Backend
         /// <summary> Returns a list of log nodes linked to `projectTitle`, owned by user with email `userEmail` </summary>
         public List<LogNode> ReadLogNodesFromProject(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 $" -[:LOG_HISTORY]->(node :LOG_NODE) " +
                 $" RETURN node";
 
@@ -281,8 +280,8 @@ namespace Backend
 
         public IEnumerator ReadLogNodesFromProjectCo(GraphProject project, Action<List<LogNode>> processLogNodes) // works
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 $" -[*]->(node :LOG_NODE) " +
                 $" RETURN node";
 
@@ -342,11 +341,31 @@ namespace Backend
             processTitles(projectTitles);
         }
 
+        public IEnumerator ReadAllEmptyProjects(GraphUser user, Action<List<GraphProject>> processGraphProjects) // Works!
+        {
+            string query = $"MATCH (:USER {{email: '{user.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (project:PROJECT_ROOT) " +
+                $" RETURN project";
+
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, t => table = t);
+
+            List<GraphProject> projects = new List<GraphProject>();
+            foreach (Dictionary<string, JToken> row in table)
+            {
+                JObject projectJson = row["project"] as JObject;
+                projects.Add(GraphProject.FromJObject(user, projectJson));
+            }
+
+            yield return "waiting for next frame :) the next function might take a while to run lol";
+            processGraphProjects(projects);
+        }
+
 
         public Guid GetHeadLogNodeId(GraphProject project)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                             "-[:LOG_HISTORY]-> (node) RETURN node";
 
             using (var session = _driver.Session())
@@ -372,8 +391,8 @@ namespace Backend
 
         public IEnumerator GetHeadLogNodeIdCo(GraphProject project, Action<Guid> processGuid)
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                            $"-[:OWNS_PROJECT]->(:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                             "-[:LOG_HISTORY]-> (node) RETURN node";
 
             List<Dictionary<string, JToken>> table = null;
@@ -419,30 +438,51 @@ namespace Backend
             });
         }
 
-        public IEnumerator ReadGraphNodesInPath(PathRoot path, Action<List<GraphNode>> processGraphNodes)
+        public IEnumerator ReadNodeIdsInPath(PathRoot path, Action<List<Guid>> processNodeIds)
         {
             string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})" +
                 $"-[:VIEWS]-> (node :NODE)" + 
-                $"RETURN node";
+                $"RETURN node.guid as guid";
             
-            List<GraphNode> graphNodes = new List<GraphNode>();
+            List<Guid> nodeIds = new List<Guid>();
             yield return connection.SendReadTransaction(query, table => 
             {
                 foreach (Dictionary<string, JToken> row in table)
                 {
-                    JObject json = row["node"] as JObject;
-                    graphNodes.Add(GraphNode.FromJObject(path.Project, json));
+                    string guidString = (string) row["guid"];
+                    nodeIds.Add(Guid.Parse(guidString));
                 }
             });
 
             yield return "waiting for next frame :)";
-            processGraphNodes(graphNodes);
+            processNodeIds(nodeIds);
+        }
+
+        // reads a list of POPULATED path roots
+        public IEnumerator ReadEmptyPathRoots(GraphProject project, Action<List<PathRoot>> processPathRoots)
+        {
+            string query = $"MATCH (project_root :PROJECT_ROOT {{guid: '{project.Id}'}})" + 
+                $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " + 
+                $"RETURN path_root";
+            
+            List<PathRoot> pathRoots = new List<PathRoot>();
+            yield return connection.SendReadTransaction(query, table => 
+            {
+                foreach (Dictionary<string, JToken> row in table)
+                {
+                    JObject pathRootJson = row["path_root"] as JObject;
+                    pathRoots.Add(PathRoot.FromJObject(project, pathRootJson));
+                }
+            });
+
+            yield return "waiting for next frame :)";
+            processPathRoots(pathRoots);
         }
         
-        public IEnumerator ReadAllEdgesFromProjectCo(GraphProject project, List<GraphNode> allNodes, Action<List<GraphEdge>> processGraphEdges) // works
+        public IEnumerator ReadEdgesBetweenNodesCo(GraphProject project, List<GraphNode> allNodes, Action<List<GraphEdge>> processGraphEdges) // works
         {
-            string query = $"MATCH (:USER {{email: '{project.ProjectId.UserEmail}'}}) " +
-                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
+                $" -[:OWNS_PROJECT]-> (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 $" -[:CONTAINS]->(parent :NODE) -[edge :LINK]-> (child :NODE) " +
                 $" RETURN parent, edge, child";
 
@@ -650,7 +690,7 @@ namespace Backend
         }
 
         private static string DestroyLogHistoryEdgeQuery(GraphProject project)
-            => $"MATCH ({{title: '{project.ProjectId.ProjectTitle}'}}) " +
+            => $"MATCH ({{title: '{project.Title}'}}) " +
                 " -[r:LOG_HISTORY]->(n) " +
                 " DELETE r";
 

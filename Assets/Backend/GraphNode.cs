@@ -57,25 +57,25 @@ namespace Backend
         }
 
         //  Writes the node, with no edges, to the database
-        public void CreateInDatabase()
-            => Project.Database.CreateUnlinkedNode(this);
+        public IEnumerator CreateInDatabase()
+            => Project.User.Database.CreateUnlinkedNode(this);
 
 
         public IEnumerator CreateInDatabaseCo()
         {
-            yield return Project.Database.CreateUnlinkedNodeCo(this);
+            yield return Project.User.Database.CreateUnlinkedNodeCo(this);
         }
 
         // Adds an extra edge to the node, writing it to the database
         public void AddEdge(GraphEdge edge)
         {
-            Project.Database.CreateParentChildRelationship(this, edge, edge.Child);
+            Project.User.Database.CreateParentChildRelationship(this, edge, edge.Child);
             Edges.Add(edge);
         }
 
         public IEnumerator AddEdgeCo(GraphEdge edge) // works
         {
-            yield return Project.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
+            yield return Project.User.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
             Edges.Add(edge);
         }
 
@@ -86,48 +86,48 @@ namespace Backend
 
         public void UpdateTitle(string title)
         {
-            Project.Database.UpdateNodeTitle(this, title);
+            Project.User.Database.UpdateNodeTitle(this, title);
             Title = title;
         }
 
         public IEnumerator UpdateTitleCo(string title) // Works!
         {
-            yield return Project.Database.UpdateNodeTitleCo(this, title);
+            yield return Project.User.Database.UpdateNodeTitleCo(this, title);
             Title = title;
         }
 
         public void UpdateDescription(string description)
         {
-            Project.Database.UpdateNodeDescription(this, description);
+            Project.User.Database.UpdateNodeDescription(this, description);
             Description = description;
         }
 
         public IEnumerator UpdateDescriptionCo(string description) // Works!
         {
-            yield return Project.Database.UpdateNodeDescriptionCo(this, description);
+            yield return Project.User.Database.UpdateNodeDescriptionCo(this, description);
             Description = description;
 
         }
 
         public void UpdateCoordinates((float x, float y, float z) coordinates)
         {
-            Project.Database.UpdateNodeCoordinates(this, coordinates);
+            Project.User.Database.UpdateNodeCoordinates(this, coordinates);
             Coordinates = coordinates;
         }
 
         public IEnumerator UpdateCoordinatesCo((float x, float y, float z) coordinates) // Works!
         {
-            yield return Project.Database.UpdateNodeCoordinatesCo(this, coordinates);
+            yield return Project.User.Database.UpdateNodeCoordinatesCo(this, coordinates);
             Coordinates = coordinates;
         }
 
         // deletes the node from the database. does not affect the node's edges or children
         public void DeleteFromDatabase()
-            => Project.Database.DestroyNode(this);
+            => Project.User.Database.DestroyNode(this);
 
         public IEnumerator DeleteFromDatabaseCo() // works
         {
-            yield return Project.Database.DestroyNodeCo(this);
+            yield return Project.User.Database.DestroyNodeCo(this);
         }
 
 

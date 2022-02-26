@@ -87,11 +87,10 @@ public class SavedProjects : MonoBehaviour
     public void CreateProjectButtonClicked()
     {
         createNewProjectPanel.SetActive(false);
-        AddProject(newProjectName.GetComponent<TMP_InputField>().text, savedProjectContainer, savedProjectsContent);
-
-        //Add code here to add a new blank project with given title
+        string projectTitle = newProjectName.GetComponent<TMP_InputField>().text;
+        AddProject(projectTitle, savedProjectContainer, savedProjectsContent);
+        
+        GraphProject newProject = new GraphProject(projectTitle);
+        StartCoroutine(newProject.CreateInDatabase());
     }
-
-
-    
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Neo4j.Driver;
+using System.Collections;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
 
@@ -8,28 +9,39 @@ namespace Backend
 {
     public class GraphUser 
     {
-        public String userEmail {get; private set;}
-        
-        public List<GraphProject> userGraphProjects = new List<GraphProject>();
+        public string Email { get; private set; }
+        public List<GraphProject> Projects = new List<GraphProject>();
+        public DatabaseView Database = new DatabaseView();
 
-        private List<String> projectTitles = new List<String>();
-        public GraphUser(String userEmail, string dbUri = /* "bolt://localhost:7687" */ "neo4j://cloud-vm-42-36.doc.ic.ac.uk:7687", string dbUsername = "neo4j", string dbPassword = "s3cr3t")
+        public bool IsEmpty { get => !Projects.Any(); }
+
+        public GraphUser(string email = "foo.bar@doc.ic.ac.uk")
         {
-            this.userEmail = userEmail;
-            var Database = new DatabaseView(dbUri, dbUsername, dbPassword);
-            var projectTitles = Database.ReadAllProjectTitlesAttachedToUser(userEmail);
+            this.Email = email;
         }
 
+        // Reads in title and ID of each graph project into Projects, but leaves them empty (does not load the nodes or edges)
+        // Each empty project can then be read in by starting the coroutine Projects[i].ReadFromDatabase()
+        public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
+        {
+            yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
+            if (processUser != null)
+            {
+                yield return "waiting for next frame :)";
+                processUser(this);
+            }
+        }
+        /*
         public List<GraphProject> returnProjectsWithTitle(List<String> projectTitles)
         {
             List<GraphProject> projects = new List<GraphProject>();
             foreach (var projectTitle in projectTitles)
             {
-                GraphProject newGraphProject = new GraphProject(userEmail, projectTitle);
+                GraphProject newGraphProject = new GraphProject(Email, projectTitle);
                 projects.Add(newGraphProject);
-                userGraphProjects.Add(newGraphProject); // Store in class as well for future access
+                Projects.Add(newGraphProject); // Store in class as well for future access
             }
             return projects;
-        }
+        } */
     }
 }

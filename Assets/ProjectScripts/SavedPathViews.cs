@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Backend;
 
 public class SavedPathViews : MonoBehaviour
 {
@@ -11,9 +12,6 @@ public class SavedPathViews : MonoBehaviour
     public Transform savedPathViewContainer;
     public GameObject newPathViewName;
     public GameObject createNewPathViewPanel;
-
-
-
 
     void Start()
     {
@@ -41,7 +39,7 @@ public class SavedPathViews : MonoBehaviour
     }
 
     //not sure how to implement this, need to get which button is clicked, find its parent container and get it's child text component
-    public void LoadPathViewsForProject(string pathViewTitle) {
+    public void LoadPathViewsForProject(string pathViewTitle, GraphProject project) {
 
     }
     
@@ -77,5 +75,13 @@ public class SavedPathViews : MonoBehaviour
         // {   
           
         // }
+
+        // PathRoot path = new PathRoot(graphProject, "title of the path", "path description");
+        // foreach (GraphNode node in ...) // for each graph node you want to add to the path
+        // {  
+        //     path.AddNode(node); // adding the graph node
+        // }
+
+        // StartCoroutine(path.CreateInDatabase()); // saving the project to the database
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UI;
 using TMPro;
 
@@ -19,7 +20,7 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _textObject;
 
-    private Backend.GraphProject graph = new Backend.GraphProject();
+    private Backend.GraphProject graph = null;
 
     private List<GameObject> graphNodes = new List<GameObject>();
 
@@ -28,9 +29,15 @@ public class LoadGraph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(graph.readNodesAndEdges(displayProject));
+        string projectTitle = "Test Project";
+        graph = new GraphProject(projectTitle);
+        // graphProject.Paths will give you all the PathRoots in the GraphProject
+        StartCoroutine(graph.ReadFromDatabase(displayProject));
+
+        // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
     }
 
+    // graphProject.readNodesAndEdges will call this function when it has finished loading from database
     public void displayProject(GraphProject graphProject)
     {
         foreach (GraphNode node in graphProject.Nodes) {
@@ -50,8 +57,8 @@ public class LoadGraph : MonoBehaviour
        
         foreach (GraphEdge databaseEdge in graphProject.Edges) {
             bool isCurvedEdge = false;
-            int parentIndex = (graph.Nodes).IndexOf(databaseEdge.Parent);
-            int childIndex = (graph.Nodes).IndexOf(databaseEdge.Child);
+            int parentIndex = graphProject.Nodes.IndexOf(databaseEdge.Parent);
+            int childIndex = graphProject.Nodes.IndexOf(databaseEdge.Child);
 
             UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
 
