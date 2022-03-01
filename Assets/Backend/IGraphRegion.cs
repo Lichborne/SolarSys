@@ -18,5 +18,7 @@ namespace Backend
         public bool IsEmpty { get; }
 
         public IEnumerator CreateInDatabase();
+
+        public IEnumerator ReadFromDatabase(Action<IGraphRegion> processGraphRegion);
     }
 }

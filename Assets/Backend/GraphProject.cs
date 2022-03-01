@@ -33,9 +33,8 @@ namespace Backend
         { }
 
         // Reads nodes, edges and paths from database
-        public IEnumerator ReadFromDatabase(Action<GraphProject> processReadProject = null)
+        private IEnumerator ReadSelfFromDatabase()
         {
-            // Read in nodes and edges and process a graph project
             yield return User.Database.ReadNodesFromProjectCo(this, nodesRead => Nodes = nodesRead);
             yield return User.Database.ReadEdgesBetweenNodesCo(this, Nodes, edgesRead => Edges = edgesRead);
 
@@ -43,11 +42,27 @@ namespace Backend
                 edge.Parent.Edges.Add(edge);
 
             yield return User.Database.ReadEmptyPathRoots(this, pathsRead => Paths = pathsRead);
+        }
+
+        public IEnumerator ReadFromDatabase(Action<GraphProject> processReadProject = null)
+        {
+            // Read in nodes and edges and process a graph project
+            yield return ReadSelfFromDatabase();
 
             if (processReadProject != null)
             {
                 yield return "proceed to next frame";
                 processReadProject(this);
+            }
+        }
+
+        public IEnumerator ReadFromDatabase(Action<IGraphRegion> processReadRegion = null)
+        {
+            yield return ReadSelfFromDatabase();
+            if (processReadRegion != null)
+            {
+                yield return "waiting for next frame :)";
+                processReadRegion(this);
             }
         }
 

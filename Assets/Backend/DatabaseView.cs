@@ -75,7 +75,6 @@ namespace Backend
 
         private IEnumerator MakeAndLogChangeQueryCo(GraphProject project, string changeQuery, LogNode logNode)
         {
-            Debug.Log($"Making change {changeQuery}");
             Guid headLogNodeId = Guid.Empty;
             yield return GetHeadLogNodeIdCo(project, t => headLogNodeId = t);
            
@@ -98,7 +97,7 @@ namespace Backend
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
-        public IEnumerable CreateBlankGraphProject(GraphProject project)
+        public IEnumerator CreateBlankGraphProject(GraphProject project)
         {
             string query = $"MATCH (user :USER {{email: '{project.User.Email}'}})" + 
                 $"MERGE (user) -[:OWNS_PROJECT]-> " + 
@@ -107,12 +106,11 @@ namespace Backend
             yield return connection.SendWriteTransactions(query);
         }
 
-        // TODO: Replace CREATE with MERGE!
         public IEnumerator CreateUnlinkedNode(GraphNode node)
         {
             string query = $" MATCH (:USER {{email: '{node.Project.User.Email}'}}) " +
                             $" -[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{node.Project.Title}'}}) " +
-                            $" CREATE (project_root) -[:CONTAINS]-> " +
+                            $" MERGE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
 
@@ -594,7 +592,6 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.coordinates = [{coordinates.x}, {coordinates.y}, {coordinates.z}]";
 
-            // Debug.Log("query = " + query);
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
