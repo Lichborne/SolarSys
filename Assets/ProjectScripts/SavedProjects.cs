@@ -14,7 +14,8 @@ public class SavedProjects : MonoBehaviour
     public Transform savedProjectContainer;
     public GameObject newProjectName;
     public GameObject createNewProjectPanel;
-
+    [HideInInspector]
+    public GraphUser user;
 
 
 
@@ -57,7 +58,9 @@ public class SavedProjects : MonoBehaviour
         // Adding my own Coroutine code
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
         string userEmail = "foo.bar@doc.ic.ac.uk";
+        user = new GraphUser(userEmail);
         StartCoroutine(
+            // user.ReadAllEmptyProjects(DisplayProjectTitles)
             database.ReadAllProjectTitlesAttachedToUserCo(userEmail, DisplayProjectTitles)
         );
     }
@@ -90,7 +93,7 @@ public class SavedProjects : MonoBehaviour
         string projectTitle = newProjectName.GetComponent<TMP_InputField>().text;
         AddProject(projectTitle, savedProjectContainer, savedProjectsContent);
         
-        GraphProject newProject = new GraphProject(projectTitle);
+        GraphProject newProject = new GraphProject(user, projectTitle);
         StartCoroutine(newProject.CreateInDatabase());
     }
 }
