@@ -29,12 +29,17 @@ public class LoadGraph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string projectTitle = "Test Project";
-        graph = new GraphProject(projectTitle);
-        // graphProject.Paths will give you all the PathRoots in the GraphProject
-        StartCoroutine(graph.ReadFromDatabase(displayProject));
+        // string projectTitle = "Test Project";
+        // graph = new GraphProject(projectTitle);
+        // // graphProject.Paths will give you all the PathRoots in the GraphProject
+        // StartCoroutine(graph.ReadFromDatabase(displayProject));
 
-        // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
+        // // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
+    }
+
+    public void LoadProject(string projectTitle) {
+        graph = new GraphProject(projectTitle);
+        StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 
     // graphProject.readNodesAndEdges will call this function when it has finished loading from database
@@ -86,9 +91,9 @@ public class LoadGraph : MonoBehaviour
 
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, _textObject, graphNodes[parentIndex], graphNodes[childIndex], 90);
 
-            //two lines of Olivia's code, if inefficient can refactor later
-            edgeObject.GetComponent<StoreParentChild>().parent = graphNodes[parentIndex];
-            edgeObject.GetComponent<StoreParentChild>().child = graphNodes[childIndex];
+            // //two lines of Olivia's code, if inefficient can refactor later
+            // edgeObject.GetComponent<StoreParentChild>().parent = graphNodes[parentIndex];
+            // edgeObject.GetComponent<StoreParentChild>().child = graphNodes[childIndex];
 
             graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(graphNodes[childIndex]);
             graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);

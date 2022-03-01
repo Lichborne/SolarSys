@@ -12,6 +12,15 @@ public class SavedPathViews : MonoBehaviour
     public Transform savedPathViewContainer;
     public GameObject newPathViewName;
     public GameObject createNewPathViewPanel;
+    public GameObject savedPathViewsPanel;
+    public GameObject savedProjectsPanel;
+    public GameObject player;
+    [HideInInspector]
+    public string selectedProject;
+    [HideInInspector]
+    public string selectedPathView;
+    [HideInInspector]
+    public GraphUser user;
 
     void Start()
     {
@@ -39,8 +48,13 @@ public class SavedPathViews : MonoBehaviour
     }
 
     //not sure how to implement this, need to get which button is clicked, find its parent container and get it's child text component
-    public void LoadPathViewsForProject(string pathViewTitle, GraphProject project) {
+    public void LoadPathViewsForProject(string project) {
+        Debug.Log(selectedProject);
+        Debug.Log(project);
 
+        // project.ReadFromDatabase() - how to use
+        user = savedProjectsPanel.GetComponent<SavedProjects>().user;
+        Debug.Log(user.Email);
     }
     
 
@@ -83,5 +97,16 @@ public class SavedPathViews : MonoBehaviour
         // }
 
         // StartCoroutine(path.CreateInDatabase()); // saving the project to the database
+    }
+
+    public void LoadOriginalProject() 
+    {
+        player.GetComponent<LoadGraph>().LoadProject(selectedProject);
+    }
+
+    public void LoadSelectedPathView(string pathView)
+    {
+        // player.GetComponent<LoadGraph>().LoadPathView(selectedPathView);
+        Debug.Log(pathView);
     }
 }
