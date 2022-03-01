@@ -67,7 +67,9 @@ namespace Backend
 
         public IEnumerator CreateInDatabase()
         {
+            Debug.Log($"CreateInDatabase() started creating {Title}");
             yield return User.Database.CreateBlankGraphProject(this);
+            Debug.Log($"CreateInDatabase() finished creating blank project {Title}");
 
             foreach (GraphNode node in Nodes)
                 yield return node.CreateInDatabase();

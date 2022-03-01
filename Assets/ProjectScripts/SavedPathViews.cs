@@ -49,12 +49,12 @@ public class SavedPathViews : MonoBehaviour
 
     //not sure how to implement this, need to get which button is clicked, find its parent container and get it's child text component
     public void LoadPathViewsForProject(string project) {
-        Debug.Log(selectedProject);
-        Debug.Log(project);
+        // Debug.Log(selectedProject);
+        // Debug.Log(project);
 
         // project.ReadFromDatabase() - how to use
         user = savedProjectsPanel.GetComponent<SavedProjects>().user;
-        Debug.Log(user.Email);
+        // Debug.Log(user.Email);
     }
     
 

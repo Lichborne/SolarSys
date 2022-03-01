@@ -98,12 +98,13 @@ namespace Backend
 
         // ===================================== Create
         /// <summary> Writes the node to the database, without any links </summary>
-        public IEnumerable CreateBlankGraphProject(GraphProject project)
+        public IEnumerator CreateBlankGraphProject(GraphProject project)
         {
             string query = $"MATCH (user :USER {{email: '{project.User.Email}'}})" + 
                 $"MERGE (user) -[:OWNS_PROJECT]-> " + 
                 $"(project_root :PROJECT_ROOT {{title: '{project.Title}'}})";
             
+            Debug.Log($"CreateBlankGraphProject() running query \n{query}");
             yield return connection.SendWriteTransactions(query);
         }
 
