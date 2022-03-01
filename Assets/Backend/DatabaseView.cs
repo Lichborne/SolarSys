@@ -9,7 +9,7 @@ namespace Backend
 {
     public class DatabaseView
     {
-        private DatabaseConnection connection; 
+        private DatabaseConnection connection;
 
         public DatabaseView(string username, string password)
         {
@@ -17,7 +17,7 @@ namespace Backend
         }
 
         public DatabaseView()
-        { 
+        {
             connection = new DatabaseConnection();
         }
 
@@ -28,7 +28,7 @@ namespace Backend
         {
             Guid headLogNodeId = Guid.Empty;
             yield return GetHeadLogNodeIdCo(project, t => headLogNodeId = t);
-           
+
             List<String> queries = new List<String>();
 
             if (headLogNodeId == Guid.Empty)
@@ -48,10 +48,10 @@ namespace Backend
 
         public IEnumerator CreateBlankGraphProject(GraphProject project)
         {
-            string query = $"MATCH (user :USER {{email: '{project.User.Email}'}})" + 
-                $"MERGE (user) -[:OWNS_PROJECT]-> " + 
+            string query = $"MATCH (user :USER {{email: '{project.User.Email}'}})" +
+                $"MERGE (user) -[:OWNS_PROJECT]-> " +
                 $"(project_root :PROJECT_ROOT {{title: '{project.Title}', guid: '{project.Id}'}})";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
@@ -62,8 +62,14 @@ namespace Backend
                             $" MERGE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
-
-            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
+            NodeCreationSchema body = new NodeCreationSchema
+            {
+                Title = node.Title,
+                Description = node.Description,
+                Id = node.Id,
+                Coordinates = node.Coordinates
+            };
+            LogNode logNode = new NodeCreationLog(body);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -76,7 +82,7 @@ namespace Backend
 
 
             LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
-                yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
+            yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
         private static string CreateUnlinkedLogNodeQuery(GraphProject project, LogNode node)
@@ -104,11 +110,11 @@ namespace Backend
 
         public IEnumerator CreateBlankPathRoot(GraphProject project, PathRoot path)
         {
-            string query = $" MATCH (user :USER {{email: '{project.User.Email}'}}) " + 
-                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.Title}'}}) " + 
-                $"MERGE (project_root) -[:HAS_PATH]-> " + 
+            string query = $" MATCH (user :USER {{email: '{project.User.Email}'}}) " +
+                $"-[:OWNS_PROJECT]-> (project_root :PROJECT_ROOT {{title: '{project.Title}'}}) " +
+                $"MERGE (project_root) -[:HAS_PATH]-> " +
                 $" (path_root :PATH_ROOT {{guid: '{path.Id}', title: '{path.Title}', description: '{path.Description}'}})";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
@@ -222,15 +228,15 @@ namespace Backend
         public IEnumerator ReadNodeIdsInPath(PathRoot path, Action<List<Guid>> processNodeIds)
         {
             string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})" +
-                $"-[:VIEWS]-> (node :NODE)" + 
+                $"-[:VIEWS]-> (node :NODE)" +
                 $"RETURN node.guid as guid";
-            
+
             List<Guid> nodeIds = new List<Guid>();
-            yield return connection.SendReadTransaction(query, table => 
+            yield return connection.SendReadTransaction(query, table =>
             {
                 foreach (Dictionary<string, JToken> row in table)
                 {
-                    string guidString = (string) row["guid"];
+                    string guidString = (string)row["guid"];
                     nodeIds.Add(Guid.Parse(guidString));
                 }
             });
@@ -241,12 +247,12 @@ namespace Backend
 
         public IEnumerator ReadEmptyPathRoots(GraphProject project, Action<List<PathRoot>> processPathRoots)
         {
-            string query = $"MATCH (project_root :PROJECT_ROOT {{guid: '{project.Id}'}})" + 
-                $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " + 
+            string query = $"MATCH (project_root :PROJECT_ROOT {{guid: '{project.Id}'}})" +
+                $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " +
                 $"RETURN path_root";
-            
+
             List<PathRoot> pathRoots = new List<PathRoot>();
-            yield return connection.SendReadTransaction(query, table => 
+            yield return connection.SendReadTransaction(query, table =>
             {
                 foreach (Dictionary<string, JToken> row in table)
                 {
@@ -258,7 +264,7 @@ namespace Backend
             yield return "waiting for next frame :)";
             processPathRoots(pathRoots);
         }
-        
+
         public IEnumerator ReadEdgesBetweenNodesCo(GraphProject project, List<GraphNode> allNodes, Action<List<GraphEdge>> processGraphEdges) // works
         {
             string query = $"MATCH (:USER {{email: '{project.User.Email}'}}) " +
@@ -280,7 +286,7 @@ namespace Backend
                 Guid childId = Guid.Parse((string)childObj["guid"]);
 
 
-                        GraphNode parentNode = allNodes.Find(node => node.Id == parentId);
+                GraphNode parentNode = allNodes.Find(node => node.Id == parentId);
                 if (parentNode == null)
                     throw new Exception($"Could not find parent node with id = {parentId}");
 
@@ -289,7 +295,7 @@ namespace Backend
                     throw new Exception($"Could not find child with id = {childId}");
 
 
-                        JObject edgeObj = row["edge"] as JObject;
+                JObject edgeObj = row["edge"] as JObject;
 
                 GraphEdge edge = GraphEdge.FromJObject(edgeObj, parentNode, childNode);
 
@@ -306,13 +312,13 @@ namespace Backend
         // FIX: manage a global list of all users loaded in. pass in the list, and return a sublist
         public IEnumerator ReadUsersWithSharedAccess(GraphProject project, Action<List<GraphUser>> processUsersSharedWith)
         {
-            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
-                $"-[:SHARED_WITH]-> (user :USER) " + 
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
+                $"-[:SHARED_WITH]-> (user :USER) " +
                 $" RETURN user ";
-            
+
             List<Dictionary<string, JToken>> table = null;
             yield return connection.SendReadTransaction(query, tableRead => table = tableRead);
-        
+
             List<GraphUser> sharedUsers = table
             .Select(row => GraphUser.FromJObject(row["user"] as JObject))
             .ToList();
@@ -328,7 +334,7 @@ namespace Backend
                 "-[:OWNS_PROJECT]-> (project :PROJECT_ROOT) " +
                 $"-[:SHARED_WITH]-> (reader :USER {{email: '{reader.Email}'}})" +
                 $"RETURN owner, project";
-            
+
             List<Dictionary<string, JToken>> table = null;
             yield return connection.SendReadTransaction(query, tableRead => table = tableRead);
 
@@ -391,10 +397,10 @@ namespace Backend
 
         public IEnumerator AddNodeToPath(PathRoot path, GraphNode node)
         {
-            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})," + 
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})," +
                 $"(node :NODE {{guid: '{node.Id}'}})" +
                 $"MERGE (path_root) -[:VIEWS]-> (node)";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
@@ -411,19 +417,19 @@ namespace Backend
 
         public IEnumerator ShareProject(GraphProject project, GraphUser toShareWith)
         {
-            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}), " + 
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}), " +
                 $"(user :USER {{email: '{toShareWith.Email}'}}) " +
                 $"MERGE (project) -[:SHARED_WITH]-> (user)";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
         public IEnumerator UnshareProject(GraphProject project, GraphUser toUnshareWith)
         {
-            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
                 $" -[share :SHARED_WITH]-> (user :USER {{email: '{toUnshareWith.Email}'}}) " +
                 $" DELETE share";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
@@ -458,39 +464,39 @@ namespace Backend
 
         public IEnumerator RemoveNodeFromPath(PathRoot path, GraphNode node)
         {
-            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
-                $"-[edge :VIEWS]->" + 
-                $"(node :NODE {{guid: '{node.Id}'}})" + 
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" +
+                $"-[edge :VIEWS]->" +
+                $"(node :NODE {{guid: '{node.Id}'}})" +
                 $"DELETE edge";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
         public IEnumerator DeletePath(PathRoot path)
         {
-            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" + 
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" +
                 $"DETACH DELETE path_root";
-            
+
             yield return connection.SendWriteTransactions(query);
         }
 
         public IEnumerator DeleteGraphProject(GraphProject project)
         {
-            string deleteNodesAndEdges = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+            string deleteNodesAndEdges = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
                 $"-[:CONTAINS]-> (node :NODE)" +
                 $"DETACH DELETE node";
-            
-            string deleteLogNodes = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+
+            string deleteLogNodes = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
                 $"-[* :LOG_HISTORY]-> (logNode :LOG_NODE)" +
                 $"DETACH DELETE logNode";
-            
-            string deletePaths = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+
+            string deletePaths = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
                 $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " +
                 $"DETACH DELETE path_root";
 
-            string deleteProject = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}})" + 
+            string deleteProject = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}})" +
                 $"DETACH DELETE project";
-            
+
             yield return connection.SendWriteTransactions(deleteNodesAndEdges, deleteLogNodes, deletePaths, deleteProject);
         }
     }

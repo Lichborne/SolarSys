@@ -5,16 +5,16 @@ namespace Backend
     public class NodeCreationSchema
     {
         [Required]
-        string Title;
+        public string Title;
 
         [Required]
-        string Body;
+        public string Description;
 
         [Required]
-        Guid Id;
+        public Guid Id;
 
         [Required]
-        (double X, double Y, double Z) Coordinates;
+        public (double X, double Y, double Z) Coordinates;
     }
 
     public class ValuePair<T>

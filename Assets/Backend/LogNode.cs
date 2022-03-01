@@ -18,7 +18,11 @@ namespace Backend
         UpdateNode,
         UpdateEdge,
         DeleteNode,
-        DeleteEdge
+        DeleteEdge,
+        // TODO to remove below 
+        Create,
+        Update,
+        Delete
     }
     public class LogNode
     {
@@ -72,61 +76,60 @@ namespace Backend
                 throw new InvalidDataException();
             }
         }
-
-        public class NodeCreationLog : LogNode
+    }
+    public class NodeCreationLog : LogNode
+    {
+        public NodeCreationLog(NodeCreationSchema log) : base(ChangeEnum.AddNode)
         {
-            public NodeCreationLog(NodeCreationSchema log) : base(ChangeEnum.AddNode)
-            {
-                Validate(log);
-                Body = JsonSerializer.Serialize(log);
-            }
+            Validate(log);
+            Body = JsonSerializer.Serialize(log);
         }
+    }
 
-        public class EdgeCreationLog : LogNode
+    public class EdgeCreationLog : LogNode
+    {
+        public EdgeCreationLog(EdgeCreationSchema log) : base(ChangeEnum.AddEdge)
         {
-            public EdgeCreationLog(EdgeCreationSchema log) : base(ChangeEnum.AddEdge)
-            {
-                Validate(log);
-                Body = JsonSerializer.Serialize(log);
-            }
+            Validate(log);
+            Body = JsonSerializer.Serialize(log);
         }
+    }
 
-        public class NodeUpdateLog : LogNode
+    public class NodeUpdateLog : LogNode
+    {
+        public NodeUpdateLog(NodeUpdateSchema log) : base(ChangeEnum.UpdateNode)
         {
-            public NodeUpdateLog(NodeUpdateSchema log) : base(ChangeEnum.UpdateNode)
-            {
-                Validate(log);
-                var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-                Body = JsonSerializer.Serialize(log, options);
-            }
+            Validate(log);
+            var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+            Body = JsonSerializer.Serialize(log, options);
         }
+    }
 
-        public class EdgeUpdateLog : LogNode
+    public class EdgeUpdateLog : LogNode
+    {
+        public EdgeUpdateLog(EdgeUpdateSchema log) : base(ChangeEnum.UpdateEdge)
         {
-            public EdgeUpdateLog(EdgeUpdateSchema log) : base(ChangeEnum.UpdateEdge)
-            {
-                Validate(log);
-                var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-                Body = JsonSerializer.Serialize(log, options);
-            }
+            Validate(log);
+            var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+            Body = JsonSerializer.Serialize(log, options);
         }
+    }
 
-        public class NodeDeletionLog : LogNode
+    public class NodeDeletionLog : LogNode
+    {
+        public NodeDeletionLog(NodeCreationSchema log) : base(ChangeEnum.DeleteNode)
         {
-            public NodeDeletionLog(NodeCreationSchema log) : base(ChangeEnum.DeleteNode)
-            {
-                Validate(log);
-                Body = JsonSerializer.Serialize(log);
-            }
+            Validate(log);
+            Body = JsonSerializer.Serialize(log);
         }
+    }
 
-        public class EdgeDeletionLog : LogNode
+    public class EdgeDeletionLog : LogNode
+    {
+        public EdgeDeletionLog(EdgeCreationSchema log) : base(ChangeEnum.DeleteEdge)
         {
-            public EdgeDeletionLog(EdgeCreationSchema log) : base(ChangeEnum.DeleteEdge)
-            {
-                Validate(log);
-                Body = JsonSerializer.Serialize(log);
-            }
+            Validate(log);
+            Body = JsonSerializer.Serialize(log);
         }
     }
 }
