@@ -22,6 +22,8 @@ public class LoadGraph : MonoBehaviour
 
     private Backend.GraphProject graph = null;
 
+    private PathRoot path = null;
+
     private List<GameObject> graphNodes = new List<GameObject>();
 
     private List<GameObject> graphEdges = new List<GameObject>();
@@ -37,13 +39,19 @@ public class LoadGraph : MonoBehaviour
         // // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
     }
 
-    public void LoadProject(string projectTitle) {
+    public void LoadProject(string projectTitle) 
+    {
         graph = new GraphProject(projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 
+    public void LoadPath(PathRoot selectedPath) 
+    {
+        StartCoroutine(selectedPath.ReadFromDatabase(displayProject));
+    }
+
     // graphProject.readNodesAndEdges will call this function when it has finished loading from database
-    public void displayProject(GraphProject graphProject)
+    public void displayProject(IGraphRegion graphProject)
     {
         foreach (GraphNode node in graphProject.Nodes) {
             

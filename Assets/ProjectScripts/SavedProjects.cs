@@ -60,10 +60,10 @@ public class SavedProjects : MonoBehaviour
         string userEmail = "foo.bar@doc.ic.ac.uk";
         user = new GraphUser(userEmail);
         StartCoroutine(
-            // user.ReadAllEmptyProjects(DisplayProjectTitles)
-            database.ReadAllProjectTitlesAttachedToUserCo(userEmail, DisplayProjectTitles)
+            user.ReadAllEmptyProjects(DisplayProjectTitles)
         );
     }
+    
     
 
     //function to append to list of graphs
@@ -77,11 +77,11 @@ public class SavedProjects : MonoBehaviour
 
     }
 
-    private void DisplayProjectTitles(List<string> projectTitles)
+    private void DisplayProjectTitles(GraphUser user)
     {
-        foreach (string title in projectTitles)
+        foreach (GraphProject project in user.Projects)
         {
-            AddProject(title, savedProjectContainer, savedProjectsContent);
+            AddProject(project.Title, savedProjectContainer, savedProjectsContent);
         }
 
     }

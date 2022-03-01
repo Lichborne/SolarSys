@@ -16,9 +16,9 @@ public class SavedPathViews : MonoBehaviour
     public GameObject savedProjectsPanel;
     public GameObject player;
     [HideInInspector]
-    public string selectedProject;
+    public GraphProject selectedProject;
     [HideInInspector]
-    public string selectedPathView;
+    public PathRoot selectedPathView;
     [HideInInspector]
     public GraphUser user;
 
@@ -29,33 +29,38 @@ public class SavedPathViews : MonoBehaviour
 
         //for now put this in Start(), just to test
 
-        // Commenting out Olivia's code
-        string pathView1 = "PathView1";
-        string pathView2 = "PathView2";
-        string pathView3 = "PathView3";
-        string pathView4 = "PathView4";
-        string pathView5 = "PathView5";
+        // // Commenting out Olivia's code
+        // string pathView1 = "PathView1";
+        // string pathView2 = "PathView2";
+        // string pathView3 = "PathView3";
+        // string pathView4 = "PathView4";
+        // string pathView5 = "PathView5";
        
 
-        AddPathView(pathView1, savedPathViewContainer, savedPathViewsContent);
-        AddPathView(pathView2, savedPathViewContainer, savedPathViewsContent);
-        AddPathView(pathView3, savedPathViewContainer, savedPathViewsContent);
-        AddPathView(pathView4, savedPathViewContainer, savedPathViewsContent);
-        AddPathView(pathView5, savedPathViewContainer, savedPathViewsContent);
+        // AddPathView(pathView1, savedPathViewContainer, savedPathViewsContent);
+        // AddPathView(pathView2, savedPathViewContainer, savedPathViewsContent);
+        // AddPathView(pathView3, savedPathViewContainer, savedPathViewsContent);
+        // AddPathView(pathView4, savedPathViewContainer, savedPathViewsContent);
+        // AddPathView(pathView5, savedPathViewContainer, savedPathViewsContent);
        
 
       
     }
 
-    //not sure how to implement this, need to get which button is clicked, find its parent container and get it's child text component
-    public void LoadPathViewsForProject(string project) {
-        Debug.Log(selectedProject);
-        Debug.Log(project);
+    //load list of path views for selected project
+    public void LoadPathViewsForProject(GraphProject project) {
+        // Debug.Log(selectedProject);
+        // Debug.Log(project);
 
         // project.ReadFromDatabase() - how to use
-        user = savedProjectsPanel.GetComponent<SavedProjects>().user;
-        Debug.Log(user.Email);
+        // user = savedProjectsPanel.GetComponent<SavedProjects>().user;
+        // Debug.Log(user.Email);
+
+        StartCoroutine(
+            project.ReadFromDatabase(DisplayPathViewTitles)
+        );
     }
+    
     
 
     //function to append to list of graphs
@@ -69,11 +74,11 @@ public class SavedPathViews : MonoBehaviour
 
     }
 
-    private void DisplayPathViewTitles(List<string> projectTitles)
+    private void DisplayPathViewTitles(GraphProject project)
     {
-        foreach (string title in projectTitles)
+        foreach (PathRoot path in project.Paths)
         {
-            AddPathView(title, savedPathViewContainer, savedPathViewsContent);
+            AddPathView(path.Title, savedPathViewContainer, savedPathViewsContent);
         }
 
     }
@@ -101,12 +106,12 @@ public class SavedPathViews : MonoBehaviour
 
     public void LoadOriginalProject() 
     {
-        player.GetComponent<LoadGraph>().LoadProject(selectedProject);
+        player.GetComponent<LoadGraph>().LoadProject(selectedProject.Title);
     }
 
-    public void LoadSelectedPathView(string pathView)
+    public void LoadSelectedPathView(PathRoot pathView)
     {
         // player.GetComponent<LoadGraph>().LoadPathView(selectedPathView);
-        Debug.Log(pathView);
+        player.GetComponent<LoadGraph>().LoadPath(pathView);
     }
 }

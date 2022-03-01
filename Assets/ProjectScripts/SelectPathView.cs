@@ -24,10 +24,17 @@ public class SelectPathView : MonoBehaviour
         GameObject projectContainer = gameObject.transform.parent.gameObject;
         GameObject titleField = projectContainer.transform.Find("Text (TMP)").gameObject;
         string title = titleField.GetComponent<TextMeshProUGUI>().text;
-        // Debug.Log(title);
-        //call function in SavedPathViews and pass in title parameter
-        savedPathViewsPanel.GetComponent<SavedPathViews>().selectedPathView = title;
-        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadSelectedPathView(title);
+        GraphProject selected_project = savedPathViewsPanel.GetComponent<SavedPathViews>().selectedProject;
+        PathRoot selected_path = null;
+        List<PathRoot> paths = selected_project.Paths;
+        foreach (PathRoot p in paths)
+        {
+            if (p.Title == title) {
+                selected_path = p;
+            }
+        }
+        savedPathViewsPanel.GetComponent<SavedPathViews>().selectedPathView = selected_path;
+        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadSelectedPathView(selected_path);
 
     }
 }

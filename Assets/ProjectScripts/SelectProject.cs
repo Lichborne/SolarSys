@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Backend;
 
 public class SelectProject : MonoBehaviour
 {
 
     public GameObject savedPathViewsPanel;
+    public GameObject savedProjectsPanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,10 +27,18 @@ public class SelectProject : MonoBehaviour
         GameObject projectContainer = gameObject.transform.parent.gameObject;
         GameObject titleField = projectContainer.transform.Find("Text (TMP)").gameObject;
         string title = titleField.GetComponent<TextMeshProUGUI>().text;
+        GraphProject project = null;
         // Debug.Log(title);
         //call function in SavedPathViews and pass in title parameter
-        savedPathViewsPanel.GetComponent<SavedPathViews>().selectedProject = title;
-        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadPathViewsForProject(title);
+        List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.Projects;
+        foreach (GraphProject p in projects)
+        {
+            if (p.Title == title) {
+                project = p;
+            }
+        }
+        savedPathViewsPanel.GetComponent<SavedPathViews>().selectedProject = project;
+        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadPathViewsForProject(project);
 
     }
 }

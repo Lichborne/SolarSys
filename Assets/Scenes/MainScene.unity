@@ -4750,7 +4750,6 @@ MonoBehaviour:
   savedPathViewsPanel: {fileID: 0}
   savedProjectsPanel: {fileID: 8132848421150269994}
   player: {fileID: 1487399002}
-  selectedProject: 
   selectedPathView: 
 --- !u!1 &1687258581
 GameObject:
@@ -11494,6 +11493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   savedPathViewsPanel: {fileID: 1613203965}
+  savedProjectsPanel: {fileID: 8132848421150269994}
 --- !u!224 &4659566411080213836
 RectTransform:
   m_ObjectHideFlags: 0
