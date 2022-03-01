@@ -72,7 +72,7 @@ namespace Backend
 
         public IEnumerator ReadFromDatabase(Action<PathRoot> processPathRoot = null)
         {      
-            ReadSelfFromDatabase();
+            yield return ReadSelfFromDatabase();
 
             if (processPathRoot != null)
             {
@@ -83,7 +83,7 @@ namespace Backend
 
         public IEnumerator ReadFromDatabase(Action<IGraphRegion> processGraphRegion = null)
         {      
-            ReadSelfFromDatabase();
+            yield return ReadSelfFromDatabase();
 
             if (processGraphRegion != null)
             {

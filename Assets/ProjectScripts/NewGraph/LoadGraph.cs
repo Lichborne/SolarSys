@@ -51,6 +51,8 @@ public class LoadGraph : MonoBehaviour
     // graphProject.readNodesAndEdges will call this function when it has finished loading from database
     public void displayProject(IGraphRegion graphProject)
     {
+        Debug.Log($"In Display Project: found {graphProject.Nodes.Count} nodes");
+
         foreach (GraphNode node in graphProject.Nodes) {
             
             Vector3 pos = new Vector3(node.Coordinates.X, node.Coordinates.Y, node.Coordinates.Z);
@@ -107,7 +109,6 @@ public class LoadGraph : MonoBehaviour
             graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
         }
 
-        Debug.Log($"In Display Project: found {graphProject.Nodes.Count} nodes");
     }
     /*
     public void displayPath(GraphProject graphProject, int pathno)
