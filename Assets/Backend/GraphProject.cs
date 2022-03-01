@@ -10,10 +10,10 @@ namespace Backend
     {
         public Guid Id { get; private set; }
         public string Title { get; private set; }
+        public List<GraphUser> UsersSharedWith { get; private set; } = new List<GraphUser>();
         public List<GraphNode> Nodes { get; private set; } = new List<GraphNode>();
         public List<GraphEdge> Edges { get; private set; }  = new List<GraphEdge>();
         public List<PathRoot> Paths { get; private set; } = new List<PathRoot>();
-        public List<GraphUser> UsersSharedWith { get; private set; } = new List<GraphUser>();
         public bool IsEmpty { get => !Nodes.Any(); }
         public GraphUser User { get; private set; }
 

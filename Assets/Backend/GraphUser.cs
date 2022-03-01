@@ -11,7 +11,7 @@ namespace Backend
     {
         public string Email { get; private set; }
         public List<GraphProject> Projects = new List<GraphProject>();
-        public List<GraphProject> ProjectsSharedWith = new List<GraphProject>();
+        public List<GraphProject> ReadOnlyProjects = new List<GraphProject>();
         public DatabaseView Database { get; private set; } = new DatabaseView();
 
         public bool IsEmpty { get => !Projects.Any(); }
@@ -26,7 +26,7 @@ namespace Backend
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
         {
             yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
-            yield return Database.ReadEmptyProjectsSharedWith(this, sharedProjects => ProjectsSharedWith = sharedProjects);
+            yield return Database.ReadEmptyProjectsSharedWith(this, sharedProjects => ReadOnlyProjects = sharedProjects);
 
             if (processUser != null)
             {
