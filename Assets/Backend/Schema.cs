@@ -1,28 +1,36 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using static Backend.StringExtensions;
+
 using System.ComponentModel.DataAnnotations;
 
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using UnityEngine;
 namespace Backend
 {
     public class NodeCreationSchema
     {
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         public string Title;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         public string Description;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         public Guid Id;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         public (double X, double Y, double Z) Coordinates;
     }
 
     public class ValuePair<T>
     {
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         T NewValue;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         T OldValue;
     }
 
@@ -32,7 +40,7 @@ namespace Backend
 
         ValuePair<String> Body;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         Guid Id;
 
         ValuePair<(double X, double Y, double Z)> Coordinates;
@@ -40,25 +48,25 @@ namespace Backend
 
     public class EdgeCreationSchema
     {
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         string Title;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         string Body;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         Guid Id;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         Guid ParentId;
 
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         Guid ChildId;
     }
 
     public class EdgeUpdateSchema
     {
-        [Required]
+        [JsonProperty(Required = Required.Always)]
         Guid Id;
 
         ValuePair<string> Title;
@@ -68,11 +76,5 @@ namespace Backend
         ValuePair<Guid> ParentId;
 
         ValuePair<Guid> ChildId;
-    }
-
-    public class NodeDeletionSchema
-    {
-
-
     }
 }

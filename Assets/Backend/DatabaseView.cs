@@ -62,14 +62,8 @@ namespace Backend
                             $" MERGE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
-            NodeCreationSchema body = new NodeCreationSchema
-            {
-                Title = node.Title,
-                Description = node.Description,
-                Id = node.Id,
-                Coordinates = node.Coordinates
-            };
-            LogNode logNode = new NodeCreationLog(body);
+
+            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -80,8 +74,14 @@ namespace Backend
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
-
-            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
+            NodeCreationSchema body = new NodeCreationSchema
+            {
+                Title = node.Title,
+                Description = node.Description,
+                Id = node.Id,
+                Coordinates = node.Coordinates
+            };
+            LogNode logNode = new NodeCreationLog(body);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
