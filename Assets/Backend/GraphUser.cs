@@ -7,11 +7,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
-    public class GraphUser 
+    public class GraphUser : IEquatable<GraphUser>
     {
         public string Email { get; private set; }
         public List<GraphProject> Projects = new List<GraphProject>();
-        public List<GraphProject> ProjectsShared = new List<GraphProject>();
+        public List<GraphProject> ProjectsSharedWith = new List<GraphProject>();
         public DatabaseView Database { get; private set; } = new DatabaseView();
 
         public bool IsEmpty { get => !Projects.Any(); }
@@ -26,8 +26,8 @@ namespace Backend
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
         {
             yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
-            yield return Database.ReadProjectsSharedWith(this, sharedProjects => ProjectsShared = sharedProjects);
-            
+            yield return Database.ReadEmptyProjectsSharedWith(this, sharedProjects => ProjectsSharedWith = sharedProjects);
+
             if (processUser != null)
             {
                 yield return "waiting for next frame :)";
@@ -37,6 +37,23 @@ namespace Backend
 
         public static GraphUser FromJObject(JObject json)
             => new GraphUser((string) json["email"]);
+        
+
+        public bool Equals(GraphUser other)
+            => Email == other.Email;
+        
+
+        public override bool Equals(object other)
+        {
+            if (!(other is GraphUser))
+                return false;
+            
+            return Equals(other as GraphUser);
+        }
+
+
+        public override int GetHashCode()
+            => Email.GetHashCode();
 
         /*
         public List<GraphProject> returnProjectsWithTitle(List<String> projectTitles)
