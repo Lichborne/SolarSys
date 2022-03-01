@@ -54,7 +54,7 @@ namespace Backend
         }
 
         // uses the nodes and edges from the GraphProject
-        public IEnumerator ReadFromDatabase(Action<PathRoot> processPathRoot = null)
+        private IEnumerator ReadSelfFromDatabase()
         {
             List<Guid> idsOfNodeInPath = new List<Guid>();
             yield return Project.User.Database.ReadNodeIdsInPath(this, nodeIds => idsOfNodeInPath = nodeIds);
@@ -68,11 +68,27 @@ namespace Backend
                 Nodes.Add(node);
                 Edges.AddRange(node.Edges);
             }
+        }
+
+        public IEnumerator ReadFromDatabase(Action<PathRoot> processPathRoot = null)
+        {      
+            ReadSelfFromDatabase();
 
             if (processPathRoot != null)
             {
                 yield return "waiting for next frame :)";
                 processPathRoot(this);
+            }
+        }
+
+        public IEnumerator ReadFromDatabase(Action<IGraphRegion> processGraphRegion = null)
+        {      
+            ReadSelfFromDatabase();
+
+            if (processGraphRegion != null)
+            {
+                yield return "waiting for next frame :)";
+                processGraphRegion(this);
             }
         }
         
