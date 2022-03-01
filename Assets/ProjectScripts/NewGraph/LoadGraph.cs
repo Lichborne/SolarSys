@@ -22,8 +22,6 @@ public class LoadGraph : MonoBehaviour
 
     private Backend.GraphProject graph = null;
 
-    private PathRoot path = null;
-
     private List<GameObject> graphNodes = new List<GameObject>();
 
     private List<GameObject> graphEdges = new List<GameObject>();
@@ -108,6 +106,8 @@ public class LoadGraph : MonoBehaviour
             graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);
             graphNodes[childIndex].GetComponent<FrontEndNode>().edgeIn.Add(edgeObject);
         }
+
+        Debug.Log($"In Display Project: found {graphProject.Nodes.Count} nodes");
     }
     /*
     public void displayPath(GraphProject graphProject, int pathno)
