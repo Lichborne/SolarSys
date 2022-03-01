@@ -1,5 +1,4 @@
 using System;
-using Neo4j.Driver;
 using static Backend.StringExtensions;
 using System.Collections;
 
@@ -48,19 +47,19 @@ namespace Backend
             }
         }
 
-        public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
-        {
-            string title = dbRelationship.Properties["title"].As<string>();
-            string description = dbRelationship.Properties["description"].As<string>();
-            string guidText = dbRelationship.Properties["guid"].As<string>();
-            return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
-        }
+        // public static GraphEdge FromIRelationship(IRelationship dbRelationship, GraphNode parent, GraphNode child)
+        // {
+        //     string title = dbRelationship.Properties["title"].As<string>();
+        //     string description = dbRelationship.Properties["description"].As<string>();
+        //     string guidText = dbRelationship.Properties["guid"].As<string>();
+        //     return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
+        // }
 
         public static GraphEdge FromJObject(JObject obj, GraphNode parent, GraphNode child)
         {
-            string title = obj["title"].As<string>();
-            string description = obj["description"].As<string>();
-            string guidText = obj["guid"].As<string>();
+            string title = (string) obj["title"];
+            string description = (string) obj["description"];
+            string guidText = (string) obj["guid"];
             return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
@@ -74,10 +73,10 @@ namespace Backend
         }
 
         // Updates the title of the edge, writing change to database
-        public void UpdateTitle(string title)
+        public IEnumerator UpdateTitle(string title)
         {
             Title = title;
-            Project.User.Database.UpdateEdgeTitle(this, title);
+            yield return Project.User.Database.UpdateEdgeTitleCo(this, title);
         }
 
         public IEnumerator UpdateTitleCo(string title)
@@ -87,10 +86,10 @@ namespace Backend
         }
 
         // updates the description of the edge, writing change to database
-        public void UpdateDescription(string description)
+        public IEnumerator UpdateDescription(string description)
         {
             Description = description;
-            Project.User.Database.UpdateEdgeDescription(this, description);
+            yield return Project.User.Database.UpdateEdgeDescriptionCo(this, description);
         }
 
         public IEnumerator UpdateDescriptionCo(string description)
@@ -100,8 +99,8 @@ namespace Backend
         }
 
         // deletes the edge from the database. does not affect the edge's parent or child.
-        public void DeleteFromDatabase()
-            => Project.User.Database.DestroyEdge(this);
+        public IEnumerator DeleteFromDatabase()
+            => Project.User.Database.DestroyEdgeCo(this);
 
         public IEnumerator DeleteFromDatabaseCo() // works
         {

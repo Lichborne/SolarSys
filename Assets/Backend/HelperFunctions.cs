@@ -1,4 +1,3 @@
-using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;

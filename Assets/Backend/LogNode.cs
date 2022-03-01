@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
 
@@ -41,15 +40,15 @@ namespace Backend
             TimeStamp = timeStamp;
         }
 
-        public static LogNode FromINode(INode dbNode)
-        {
-            Enum.TryParse(dbNode.Properties["change"].As<string>(), out ChangeEnum change);
-            string body = dbNode.Properties["body"].As<string>();
-            Guid guid = Guid.Parse(dbNode.Properties["guid"].As<string>());
-            DateTime timeStamp = DateTime.Parse(dbNode.Properties["timestamp"].As<string>());
+        // public static LogNode FromINode(INode dbNode)
+        // {
+        //     Enum.TryParse(dbNode.Properties["change"].As<string>(), out ChangeEnum change);
+        //     string body = dbNode.Properties["body"].As<string>();
+        //     Guid guid = Guid.Parse(dbNode.Properties["guid"].As<string>());
+        //     DateTime timeStamp = DateTime.Parse(dbNode.Properties["timestamp"].As<string>());
 
-            return new LogNode(change, body, guid, timeStamp);
-        }
+        //     return new LogNode(change, body, guid, timeStamp);
+        // }
 
         public static LogNode FromJObject(GraphProject project, JObject obj)
         {
@@ -60,6 +59,5 @@ namespace Backend
 
             return new LogNode(change, body, guid, timeStamp);
         }
-
     }
 }

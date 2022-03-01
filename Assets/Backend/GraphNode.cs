@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Neo4j.Driver;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
 using Newtonsoft.Json.Linq;
@@ -33,16 +32,16 @@ namespace Backend
             this(Guid.NewGuid(), project, title, description, coordinates)
         { }
 
-        public static GraphNode FromINode(GraphProject project, INode dbNode)
-        {
-            string title = dbNode.Properties["title"].As<string>();
-            string description = dbNode.Properties["description"].As<string>();
-            string guidText = dbNode.Properties["guid"].As<string>();
-            Guid guid = Guid.Parse(guidText);
-            List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
+        // public static GraphNode FromINode(GraphProject project, INode dbNode)
+        // {
+        //     string title = dbNode.Properties["title"].As<string>();
+        //     string description = dbNode.Properties["description"].As<string>();
+        //     string guidText = dbNode.Properties["guid"].As<string>();
+        //     Guid guid = Guid.Parse(guidText);
+        //     List<float> coords = dbNode.Properties["coordinates"].As<List<float>>();
 
-            return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
-        }
+        //     return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
+        // }
 
         public static GraphNode FromJObject(GraphProject project, JObject json)
         {
@@ -67,10 +66,10 @@ namespace Backend
         }
 
         // Adds an extra edge to the node, writing it to the database
-        public void AddEdge(GraphEdge edge)
+        public IEnumerator AddEdge(GraphEdge edge)
         {
-            Project.User.Database.CreateParentChildRelationship(this, edge, edge.Child);
             Edges.Add(edge);
+            yield return Project.User.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
         }
 
         public IEnumerator AddEdgeCo(GraphEdge edge) // works
@@ -84,10 +83,10 @@ namespace Backend
             => Edges.Remove(edge);
 
 
-        public void UpdateTitle(string title)
+        public IEnumerator UpdateTitle(string title)
         {
-            Project.User.Database.UpdateNodeTitle(this, title);
             Title = title;
+            yield return Project.User.Database.UpdateNodeTitleCo(this, title);
         }
 
         public IEnumerator UpdateTitleCo(string title) // Works!
@@ -96,39 +95,27 @@ namespace Backend
             Title = title;
         }
 
-        public void UpdateDescription(string description)
+        public IEnumerator UpdateDescription(string description)
         {
-            Project.User.Database.UpdateNodeDescription(this, description);
             Description = description;
+            yield return Project.User.Database.UpdateNodeDescriptionCo(this, description);
         }
 
         public IEnumerator UpdateDescriptionCo(string description) // Works!
         {
-            yield return Project.User.Database.UpdateNodeDescriptionCo(this, description);
             Description = description;
-
-        }
-
-        public void UpdateCoordinates((float x, float y, float z) coordinates)
-        {
-            Project.User.Database.UpdateNodeCoordinates(this, coordinates);
-            Coordinates = coordinates;
+            yield return Project.User.Database.UpdateNodeDescriptionCo(this, description);
         }
 
         public IEnumerator UpdateCoordinatesCo((float x, float y, float z) coordinates) // Works!
         {
-            yield return Project.User.Database.UpdateNodeCoordinatesCo(this, coordinates);
             Coordinates = coordinates;
+            yield return Project.User.Database.UpdateNodeCoordinatesCo(this, coordinates);
         }
 
-        // deletes the node from the database. does not affect the node's edges or children
-        public void DeleteFromDatabase()
-            => Project.User.Database.DestroyNode(this);
-
+        // deletes the node from the database along with its edges. does not affect the node's children
         public IEnumerator DeleteFromDatabaseCo() // works
-        {
-            yield return Project.User.Database.DestroyNodeCo(this);
-        }
+            => Project.User.Database.DestroyNodeCo(this);
 
 
         public override string ToString()
