@@ -2,11 +2,16 @@ CREATE
 // ================================== user 
 (foo_user :USER {name: "Foo Bar", email: "foo.bar@doc.ic.ac.uk"}),
 
+(danny_devito :USER {email: "danny.devito@ic.ac.uk"}),
+
 // ================================== project root 
 (project_root :PROJECT_ROOT {title: "Test Project", guid: "61f51a64-2121-404a-9a4f-99d869e63aad"}),
 
 // ================================== adding project to user
 (foo_user) -[:OWNS_PROJECT]->(project_root),
+
+// ================================= sharing project with danny devito
+(project_root) -[:SHARED_WITH]-> (danny_devito),
 
 // ================================== create log history linked list
 (project_root) -[:LOG_HISTORY]-> (a :LOG_NODE {guid: '2f6e4433-6aeb-4072-8949-1b2da6e9eb59', change: 'INSERT', body: 'description', timestamp : '123'}),
