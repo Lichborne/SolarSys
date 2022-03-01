@@ -299,6 +299,50 @@ namespace Backend
             processGraphEdges(edges);
         }
 
+        // POTENTIAL BUG: this returns a list of NEWLY CREATED user objects. 
+        // If there are two user objects corresponding to the same account
+        // (i.e. two user objects with the same email)
+        // then one will not necessarily have loaded in all the graphprojects that the other has
+        // FIX: manage a global list of all users loaded in. pass in the list, and return a sublist
+        public IEnumerator ReadUsersWithSharedAccess(GraphProject project, Action<List<GraphUser>> processUsersSharedWith)
+        {
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+                $"-[:SHARED_WITH]-> (user :USER) " + 
+                $" RETURN user ";
+            
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, tableRead => table = tableRead);
+        
+            List<GraphUser> sharedUsers = table
+            .Select(row => GraphUser.FromJObject(row["user"] as JObject))
+            .ToList();
+
+            yield return "waiting for next frame :)";
+
+            processUsersSharedWith(sharedUsers);
+        }
+
+        public IEnumerator ReadProjectsSharedWith(GraphUser reader, Action<List<GraphProject>> processProjects)
+        {
+            string query = $"MATCH (owner :USER) " +
+                "-[:OWNS_PROJECT]-> (project :PROJECT_ROOT) " +
+                $"-[:SHARED_WITH]-> (reader :USER {{email: '{reader.Email}'}})" +
+                $"RETURN owner, project";
+            
+            List<Dictionary<string, JToken>> table = null;
+            yield return connection.SendReadTransaction(query, tableRead => table = tableRead);
+
+            List<GraphProject> projects = new List<GraphProject>();
+            foreach (var row in table)
+            {
+                GraphUser owner = GraphUser.FromJObject(row["owner"] as JObject);
+                GraphProject project = GraphProject.FromJObject(owner, row["project"] as JObject);
+                projects.Add(project);
+            }
+
+            processProjects(projects);
+        }
+
 
         // ============================== UPDATE
         public IEnumerator UpdateNodeTitleCo(GraphNode node, string title) // Works!
@@ -333,7 +377,6 @@ namespace Backend
         }
 
 
-
         public IEnumerator UpdateEdgeTitleCo(GraphEdge edge, string title)
         {
             string updateTitleQuery = $"MATCH (:NODE {{guid: '{edge.Parent.Id}'}}) " +
@@ -344,7 +387,6 @@ namespace Backend
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
             yield return MakeAndLogChangeQueryCo(edge.Project, updateTitleQuery, logNode);
         }
-
 
 
         public IEnumerator AddNodeToPath(PathRoot path, GraphNode node)
@@ -365,6 +407,24 @@ namespace Backend
 
             LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
             yield return MakeAndLogChangeQueryCo(edge.Project, updateDescQuery, logNode);
+        }
+
+        public IEnumerator ShareProject(GraphProject project, GraphUser toShareWith)
+        {
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}), " + 
+                $"(user :USER {{email: '{toShareWith.Email}'}}) " +
+                $"MERGE (project) -[:SHARED_WITH]-> (user)";
+            
+            yield return connection.SendWriteTransactions(query);
+        }
+
+        public IEnumerator UnshareProject(GraphProject project, GraphUser toUnshareWith)
+        {
+            string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+                $" -[share :SHARED_WITH]-> (user :USER {{email: '{toUnshareWith.Email}'}}) " +
+                $" DELETE share";
+            
+            yield return connection.SendWriteTransactions(query);
         }
 
 
@@ -433,21 +493,5 @@ namespace Backend
             
             yield return connection.SendWriteTransactions(deleteNodesAndEdges, deleteLogNodes, deletePaths, deleteProject);
         }
-
-
-    //     private void WriteQueries(params string[] queries)
-    //     {
-    //         using (var session = _driver.Session())
-    //         {
-    //             session.WriteTransaction(tx =>
-    //             {
-    //                 IResultSummary summary = null;
-    //                 foreach (string query in queries)
-    //                     summary = tx.Run(query).Consume();
-
-    //                 return summary;
-    //             });
-    //         }
-    //     }
     }
 }

@@ -13,6 +13,7 @@ namespace Backend
         public List<GraphNode> Nodes { get; private set; } = new List<GraphNode>();
         public List<GraphEdge> Edges { get; private set; }  = new List<GraphEdge>();
         public List<PathRoot> Paths { get; private set; } = new List<PathRoot>();
+        public List<GraphUser> UsersSharedWith { get; private set; } = new List<GraphUser>();
         public bool IsEmpty { get => !Nodes.Any(); }
         public GraphUser User { get; private set; }
 
@@ -23,7 +24,6 @@ namespace Backend
             Title = title;
         }
 
-        // Please pass in the user instead!!
         public GraphProject(string title) :
             this(new GraphUser("foo.bar@doc.ic.ac.uk"), Guid.NewGuid(), title)
         { }
@@ -41,6 +41,7 @@ namespace Backend
             foreach (var edge in Edges)
                 edge.Parent.Edges.Add(edge);
 
+            yield return User.Database.ReadUsersWithSharedAccess(this, users => UsersSharedWith = users);
             yield return User.Database.ReadEmptyPathRoots(this, pathsRead => Paths = pathsRead);
         }
 
@@ -65,6 +66,28 @@ namespace Backend
                 processReadRegion(this);
             }
         }
+
+        public IEnumerator ShareWith(GraphUser user)
+        {
+            UsersSharedWith.Add(user);
+
+            yield return User.Database.ShareProject(this, user);
+        }
+
+        public IEnumerator UnshareWith(GraphUser user)
+        {
+            if (!IsSharedWith(user))
+                throw new Exception($"Could not unshare project {Title} with user {user.Email} as the user is not shared with the project.");
+            
+            UsersSharedWith.RemoveAll(u => u.Email == user.Email);
+            yield return User.Database.UnshareProject(this, user);
+        }
+
+        public bool IsOwnedBy(GraphUser user)
+            => User.Email == user.Email;
+        
+        public bool IsSharedWith(GraphUser user)
+            => UsersSharedWith.Any(u => u.Email == user.Email);
 
         public static GraphProject FromJObject(GraphUser user, JObject json)
         {

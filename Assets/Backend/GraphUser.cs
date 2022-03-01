@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using static Backend.StringExtensions;
+using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
@@ -10,6 +11,7 @@ namespace Backend
     {
         public string Email { get; private set; }
         public List<GraphProject> Projects = new List<GraphProject>();
+        public List<GraphProject> ProjectsShared = new List<GraphProject>();
         public DatabaseView Database { get; private set; } = new DatabaseView();
 
         public bool IsEmpty { get => !Projects.Any(); }
@@ -24,12 +26,18 @@ namespace Backend
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
         {
             yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
+            yield return Database.ReadProjectsSharedWith(this, sharedProjects => ProjectsShared = sharedProjects);
+            
             if (processUser != null)
             {
                 yield return "waiting for next frame :)";
                 processUser(this);
             }
         }
+
+        public static GraphUser FromJObject(JObject json)
+            => new GraphUser((string) json["email"]);
+
         /*
         public List<GraphProject> returnProjectsWithTitle(List<String> projectTitles)
         {
