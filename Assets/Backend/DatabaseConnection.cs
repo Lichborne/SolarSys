@@ -85,9 +85,6 @@ namespace Backend
             HandleErrorsFromTransactionResponse(query, response);
 
             List<Dictionary<string, JToken>> entries = EntriesFromReadResponse(response);
-            // foreach (var entry in entries){ why does this run so many times???
-            //     Debug.Log(entry);
-            // }
             processEntries(entries);
         }
 
