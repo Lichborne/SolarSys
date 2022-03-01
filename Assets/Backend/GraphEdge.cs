@@ -98,10 +98,7 @@ namespace Backend
             yield return Project.User.Database.UpdateEdgeDescriptionCo(this, description);
         }
 
-        // deletes the edge from the database. does not affect the edge's parent or child.
-        public IEnumerator DeleteFromDatabase()
-            => Project.User.Database.DestroyEdgeCo(this);
-
+        // deletes the edge from the database. does not affect the edge's parent or child
         public IEnumerator DeleteFromDatabaseCo() // works
         {
             yield return Project.User.Database.DestroyEdgeCo(this);

@@ -73,13 +73,6 @@ namespace Backend
             return new GraphProject(user, Guid.Parse(guidString), title);
         }
 
-        public void AddRelation(GraphNode parent, GraphEdge edge)
-        {
-            parent.AddEdge(edge);
-
-            // write all this to database
-        }
-
         public IEnumerator CreateInDatabase()
         {
             yield return User.Database.CreateBlankGraphProject(this);
@@ -90,5 +83,8 @@ namespace Backend
             foreach (GraphEdge edge in Edges)
                 yield return edge.CreateInDatabase();
         }
+
+        public IEnumerator DeleteFromDatabase()
+            => User.Database.DeleteGraphProject(this);
     }
 }

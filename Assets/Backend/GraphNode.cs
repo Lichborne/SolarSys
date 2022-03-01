@@ -66,12 +66,6 @@ namespace Backend
         }
 
         // Adds an extra edge to the node, writing it to the database
-        public IEnumerator AddEdge(GraphEdge edge)
-        {
-            Edges.Add(edge);
-            yield return Project.User.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);
-        }
-
         public IEnumerator AddEdgeCo(GraphEdge edge) // works
         {
             yield return Project.User.Database.CreateParentChildRelationshipCo(this, edge, edge.Child);

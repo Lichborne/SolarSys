@@ -20,5 +20,7 @@ namespace Backend
         public IEnumerator CreateInDatabase();
 
         public IEnumerator ReadFromDatabase(Action<IGraphRegion> processGraphRegion);
+
+        public IEnumerator DeleteFromDatabase();
     }
 }

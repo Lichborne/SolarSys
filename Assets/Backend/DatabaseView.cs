@@ -700,6 +700,26 @@ namespace Backend
             yield return connection.SendWriteTransactions(query);
         }
 
+        public IEnumerator DeleteGraphProject(GraphProject project)
+        {
+            string deleteNodesAndEdges = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+                $"-[:CONTAINS]-> (node :NODE)" +
+                $"DETACH DELETE node";
+            
+            string deleteLogNodes = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+                $"-[* :LOG_HISTORY]-> (logNode :LOG_NODE)" +
+                $"DETACH DELETE logNode";
+            
+            string deletePaths = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " + 
+                $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " +
+                $"DETACH DELETE path_root";
+
+            string deleteProject = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}})" + 
+                $"DETACH DELETE project";
+            
+            yield return connection.SendWriteTransactions(deleteNodesAndEdges, deleteLogNodes, deletePaths, deleteProject);
+        }
+
         // private void WriteQuery(string query)
         // {
         //     using (var session = _driver.Session())

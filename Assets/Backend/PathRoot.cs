@@ -124,5 +124,8 @@ namespace Backend
             projectCopy.Edges.AddRange(newEdges);
             return projectCopy;
         }
+
+        public IEnumerator DeleteFromDatabase()
+            => Project.User.Database.DeletePath(this);
     }
 }
