@@ -45,13 +45,13 @@ namespace Backend
 
         public static GraphNode FromJObject(GraphProject project, JObject json)
         {
-            string title = (string) json["title"];
-            string description = (string) json["description"];
-            Guid guid = Guid.Parse((string) json["guid"]);
+            string title = (string)json["title"];
+            string description = (string)json["description"];
+            Guid guid = Guid.Parse((string)json["guid"]);
             List<float> coords = (json["coordinates"] as JArray)
-                .Select(c => (float) c)
+                .Select(c => (float)c)
                 .ToList();
-            
+
             return new GraphNode(guid, project, title, description, (coords[0], coords[1], coords[2]));
         }
 
@@ -128,5 +128,10 @@ namespace Backend
 
         public override int GetHashCode()
             => Id.GetHashCode();
+
+        public String Serialize()
+        {
+            return $"{Title};{Description};{Id.ToString()};{Coordinates.ToString()}";
+        }
     }
 }

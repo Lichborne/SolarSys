@@ -63,7 +63,7 @@ namespace Backend
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
 
-            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
+            LogNode logNode = new LogNode(ChangeEnum.AddNode, "json goes here");
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -74,14 +74,8 @@ namespace Backend
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
-            NodeCreationSchema body = new NodeCreationSchema
-            {
-                Title = node.Title,
-                Description = node.Description,
-                Id = node.Id,
-                Coordinates = node.Coordinates
-            };
-            LogNode logNode = new NodeCreationLog(body);
+
+            LogNode logNode = new NodeCreationLog(node);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -98,7 +92,7 @@ namespace Backend
                 $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
                 $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (child)";
 
-            LogNode logNode = new LogNode(ChangeEnum.Create, "json goes here");
+            LogNode logNode = new EdgeCreationLog(parent, edge, child);
             yield return MakeAndLogChangeQueryCo(parent.Project, query, logNode);
 
         }
@@ -356,7 +350,7 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.title = '{title}'";
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            LogNode logNode = new NodeUpdateLog(node, "title", title);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -367,7 +361,7 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.description = '{description}'";
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            LogNode logNode = new NodeUpdateLog(node, "description", description);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -378,7 +372,7 @@ namespace Backend
             string query = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $" SET node.coordinates = [{coordinates.x}, {coordinates.y}, {coordinates.z}]";
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            LogNode logNode = new NodeUpdateLog(node, "description", coordinates.ToString());
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
 
@@ -390,7 +384,7 @@ namespace Backend
                 $" (:NODE {{guid: '{edge.Child.Id}'}})" +
                 $" SET edge.title = '{title}'";
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            LogNode logNode = new EdgeUpdateLog(edge, "title", title);
             yield return MakeAndLogChangeQueryCo(edge.Project, updateTitleQuery, logNode);
         }
 
@@ -411,7 +405,7 @@ namespace Backend
                 $" (:NODE {{guid: '{edge.Child.Id}'}})" +
                 $" SET edge.description = '{description}'";
 
-            LogNode logNode = new LogNode(ChangeEnum.Update, "json goes here");
+            LogNode logNode = new EdgeUpdateLog(edge, "description", description);
             yield return MakeAndLogChangeQueryCo(edge.Project, updateDescQuery, logNode);
         }
 
@@ -440,7 +434,7 @@ namespace Backend
             string deleteQuery = $"MATCH (node :NODE {{guid: '{node.Id}'}}) " +
                 $"DETACH DELETE (node)";
 
-            LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
+            LogNode logNode = new NodeDeletionLog(node);
             yield return MakeAndLogChangeQueryCo(node.Project, deleteQuery, logNode);
         }
 
@@ -452,7 +446,7 @@ namespace Backend
                 $" (:NODE {{guid: '{edge.Child.Id}'}}) " +
                 $" DELETE edge";
 
-            LogNode logNode = new LogNode(ChangeEnum.Delete, "json goes here");
+            LogNode logNode = new EdgeDeletionLog(edge);
             yield return MakeAndLogChangeQueryCo(edge.Project, deleteEdgeQuery, logNode);
         }
 

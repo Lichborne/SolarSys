@@ -18,11 +18,7 @@ namespace Backend
         UpdateNode,
         UpdateEdge,
         DeleteNode,
-        DeleteEdge,
-        // TODO to remove below 
-        Create,
-        Update,
-        Delete
+        DeleteEdge
     }
     public class LogNode
     {
@@ -63,73 +59,53 @@ namespace Backend
 
             return new LogNode(body, change, guid, timeStamp);
         }
-
-        // public static void Validate<T>(T obj)
-        // {
-        //     var results = new List<ValidationResult>();
-
-        //     var validate = Validator.TryValidateObject(obj, new ValidationContext(obj), results, true);
-
-        //     if (!validate)
-        //     {
-        //         Console.WriteLine(String.Join("\n", results.Select(o => o.ErrorMessage)));
-        //         Debug.Log("Validation error!");
-        //     }
-        // }
     }
     public class NodeCreationLog : LogNode
     {
-        public NodeCreationLog(NodeCreationSchema log) : base(ChangeEnum.AddNode)
+        public NodeCreationLog(GraphNode node) : base(ChangeEnum.AddNode)
         {
-            //Validate(log);
-            Body = JsonConvert.SerializeObject(log);
+            Body = node.Serialize();
         }
     }
 
     public class EdgeCreationLog : LogNode
     {
-        public EdgeCreationLog(EdgeCreationSchema log) : base(ChangeEnum.AddEdge)
+        public EdgeCreationLog(GraphNode parent, GraphEdge edge, GraphNode child) : base(ChangeEnum.AddEdge)
         {
-            //Validate(log);
-            Body = JsonConvert.SerializeObject(log);
+            Body = $"({parent.Id.ToString()},{edge.Serialize()},{child.Id.ToString()})";
         }
     }
 
     public class NodeUpdateLog : LogNode
     {
-        public NodeUpdateLog(NodeUpdateSchema log) : base(ChangeEnum.UpdateNode)
+        public NodeUpdateLog(GraphNode node, String field, String newValue) : base(ChangeEnum.UpdateNode)
         {
-            //Validate(log);
-            //var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-            Body = JsonConvert.SerializeObject(log);
+            Body = $"({node.Serialize()},{field},{newValue})";
         }
     }
 
     public class EdgeUpdateLog : LogNode
     {
-        public EdgeUpdateLog(EdgeUpdateSchema log) : base(ChangeEnum.UpdateEdge)
+        public EdgeUpdateLog(GraphEdge edge, String field, String newValue) : base(ChangeEnum.UpdateEdge)
         {
-            // Validate(log);
-            // var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-            Body = JsonConvert.SerializeObject(log);
+
+            Body = $"({edge.Serialize()},{field},{newValue})";
         }
     }
 
     public class NodeDeletionLog : LogNode
     {
-        public NodeDeletionLog(NodeCreationSchema log) : base(ChangeEnum.DeleteNode)
+        public NodeDeletionLog(GraphNode node) : base(ChangeEnum.DeleteNode)
         {
-            // Validate(log);
-            Body = JsonConvert.SerializeObject(log);
+            Body = node.Serialize();
         }
     }
 
     public class EdgeDeletionLog : LogNode
     {
-        public EdgeDeletionLog(EdgeCreationSchema log) : base(ChangeEnum.DeleteEdge)
+        public EdgeDeletionLog(GraphEdge edge) : base(ChangeEnum.DeleteEdge)
         {
-            // Validate(log);
-            Body = JsonConvert.SerializeObject(log);
+            Body = edge.Serialize();
         }
     }
 }
