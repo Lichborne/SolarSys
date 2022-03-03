@@ -26,7 +26,7 @@ namespace Backend
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
         {
             yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
-            yield return Database.ReadEmptyProjectsSharedWith(this, sharedProjects => ReadOnlyProjects = sharedProjects);
+            yield return Database.ReadProjectsSharedWith(this, sharedProjects => ReadOnlyProjects = sharedProjects);
 
             if (processUser != null)
             {
