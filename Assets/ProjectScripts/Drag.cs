@@ -105,7 +105,6 @@ class Drag : MonoBehaviour
         GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
         Vector3 currentPosition = transform.position;
         StartCoroutine(attachedNode.UpdateCoordinatesCo((currentPosition.x, currentPosition.y, currentPosition.z)));
-        Debug.Log("Updating planet " + attachedNode.Title + "'s coordinates to " + currentPosition);
     }
 }
  
