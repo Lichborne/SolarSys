@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class FrontEndEdge : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class FrontEndEdge : MonoBehaviour
 
     public GameObject _child {get; set; } = null;
 
+    private float _rotation = 0;
+
     // Instead of update; moving called by funct in node.
     void Start() 
     {
@@ -21,7 +24,7 @@ public class FrontEndEdge : MonoBehaviour
     }
     void Update()
     {   
-        if (_databaseEdge == null) {
+        if (_databaseEdge == null && !(_textObject == null)) {
             return;
         }
         //if it's a self reference edge, we just update its position in a more simple manner and return
@@ -36,7 +39,7 @@ public class FrontEndEdge : MonoBehaviour
         // rotate towards child
         gameObject.transform.LookAt(_child.transform);
 
-        gameObject.transform.Rotate(0.0f, 0.0f, 90f);
+        gameObject.transform.Rotate(0.0f, 0.0f, _rotation);
         
         //for scaling
         Vector3 ls = gameObject.transform.localScale;
@@ -47,7 +50,7 @@ public class FrontEndEdge : MonoBehaviour
         // some additional scaling if the edge is curved
         if (_isCurved) {
 
-            ls.y = Vector3.Distance(_parent.transform.position, _child.transform.position)/2;
+            ls.y = Vector3.Distance(_parent.transform.position, _child.transform.position)/3;
 
             ls.x = Vector3.Distance(_parent.transform.position, _child.transform.position)/8;
 
@@ -70,6 +73,7 @@ public class FrontEndEdge : MonoBehaviour
         _textObject = text;
         _parent = p;
         _child = c;
+        _rotation = rotation;
 
         gameObject.GetComponent<StoreParentChild>().parent = _parent;
         gameObject.GetComponent<StoreParentChild>().child = _child;
