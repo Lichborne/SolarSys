@@ -57,9 +57,7 @@ public class AddEdge : MonoBehaviour
                 if(_toNode == _fromNode) 
                 {
                     rightPrefab = _selfReferencePreFab;
-                }
-
-                if (_fromNode.GetComponent<FrontEndNode>().from.Contains(_toNode) || _toNode.GetComponent<FrontEndNode>().from.Contains(_fromNode)) 
+                } else if (_fromNode.GetComponent<FrontEndNode>().from.Contains(_toNode) || _toNode.GetComponent<FrontEndNode>().from.Contains(_fromNode)) 
                 {
                     rightPrefab = _curvedPrefab;
                     rotation = _fromNode.GetComponent<FrontEndNode>().changeEdge(_toNode, _curvedPrefab);

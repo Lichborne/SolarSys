@@ -96,7 +96,7 @@ class Drag : MonoBehaviour
                 {
                     if (edge.GetComponent<FrontEndEdge>()._child == gameObject)
                     {
-                        StartCoroutine(edge.GetComponent<FrontEndEdge>()._databaseEdge.DeleteFromDatabaseCo());
+                        //StartCoroutine(edge.GetComponent<FrontEndEdge>()._databaseEdge.DeleteFromDatabaseCo());
                         Destroy(edge);
                     }
                 }
@@ -106,7 +106,7 @@ class Drag : MonoBehaviour
 
             foreach (GameObject edge in gameObject.GetComponent<FrontEndNode>().edgeOut) 
             {
-                 StartCoroutine(edge.GetComponent<FrontEndEdge>()._databaseEdge.DeleteFromDatabaseCo());
+                //StartCoroutine(edge.GetComponent<FrontEndEdge>()._databaseEdge.DeleteFromDatabaseCo());
                 Destroy(edge);
             }
 

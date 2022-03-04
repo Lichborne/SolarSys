@@ -58,7 +58,7 @@ public class FrontEndNode : MonoBehaviour
     private List<GameObject> findAllWithChild(GameObject toNode) {
         List<GameObject> edgesToReplace = new List<GameObject>();
         foreach (GameObject edge in edgeOut) {
-            if (edge.GetComponent<FrontEndEdge>()._child == toNode) {
+            if (edge.GetComponent<FrontEndEdge>()._child == toNode && edge.GetComponent<FrontEndEdge>()._child != edge.GetComponent<FrontEndEdge>()._parent) {
                 edgesToReplace.Add(edge);
             }
         }
