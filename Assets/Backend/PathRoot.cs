@@ -125,7 +125,14 @@ namespace Backend
             return projectCopy;
         }
 
+        public IEnumerator DeleteFromDatabase(Action cleanupFunc)
+        {
+            yield return Project.User.Database.DeletePath(this);
+            if (cleanupFunc != null)
+                cleanupFunc();
+        }
+
         public IEnumerator DeleteFromDatabase()
-            => Project.User.Database.DeletePath(this);
+            => DeleteFromDatabase(null);
     }
 }

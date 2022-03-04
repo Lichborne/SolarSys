@@ -107,7 +107,14 @@ namespace Backend
                 yield return edge.CreateInDatabase();
         }
 
+        public IEnumerator DeleteFromDatabase(Action cleanupFunc)
+        {
+            yield return User.Database.DeleteGraphProject(this);
+            if (cleanupFunc != null)
+                cleanupFunc();
+        }
+
         public IEnumerator DeleteFromDatabase()
-            => User.Database.DeleteGraphProject(this);
+            => DeleteFromDatabase(null);
     }
 }
