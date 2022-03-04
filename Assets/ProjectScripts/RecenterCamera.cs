@@ -4,18 +4,24 @@ using UnityEngine;
 
 public class RecenterCamera : MonoBehaviour
 {
-    public Camera cameraToRecenter = Camera.main;
-   
-    void Start() 
-    {
-        recenter();
+    
+    private Camera cameraToRecenter = Camera.main;
+
+    void OnMouseOver() {
+        Debug.Log("touched");
+        if (Input.GetMouseButtonDown(0)) {
+            recenter();
+        }
     }
 
-    void recenter() 
+    public void recenter() 
     {
+        GameObject player = GameObject.FindGameObjectsWithTag("Player")[0];
         cameraToRecenter = Camera.main;
-        transform.rotation = new Quaternion(0,0,0,0);
-        transform.position = new Vector3(0,0,0);
+        cameraToRecenter.transform.rotation = new Quaternion(0,0,0,0);
+        cameraToRecenter.transform.position = new Vector3(0,0,0);
+        player.transform.position = new Vector3(0,0,0);
+        Debug.Log("Called");
     }
 
     

@@ -30,7 +30,7 @@ public class FrontEndEdge : MonoBehaviour
         //if it's a self reference edge, we just update its position in a more simple manner and return
         if (_parent == _child) {
             gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
-            gameObject.transform.LookAt(_parent.transform);
+            //gameObject.transform.LookAt(_parent.transform);
             return;
         }
 
@@ -75,9 +75,13 @@ public class FrontEndEdge : MonoBehaviour
         _child = c;
         _rotation = rotation;
 
-        gameObject.GetComponent<StoreParentChild>().parent = _parent;
-        gameObject.GetComponent<StoreParentChild>().child = _child;
+        //gameObject.GetComponent<StoreParentChild>().parent = _parent;
+        //gameObject.GetComponent<StoreParentChild>().child = _child;
         gameObject.transform.LookAt(_child.transform);
         gameObject.transform.Rotate(0.0f, 0.0f, rotation);
+
+        if (_parent == _child) {
+
+        }
     }
 }
