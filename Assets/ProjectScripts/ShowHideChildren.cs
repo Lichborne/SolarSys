@@ -15,6 +15,7 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject createNewPathViewPopUp;
     public GameObject savedGraphsButtonPanel;
     public GameObject LoginPanel;
+    public GameObject recenterButtonPanel;
    
    
     public void Toggle_infoDisplay()
@@ -122,6 +123,17 @@ public class ShowHideChildren : MonoBehaviour
         else 
         {
             LoginPanel.SetActive(true);
+        }
+    }
+    public void Toggle_RecenterButtonPanel()
+    {
+        if (recenterButtonPanel.activeSelf == true) 
+        {
+            recenterButtonPanel.SetActive(false);
+        }
+        else 
+        {
+            recenterButtonPanel.SetActive(true);
         }
     }
 
