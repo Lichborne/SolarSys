@@ -7,12 +7,12 @@ public class RecenterCamera : MonoBehaviour
     
     private Camera cameraToRecenter = Camera.main;
 
-    void OnMouseOver() {
-        Debug.Log("touched");
-        if (Input.GetMouseButtonDown(0)) {
-            recenter();
-        }
-    }
+    //void OnMouseOver() {
+        //Debug.Log("touched");
+        //if (Input.GetMouseButtonDown(0)) {
+            //recenter();
+        //}
+    //}
 
     public void recenter() 
     {
