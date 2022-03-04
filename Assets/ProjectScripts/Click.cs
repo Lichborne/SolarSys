@@ -9,7 +9,7 @@ public class Click : MonoBehaviour
     private LayerMask clickablesLayer;
     [HideInInspector]
     public GameObject selectedObject;
-    private List<GameObject> selectedObjects;
+    public List<GameObject> selectedObjects;
     private List<GameObject> hiddenNodes;
     private List<GameObject> hiddenEdges;
     public GameObject UIPanel;

@@ -100,9 +100,11 @@ namespace Backend
         }
 
         // deletes the edge from the database. does not affect the edge's parent or child
-        public IEnumerator DeleteFromDatabaseCo() // works
+        public IEnumerator DeleteFromDatabaseCo(Action cleanupFunc = null) // works
         {
             yield return Project.User.Database.DestroyEdgeCo(this);
+            if (cleanupFunc != null)
+                cleanupFunc();
         }
 
         public override string ToString()

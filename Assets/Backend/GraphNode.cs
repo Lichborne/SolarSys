@@ -108,8 +108,13 @@ namespace Backend
         }
 
         // deletes the node from the database along with its edges. does not affect the node's children
-        public IEnumerator DeleteFromDatabaseCo() // works
-            => Project.User.Database.DestroyNodeCo(this);
+        public IEnumerator DeleteFromDatabaseCo(Action cleanupFunc = null) // works
+        {
+            yield return Project.User.Database.DestroyNodeCo(this);
+            if (cleanupFunc != null)
+                cleanupFunc();
+        }
+
 
 
         public override string ToString()

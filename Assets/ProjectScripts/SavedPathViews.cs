@@ -10,6 +10,8 @@ public class SavedPathViews : MonoBehaviour
     private List<string> pathViewList;
     public Transform savedPathViewsContent;
     public Transform savedPathViewContainer;
+
+    [SerializeField]
     public GameObject newPathViewName;
     public GameObject createNewPathViewPanel;
     public GameObject savedPathViewsPanel;
@@ -87,21 +89,19 @@ public class SavedPathViews : MonoBehaviour
     public void CreatePathViewButtonClicked()
     {
         createNewPathViewPanel.SetActive(false);
-        AddPathView(newPathViewName.GetComponent<TMP_InputField>().text, savedPathViewContainer, savedPathViewsContent);
+        string pathTitle = newPathViewName.GetComponent<TMP_InputField>().text;
+        var currentlySelectedNodes = Camera.main.GetComponent<Click>().selectedObjects;
+        AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
 
-        //Add code here to add a new path view given currently active
-        // foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Node"))
-        // {   
-          
-        // }
+        PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
+        foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
+        {
+            GraphNode attachedNode = gameobject.GetComponent<FrontEndNode>().getDatabaseNode();
+            Debug.Log(attachedNode.Title);
+            path.AddNode(attachedNode); // adding the graph node
+        }
 
-        // PathRoot path = new PathRoot(graphProject, "title of the path", "path description");
-        // foreach (GraphNode node in ...) // for each graph node you want to add to the path
-        // {  
-        //     path.AddNode(node); // adding the graph node
-        // }
-
-        // StartCoroutine(path.CreateInDatabase()); // saving the project to the database
+        player.GetComponent<LoadGraph>().StartCoroutine(path.CreateInDatabase()); // saving the project to the database
     }
 
     public void LoadOriginalProject() 
