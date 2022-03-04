@@ -11,7 +11,7 @@ namespace UnityTemplateProjects
         bool is_zoomed_on_planet = false;
         bool is_zooming = false;
 
-        class CameraState
+        public class CameraState
         {
             public float yaw;
             public float pitch;
@@ -95,7 +95,7 @@ namespace UnityTemplateProjects
 
         const float k_MouseSensitivityMultiplier = 0.01f;
 
-        CameraState m_TargetCameraState = new CameraState();
+        public CameraState m_TargetCameraState = new CameraState();
         CameraState m_StartOfUpdateCameraState = new CameraState();
         CameraState m_BeforeZoomCameraState = new CameraState();
         CameraState m_InterpolatingCameraState = new CameraState();

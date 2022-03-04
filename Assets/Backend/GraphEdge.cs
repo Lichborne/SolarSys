@@ -25,6 +25,7 @@ namespace Backend
             Id = id;
             Parent = parent;
             Child = child;
+            Project = parent.Project;
         }
 
         public GraphEdge(string title, string body, GraphNode parent, GraphNode child) :
@@ -57,9 +58,9 @@ namespace Backend
 
         public static GraphEdge FromJObject(JObject obj, GraphNode parent, GraphNode child)
         {
-            string title = (string) obj["title"];
-            string description = (string) obj["description"];
-            string guidText = (string) obj["guid"];
+            string title = (string)obj["title"];
+            string description = (string)obj["description"];
+            string guidText = (string)obj["guid"];
             return new GraphEdge(Guid.Parse(guidText), title, description, parent, child);
         }
 
@@ -121,5 +122,10 @@ namespace Backend
 
         public override int GetHashCode()
             => Id.GetHashCode();
+
+        public String Serialize()
+        {
+            return $"{Title};{Description};{Id.ToString()};{Parent.Id};{Child.Id}";
+        }
     }
 }

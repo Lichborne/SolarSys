@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 public class AuthenticateUser : MonoBehaviour
 {
     public GameObject savedProjectsPanel;
+    public GameObject recenterCameraPanel;
     public GameObject loginPanel;
     public GameObject errorMessage;
 
@@ -47,6 +48,7 @@ public class AuthenticateUser : MonoBehaviour
                 errorMessage.SetActive(false);
                 loginPanel.SetActive(false);
                 savedProjectsPanel.SetActive(true);
+                recenterCameraPanel.SetActive(true);
                 Camera.main.GetComponent<DeactivateCamera>().activateCamera();
                 break;
             case 401:
