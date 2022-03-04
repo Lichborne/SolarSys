@@ -20,7 +20,7 @@ public class LoadGraph : MonoBehaviour
 
     public GameObject _textObject;
 
-    public Backend.GraphProject graph = new Backend.GraphProject();
+    public Backend.GraphProject graph = null;
 
     private List<GameObject> graphNodes = new List<GameObject>();
 
