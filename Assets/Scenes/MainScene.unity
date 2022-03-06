@@ -4910,6 +4910,7 @@ MonoBehaviour:
   _edgePrefab: {fileID: 3639624899920325730, guid: e1f8c4f3d64ac514b8f442daf57f3a2e, type: 3}
   _curvedPrefab: {fileID: 2237684596228869056, guid: 19b585c978245af4f916e6caca5b8f53, type: 3}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+  _textObject: {fileID: 895533040229435160, guid: 1c5108488c470e640affb4ce5de699cf, type: 3}
   cameraController: {fileID: 1687258583}
 --- !u!114 &1487399005
 MonoBehaviour:
@@ -4923,11 +4924,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c709b25a29aff24e80fd58a9e386754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nodePrefab: {fileID: 4974278123316600395, guid: cffe4958efa6c1340ae54a8cbde8ae9e, type: 3}
+  _nodePrefab: {fileID: 3404108376748283412, guid: 8ebf8a09aeee6a14b88a43c97b2a2923, type: 3}
   _edgePreFab: {fileID: 3639624899920325730, guid: e1f8c4f3d64ac514b8f442daf57f3a2e, type: 3}
   _curvedPrefab: {fileID: 2237684596228869056, guid: 19b585c978245af4f916e6caca5b8f53, type: 3}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
-  _textObject: {fileID: 0}
+  _textObject: {fileID: 895533040229435160, guid: 1c5108488c470e640affb4ce5de699cf, type: 3}
 --- !u!114 &1487399006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5327,6 +5328,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   selectedObject: {fileID: 0}
+  selectedObjects: []
   UIPanel: {fileID: 941591993497452965}
   UIPanelPath: {fileID: 3492458473271019277}
   UIPanelMultiple: {fileID: 3492458474247872956}

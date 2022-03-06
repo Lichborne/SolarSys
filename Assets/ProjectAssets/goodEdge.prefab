@@ -88,6 +88,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e4f41e392b4c04b8e3d643ed993fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selfReferencePrefab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+  _edgePrefab: {fileID: 3639624899920325730, guid: e1f8c4f3d64ac514b8f442daf57f3a2e, type: 3}
+  _curvedPrefab: {fileID: 2237684596228869056}
 --- !u!1001 &7528460473781845566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106,6 +109,14 @@ PrefabInstance:
     - target: {fileID: 3204486261428266281, guid: 56db0ac0640f32e4bbb52c7791d636f5, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3204486261428266281, guid: 56db0ac0640f32e4bbb52c7791d636f5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 3204486261428266281, guid: 56db0ac0640f32e4bbb52c7791d636f5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 3204486261428266281, guid: 56db0ac0640f32e4bbb52c7791d636f5, type: 3}
       propertyPath: m_LocalPosition.x

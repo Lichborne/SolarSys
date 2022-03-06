@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2560018073222169429}
   m_LocalRotation: {x: 0.6532815, y: -0.27059805, z: -0.27059805, w: 0.6532815}
-  m_LocalPosition: {x: 0.3576985, y: -0.34935892, z: 0.278}
+  m_LocalPosition: {x: 0.3576985, y: -0.34935892, z: 0.213}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5333398985976511163}
@@ -409,6 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isCurved: 0
+  _rotation: 0
 --- !u!64 &3476498693285748524
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -435,6 +436,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e4f41e392b4c04b8e3d643ed993fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selfReferencePrefab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+  _edgePrefab: {fileID: 3639624899920325730}
+  _curvedPrefab: {fileID: 2237684596228869056, guid: 19b585c978245af4f916e6caca5b8f53, type: 3}
 --- !u!1001 &227421377995331502
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -641,8 +645,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2006701754031461411, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2006701754031461411, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 2006701754031461411, guid: 285eaa547166bce5bbdeb2d0d90b4b4c, type: 3}
       propertyPath: m_LocalPosition.x
