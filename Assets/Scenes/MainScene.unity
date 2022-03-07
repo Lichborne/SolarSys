@@ -1090,7 +1090,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 176892457}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8132848421150269996}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
+        m_MethodName: CopyProject
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &176892457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2191,7 +2203,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 344852573}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8132848421150269996}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
+        m_MethodName: DeleteProject
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &344852573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4997,8 +5021,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1613203970}
-        m_TargetAssemblyTypeName: SavedPathViews, Assembly-CSharp
+      - m_Target: {fileID: 8132848421150269996}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
         m_MethodName: ShareProject
         m_Mode: 1
         m_Arguments:
@@ -7586,7 +7610,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1325579917}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3404108376748283412, guid: 8ebf8a09aeee6a14b88a43c97b2a2923, type: 3}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1325579917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8709,7 +8745,6 @@ MonoBehaviour:
   savedPathViewsPanel: {fileID: 0}
   savedProjectsPanel: {fileID: 8132848421150269994}
   player: {fileID: 1487399002}
-  sharedWithUserEmail: {fileID: 245513901}
 --- !u!1 &1668308839
 GameObject:
   m_ObjectHideFlags: 0
@@ -9049,6 +9084,7 @@ MonoBehaviour:
     m_Bits: 8
   selectedObject: {fileID: 0}
   selectedObjects: []
+  shownNodes: []
   UIPanel: {fileID: 941591993497452965}
   UIPanelPath: {fileID: 3492458473271019277}
   UIPanelMultiple: {fileID: 3492458474247872956}
@@ -10966,7 +11002,8 @@ MonoBehaviour:
   savedProjectContainer: {fileID: 4659566411080213836}
   newProjectName: {fileID: 4813278068975609229}
   createNewProjectPanel: {fileID: 4813278068281607725}
-  createdByMeToggle: {fileID: 0}
+  createdByMeToggle: {fileID: 339078562}
+  sharedWithUserEmail: {fileID: 0}
 --- !u!114 &1983991719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18326,6 +18363,7 @@ MonoBehaviour:
   newProjectName: {fileID: 1218103053}
   createNewProjectPanel: {fileID: 74157660}
   createdByMeToggle: {fileID: 339078562}
+  sharedWithUserEmail: {fileID: 245513901}
 --- !u!222 &8132848421150269999
 CanvasRenderer:
   m_ObjectHideFlags: 0

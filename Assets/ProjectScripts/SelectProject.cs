@@ -44,7 +44,7 @@ public class SelectProject : MonoBehaviour
         }
         else
         {
-            List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.Projects;
+            List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.ReadOnlyProjects;
             foreach (GraphProject p in projects)
             {
                 if (p.Title == title) {

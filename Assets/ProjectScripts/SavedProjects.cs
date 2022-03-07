@@ -15,10 +15,11 @@ public class SavedProjects : MonoBehaviour
     public GameObject newProjectName;
     public GameObject createNewProjectPanel;
     public GameObject createdByMeToggle;
+    public GameObject sharedWithUserEmail;
     [HideInInspector]
     public GraphUser user;
     [HideInInspector]
-    public GraphProject selectedProject = null;
+    public GraphProject selectedProject;
 
 
 
@@ -60,10 +61,11 @@ public class SavedProjects : MonoBehaviour
 
         // Adding my own Coroutine code
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
-        string userEmail = "foo.bar@doc.ic.ac.uk";
+        // string userEmail = "foo.bar@doc.ic.ac.uk";
+        string userEmail = "balazs.frei@ic.ac.uk";
         user = new GraphUser(userEmail);
         StartCoroutine(
-            user.ReadAllEmptyProjects(DisplayProjectTitles)
+            user.ReadEmptyProjectsOwned(DisplayProjectTitles)
         );
     }
     
@@ -82,11 +84,19 @@ public class SavedProjects : MonoBehaviour
 
     public void DisplayProjectTitles(GraphUser user)
     {
-        foreach (GraphProject project in user.Projects)
+        if (createdByMeToggle.GetComponent<Toggle>().isOn)
         {
-            AddProject(project.Title, savedProjectContainer, savedProjectsContent);
+            foreach (GraphProject project in user.Projects)
+            {
+                AddProject(project.Title, savedProjectContainer, savedProjectsContent);
+            }
         }
-
+        else {
+            foreach (GraphProject project in user.ReadOnlyProjects)
+            {
+                AddProject(project.Title, savedProjectContainer, savedProjectsContent);
+            }
+        }
     }
 
     //This function is called when we select create new project in pop-up panel
@@ -94,10 +104,10 @@ public class SavedProjects : MonoBehaviour
     {
         createNewProjectPanel.SetActive(false);
         string projectTitle = newProjectName.GetComponent<TMP_InputField>().text;
-        AddProject(projectTitle, savedProjectContainer, savedProjectsContent);
-        
+        // AddProject(projectTitle, savedProjectContainer, savedProjectsContent);
         GraphProject newProject = new GraphProject(user, projectTitle);
         StartCoroutine(newProject.CreateInDatabase());
+        CreatedByMeToggleValueChanged();
     }
 
     public void CreatedByMeToggleValueChanged() 
@@ -105,14 +115,14 @@ public class SavedProjects : MonoBehaviour
         ClearProjectDisplay();
         if (createdByMeToggle.GetComponent<Toggle>().isOn) {
             StartCoroutine(
-                user.ReadAllEmptyProjects(DisplayProjectTitles)
+                user.ReadEmptyProjectsOwned(DisplayProjectTitles)
             );
         }
         else 
         {
-            // StartCoroutine(
-            //     user.ReadOnlyProjects(DisplayProjectTitles)
-            // );
+            StartCoroutine(
+                user.ReadEmptyProjectsShared(DisplayProjectTitles)
+            );
             Debug.Log("Read Only Projects");
         }
     }
@@ -123,5 +133,33 @@ public class SavedProjects : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void ShareProject()
+    {
+        string userEmail = sharedWithUserEmail.GetComponent<TMP_InputField>().text;
+        Debug.Log(userEmail);
+        GraphUser user = new GraphUser(userEmail);
+
+        StartCoroutine(
+            selectedProject.ShareWith(user)
+        );
+        
+    }
+
+    public void DeleteProject()
+    {
+        StartCoroutine(
+            selectedProject.DeleteFromDatabase(CreatedByMeToggleValueChanged)
+        );  
+    }
+
+    public void CopyProject()
+    {
+        string title = "Copy1";
+        StartCoroutine(
+            selectedProject.CreateCopyInDatabase(user,title)
+        );  
+        CreatedByMeToggleValueChanged();
     }
 }

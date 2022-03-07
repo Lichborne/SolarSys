@@ -17,7 +17,6 @@ public class SavedPathViews : MonoBehaviour
     public GameObject savedPathViewsPanel;
     public GameObject savedProjectsPanel;
     public GameObject player;
-    public GameObject sharedWithUserEmail;
     [HideInInspector]
     public GraphProject selectedProject;
     [HideInInspector]
@@ -96,6 +95,7 @@ public class SavedPathViews : MonoBehaviour
         var currentlySelectedNodes = Camera.main.GetComponent<Click>().shownNodes;
         AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
 
+        selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
         PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
         Debug.Log("Current Nodes" + currentlySelectedNodes);
         foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
@@ -118,13 +118,7 @@ public class SavedPathViews : MonoBehaviour
         player.GetComponent<LoadGraph>().LoadPath(selectedPathView);
     }
 
-    public void ShareProject()
-    {
-        string userEmail = sharedWithUserEmail.GetComponent<TMP_InputField>().text;
-        Debug.Log(userEmail);
-        GraphUser user = new GraphUser(userEmail);
-        selectedProject.ShareWith(user);
-    }
+   
 
     private void ClearPathViewsDisplay()
     {

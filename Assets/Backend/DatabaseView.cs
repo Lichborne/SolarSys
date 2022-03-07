@@ -414,7 +414,7 @@ namespace Backend
             string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}), " +
                 $"(user :USER {{email: '{toShareWith.Email}'}}) " +
                 $"MERGE (project) -[:SHARED_WITH]-> (user)";
-
+                Debug.Log(query);
             yield return connection.SendWriteTransactions(query);
         }
 
@@ -480,9 +480,9 @@ namespace Backend
                 $"-[:CONTAINS]-> (node :NODE)" +
                 $"DETACH DELETE node";
 
-            string deleteLogNodes = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
-                $"-[* :LOG_HISTORY]-> (logNode :LOG_NODE)" +
-                $"DETACH DELETE logNode";
+            // string deleteLogNodes = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
+            //     $"-[* :LOG_HISTORY]-> (logNode :LOG_NODE)" +
+            //     $"DETACH DELETE logNode";
 
             string deletePaths = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}) " +
                 $"-[:HAS_PATH]-> (path_root :PATH_ROOT) " +
@@ -491,7 +491,7 @@ namespace Backend
             string deleteProject = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}})" +
                 $"DETACH DELETE project";
 
-            yield return connection.SendWriteTransactions(deleteNodesAndEdges, deleteLogNodes, deletePaths, deleteProject);
+            yield return connection.SendWriteTransactions(deleteNodesAndEdges, deletePaths, deleteProject);
         }
     }
 }
