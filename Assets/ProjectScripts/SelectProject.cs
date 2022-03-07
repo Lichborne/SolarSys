@@ -10,6 +10,8 @@ public class SelectProject : MonoBehaviour
 
     public GameObject savedPathViewsPanel;
     public GameObject savedProjectsPanel;
+    public GameObject selectedProjectDisplayText;
+    public GameObject createdByMeToggle;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,23 +24,39 @@ public class SelectProject : MonoBehaviour
         
     }
 
-    public void LoadPathsForProject() 
+    public void SetSelectedProject() 
     {
         GameObject projectContainer = gameObject.transform.parent.gameObject;
         GameObject titleField = projectContainer.transform.Find("Text (TMP)").gameObject;
         string title = titleField.GetComponent<TextMeshProUGUI>().text;
         GraphProject project = null;
-        // Debug.Log(title);
-        //call function in SavedPathViews and pass in title parameter
-        List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.Projects;
-        foreach (GraphProject p in projects)
+
+
+        if (createdByMeToggle.GetComponent<Toggle>().isOn)
         {
-            if (p.Title == title) {
-                project = p;
+            List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.Projects;
+            foreach (GraphProject p in projects)
+            {
+                if (p.Title == title) {
+                    project = p;
+                }
             }
         }
-        savedPathViewsPanel.GetComponent<SavedPathViews>().selectedProject = project;
-        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadPathViewsForProject(project);
+        else
+        {
+            List<GraphProject> projects = savedProjectsPanel.GetComponent<SavedProjects>().user.Projects;
+            foreach (GraphProject p in projects)
+            {
+                if (p.Title == title) {
+                    project = p;
+                }
+            }
+            
+        }
+        
+        savedProjectsPanel.GetComponent<SavedProjects>().selectedProject = project;
+        selectedProjectDisplayText.GetComponent<TextMeshProUGUI>().text = title;
+      
 
     }
 }

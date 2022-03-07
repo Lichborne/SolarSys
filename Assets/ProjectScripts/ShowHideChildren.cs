@@ -13,9 +13,9 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject savedPathViews;
     public GameObject createNewGraphPopUp;
     public GameObject createNewPathViewPopUp;
-    public GameObject savedGraphsButtonPanel;
-    public GameObject LoginPanel;
-    public GameObject recenterButtonPanel;
+    public GameObject controlPanel;
+    public GameObject loginPanel;
+    public GameObject shareWithUserPanel;
    
    
     public void Toggle_infoDisplay()
@@ -102,40 +102,42 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
-    public void Toggle_SavedGraphsButtonPanel()
+    public void Toggle_controlPanel()
     {
-        if (savedGraphsButtonPanel.activeSelf == true) 
+        if (controlPanel.activeSelf == true) 
         {
-            savedGraphsButtonPanel.SetActive(false);
+            controlPanel.SetActive(false);
         }
         else 
         {
-            savedGraphsButtonPanel.SetActive(true);
+            controlPanel.SetActive(true);
         }
     }
 
-    public void Toggle_LoginPanel()
+    public void Toggle_loginPanel()
     {
-        if (LoginPanel.activeSelf == true) 
+        if (loginPanel.activeSelf == true) 
         {
-            LoginPanel.SetActive(false);
+            loginPanel.SetActive(false);
         }
         else 
         {
-            LoginPanel.SetActive(true);
+            loginPanel.SetActive(true);
         }
     }
-    public void Toggle_RecenterButtonPanel()
+
+     public void Toggle_shareWithUserPanel()
     {
-        if (recenterButtonPanel.activeSelf == true) 
+        if (shareWithUserPanel.activeSelf == true) 
         {
-            recenterButtonPanel.SetActive(false);
+            shareWithUserPanel.SetActive(false);
         }
         else 
         {
-            recenterButtonPanel.SetActive(true);
+            shareWithUserPanel.SetActive(true);
         }
     }
+  
 
    
 

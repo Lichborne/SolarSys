@@ -14,8 +14,11 @@ public class SavedProjects : MonoBehaviour
     public Transform savedProjectContainer;
     public GameObject newProjectName;
     public GameObject createNewProjectPanel;
+    public GameObject createdByMeToggle;
     [HideInInspector]
     public GraphUser user;
+    [HideInInspector]
+    public GraphProject selectedProject = null;
 
 
 
@@ -77,7 +80,7 @@ public class SavedProjects : MonoBehaviour
 
     }
 
-    private void DisplayProjectTitles(GraphUser user)
+    public void DisplayProjectTitles(GraphUser user)
     {
         foreach (GraphProject project in user.Projects)
         {
@@ -95,5 +98,30 @@ public class SavedProjects : MonoBehaviour
         
         GraphProject newProject = new GraphProject(user, projectTitle);
         StartCoroutine(newProject.CreateInDatabase());
+    }
+
+    public void CreatedByMeToggleValueChanged() 
+    {
+        ClearProjectDisplay();
+        if (createdByMeToggle.GetComponent<Toggle>().isOn) {
+            StartCoroutine(
+                user.ReadAllEmptyProjects(DisplayProjectTitles)
+            );
+        }
+        else 
+        {
+            // StartCoroutine(
+            //     user.ReadOnlyProjects(DisplayProjectTitles)
+            // );
+            Debug.Log("Read Only Projects");
+        }
+    }
+
+    private void ClearProjectDisplay()
+    {
+        foreach(Transform child in savedProjectsContent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

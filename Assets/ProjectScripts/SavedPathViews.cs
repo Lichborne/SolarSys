@@ -17,6 +17,7 @@ public class SavedPathViews : MonoBehaviour
     public GameObject savedPathViewsPanel;
     public GameObject savedProjectsPanel;
     public GameObject player;
+    public GameObject sharedWithUserEmail;
     [HideInInspector]
     public GraphProject selectedProject;
     [HideInInspector]
@@ -50,7 +51,7 @@ public class SavedPathViews : MonoBehaviour
     }
 
     //load list of path views for selected project
-    public void LoadPathViewsForProject(GraphProject project) {
+    public void LoadPathViewsForProject() {
         // Debug.Log(selectedProject);
         // Debug.Log(project);
 
@@ -58,8 +59,10 @@ public class SavedPathViews : MonoBehaviour
         // user = savedProjectsPanel.GetComponent<SavedProjects>().user;
         // Debug.Log(user.Email);
 
+        ClearPathViewsDisplay();
+        selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
         StartCoroutine(
-            project.ReadFromDatabase(DisplayPathViewTitles)
+            selectedProject.ReadFromDatabase(DisplayPathViewTitles)
         );
     }
     
@@ -110,9 +113,24 @@ public class SavedPathViews : MonoBehaviour
         player.GetComponent<LoadGraph>().LoadProject(selectedProject.Title);
     }
 
-    public void LoadSelectedPathView(PathRoot pathView)
+    public void LoadSelectedPathView()
     {
-        // player.GetComponent<LoadGraph>().LoadPathView(selectedPathView);
-        player.GetComponent<LoadGraph>().LoadPath(pathView);
+        player.GetComponent<LoadGraph>().LoadPath(selectedPathView);
+    }
+
+    public void ShareProject()
+    {
+        string userEmail = sharedWithUserEmail.GetComponent<TMP_InputField>().text;
+        Debug.Log(userEmail);
+        GraphUser user = new GraphUser(userEmail);
+        selectedProject.ShareWith(user);
+    }
+
+    private void ClearPathViewsDisplay()
+    {
+        foreach(Transform child in savedPathViewsContent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
