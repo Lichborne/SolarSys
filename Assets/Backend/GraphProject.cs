@@ -32,6 +32,40 @@ namespace Backend
             this(user, Guid.NewGuid(), title)
         { }
 
+        public GraphProject Copy(string projectTitle)
+        {
+            GraphProject projectCopy = new GraphProject(User, projectTitle);
+            
+            // creating copies of each old node, keeping track of which old node corresponds to which copy
+            Dictionary<GraphNode, GraphNode> oldNodeToCopy = new Dictionary<GraphNode, GraphNode>();
+
+            foreach (GraphNode oldNode in Nodes)
+            {
+                (float X, float Y, float Z) coordsCopy = oldNode.Coordinates;
+                GraphNode copy = new GraphNode(Guid.NewGuid(), projectCopy, oldNode.Title, oldNode.Description, coordsCopy);
+                oldNodeToCopy[oldNode] = copy;
+            }
+
+            // going over each edge in each old node
+            // adding a corresponding path copy to the corresponding node copy
+            List<GraphEdge> newEdges = new List<GraphEdge>();
+            foreach (GraphNode oldNode in Nodes)
+            {
+                foreach (GraphEdge oldEdge in oldNode.Edges)
+                {
+                    GraphNode parentCopy = oldNodeToCopy[oldEdge.Parent];
+                    GraphNode childCopy = oldNodeToCopy[oldEdge.Child];
+                    GraphEdge edgeCopy = new GraphEdge(Guid.NewGuid(), oldEdge.Title, oldEdge.Description, parentCopy, childCopy);   
+
+                    newEdges.Add(edgeCopy);
+                }
+            }
+
+            projectCopy.Nodes.AddRange(oldNodeToCopy.Values);
+            projectCopy.Edges.AddRange(newEdges);
+            return projectCopy;
+        }
+
         // Reads nodes, edges and paths from database
         private IEnumerator ReadSelfFromDatabase()
         {
