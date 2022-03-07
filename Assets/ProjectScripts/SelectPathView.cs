@@ -8,6 +8,7 @@ using Backend;
 public class SelectPathView : MonoBehaviour
 {
     public GameObject savedPathViewsPanel;
+    public GameObject selectedPathViewDisplayText;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +21,7 @@ public class SelectPathView : MonoBehaviour
         
     }
 
-    public void LoadSelectedPath() 
+    public void SetSelectedPath() 
     {
         GameObject projectContainer = gameObject.transform.parent.gameObject;
         GameObject titleField = projectContainer.transform.Find("Text (TMP)").gameObject;
@@ -35,7 +36,8 @@ public class SelectPathView : MonoBehaviour
             }
         }
         savedPathViewsPanel.GetComponent<SavedPathViews>().selectedPathView = selected_path;
-        savedPathViewsPanel.GetComponent<SavedPathViews>().LoadSelectedPathView(selected_path);
+        selectedPathViewDisplayText.GetComponent<TextMeshProUGUI>().text = title;
+        // savedPathViewsPanel.GetComponent<SavedPathViews>().LoadSelectedPathView(selected_path);
 
     }
 }
