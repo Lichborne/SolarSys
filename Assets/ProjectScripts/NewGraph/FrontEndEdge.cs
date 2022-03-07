@@ -15,7 +15,7 @@ public class FrontEndEdge : MonoBehaviour
 
     public GameObject _child {get; set; } = null;
 
-    private float _rotation = 0;
+    public float _rotation = 0;
 
     // Instead of update; moving called by funct in node.
     void Start() 
@@ -27,15 +27,16 @@ public class FrontEndEdge : MonoBehaviour
         if (_databaseEdge == null && !(_textObject == null)) {
             return;
         }
-        //if it's a self reference edge, we just update its position in a more simple manner and return
+        //if it's a self reference edge, we just update its position in a more simple manner, get the text object in a nice place, and return
         if (_parent == _child) {
             gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
-            //gameObject.transform.LookAt(_parent.transform);
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 3, gameObject.transform.position.z);
+            _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y+90f, gameObject.transform.rotation.z+90f, gameObject.transform.rotation.w);
             return;
         }
 
         gameObject.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-
+        
         // rotate towards child
         gameObject.transform.LookAt(_child.transform);
 
@@ -64,6 +65,15 @@ public class FrontEndEdge : MonoBehaviour
             (_child.transform.position.x+_parent.transform.position.x)/2,
             (_child.transform.position.y+_parent.transform.position.y)/2,
             (_child.transform.position.z+_parent.transform.position.z)/2);
+        
+        //if(_isCurved) 
+        //{
+            //_textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2, gameObject.transform.position.z);
+        //} else {
+        _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 1, gameObject.transform.position.z);
+        //}
+        //_textObject.transform.LookAt(_parent.transform);
+        _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y, gameObject.transform.rotation.z, gameObject.transform.rotation.w);
   }
     // constructors are ill advised, so we use this instead
     public void InstantiateEdge(bool isCurvedEdge, Backend.GraphEdge graphEdge, GameObject text, GameObject p, GameObject c, float rotation = 0f) { 
@@ -77,11 +87,8 @@ public class FrontEndEdge : MonoBehaviour
 
         //gameObject.GetComponent<StoreParentChild>().parent = _parent;
         //gameObject.GetComponent<StoreParentChild>().child = _child;
-        gameObject.transform.LookAt(_child.transform);
+        //gameObject.transform.LookAt(_child.transform);
         gameObject.transform.Rotate(0.0f, 0.0f, rotation);
 
-        if (_parent == _child) {
-
-        }
     }
 }
