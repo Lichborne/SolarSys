@@ -4280,6 +4280,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1687258588}
+        m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
+        m_MethodName: deactivateCamera
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1313627153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6498,7 +6510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1983991717
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10244,7 +10256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3492458473319478616
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12426,6 +12438,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1687258588}
+        m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
+        m_MethodName: activateCamera
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4813278068175939696
 GameObject:
   m_ObjectHideFlags: 0
@@ -12759,6 +12783,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1613203970}
         m_TargetAssemblyTypeName: SavedPathViews, Assembly-CSharp
         m_MethodName: CreatePathViewButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1687258588}
+        m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
+        m_MethodName: activateCamera
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
