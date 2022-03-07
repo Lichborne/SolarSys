@@ -20,6 +20,8 @@ public class SavedProjects : MonoBehaviour
     public GraphUser user;
     [HideInInspector]
     public GraphProject selectedProject;
+    [HideInInspector]
+    public bool readOnly = false;
 
 
 
@@ -61,8 +63,8 @@ public class SavedProjects : MonoBehaviour
 
         // Adding my own Coroutine code
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
-        // string userEmail = "foo.bar@doc.ic.ac.uk";
-        string userEmail = "balazs.frei@ic.ac.uk";
+        string userEmail = "foo.bar@doc.ic.ac.uk";
+        // string userEmail = "balazs.frei@ic.ac.uk";
         user = new GraphUser(userEmail);
         StartCoroutine(
             user.ReadEmptyProjectsOwned(DisplayProjectTitles)

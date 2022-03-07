@@ -41,6 +41,8 @@ public class SelectProject : MonoBehaviour
                     project = p;
                 }
             }
+
+            savedProjectsPanel.GetComponent<SavedProjects>().readOnly = false;
         }
         else
         {
@@ -51,6 +53,8 @@ public class SelectProject : MonoBehaviour
                     project = p;
                 }
             }
+
+            savedProjectsPanel.GetComponent<SavedProjects>().readOnly = true;
             
         }
         
