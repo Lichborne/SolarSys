@@ -25,9 +25,29 @@ namespace Backend
         // Each empty project can then be read in by starting the coroutine Projects[i].ReadFromDatabase()
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
         {
-            yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
-            yield return Database.ReadProjectsSharedWith(this, sharedProjects => ReadOnlyProjects = sharedProjects);
+            yield return ReadEmptyProjectsOwned(null);
+            yield return ReadEmptyProjectsShared(null);
 
+            if (processUser != null)
+            {
+                yield return "waiting for next frame :)";
+                processUser(this);
+            }
+        }
+
+        public IEnumerator ReadEmptyProjectsOwned(Action<GraphUser> processUser)
+        {
+            yield return Database.ReadAllEmptyProjects(this, projectsRead => Projects = projectsRead);
+            if (processUser != null)
+            {
+                yield return "waiting for next frame :)";
+                processUser(this);
+            }
+        }
+
+        public IEnumerator ReadEmptyProjectsShared(Action<GraphUser> processUser)
+        {
+            yield return Database.ReadProjectsSharedWith(this, projectsShared => ReadOnlyProjects = projectsShared);
             if (processUser != null)
             {
                 yield return "waiting for next frame :)";
