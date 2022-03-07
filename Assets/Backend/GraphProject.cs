@@ -32,9 +32,9 @@ namespace Backend
             this(user, Guid.NewGuid(), title)
         { }
 
-        public GraphProject Copy(string projectTitle)
+        public GraphProject Copy(GraphUser newUser, string newTitle)
         {
-            GraphProject projectCopy = new GraphProject(User, projectTitle);
+            GraphProject projectCopy = new GraphProject(newUser, newTitle);
             
             // creating copies of each old node, keeping track of which old node corresponds to which copy
             Dictionary<GraphNode, GraphNode> oldNodeToCopy = new Dictionary<GraphNode, GraphNode>();
