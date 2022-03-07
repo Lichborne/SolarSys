@@ -90,14 +90,15 @@ public class SavedPathViews : MonoBehaviour
     {
         createNewPathViewPanel.SetActive(false);
         string pathTitle = newPathViewName.GetComponent<TMP_InputField>().text;
-        var currentlySelectedNodes = Camera.main.GetComponent<Click>().selectedObjects;
+        var currentlySelectedNodes = Camera.main.GetComponent<Click>().shownNodes;
         AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
 
         PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
+        Debug.Log("Current Nodes" + currentlySelectedNodes);
         foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
         {
             GraphNode attachedNode = gameobject.GetComponent<FrontEndNode>().getDatabaseNode();
-            Debug.Log(attachedNode.Title);
+            Debug.Log("Adding Node to Path" + attachedNode.Title);
             path.AddNode(attachedNode); // adding the graph node
         }
 

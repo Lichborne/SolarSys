@@ -12,6 +12,7 @@ public class Click : MonoBehaviour
     public List<GameObject> selectedObjects;
     private List<GameObject> hiddenNodes;
     private List<GameObject> hiddenEdges;
+    public List<GameObject> shownNodes;
     public GameObject UIPanel;
     public GameObject UIPanelPath;
     public GameObject UIPanelMultiple;
@@ -165,6 +166,7 @@ public class Click : MonoBehaviour
                 hiddenNodes.Add(obj);
                 obj.GetComponent<ClickOn>().currentlyHidden = true;
                 obj.GetComponent<ClickOn>().HideUnhideMe();
+
             }
             //unhide selected nodes
             foreach (GameObject obj in selectedObjects) 
@@ -172,6 +174,7 @@ public class Click : MonoBehaviour
                 obj.GetComponent<ClickOn>().currentlySelected = false;
                 obj.GetComponent<ClickOn>().ClickMe();
                 hiddenNodes.Remove(obj);
+                shownNodes.Add(obj);
                 obj.GetComponent<ClickOn>().currentlyHidden = false;
                 obj.GetComponent<ClickOn>().HideUnhideMe();
             }
@@ -225,6 +228,6 @@ public class Click : MonoBehaviour
             obj.GetComponent<FrontEndEdge>()._textObject.SetActive(true);
 
         }
-
+        shownNodes.Clear();
     }
 }
