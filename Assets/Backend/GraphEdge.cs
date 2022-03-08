@@ -20,8 +20,8 @@ namespace Backend
 
         public GraphEdge(Guid id, string title, string body, GraphNode parent, GraphNode child)
         {
-            Title = title;
-            Description = body;
+            Title = title.Replace('"', '“');
+            Description = body.Replace('"', '“');
             Id = id;
             Parent = parent;
             Child = child;

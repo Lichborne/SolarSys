@@ -21,8 +21,8 @@ namespace Backend
 
         public GraphNode(Guid id, GraphProject project, string title, string description, (float x, float y, float z) coordinates)
         {
-            Title = title;
-            Description = description;
+            Title = title.Replace('"', '“');
+            Description = description.Replace('"', '“');
             Id = id;
             Coordinates = coordinates;
             Project = project;
