@@ -21,6 +21,9 @@ namespace Backend
             this.Email = email;
         }
 
+        public static IEnumerator CreateIfNotExists(string email)
+            => new DatabaseView().CreateUserIfNotExists(email);
+
         // Reads in title and ID of each graph project into Projects, but leaves them empty (does not load the nodes or edges)
         // Each empty project can then be read in by starting the coroutine Projects[i].ReadFromDatabase()
         public IEnumerator ReadAllEmptyProjects(Action<GraphUser> processUser)
