@@ -164,4 +164,16 @@ public class SavedProjects : MonoBehaviour
         );  
         CreatedByMeToggleValueChanged();
     }
+
+    public void setWhetherProjectIsReadOnly()
+    {
+        if (createdByMeToggle.GetComponent<Toggle>().isOn)
+        {
+            readOnly = true;
+            Debug.Log("set ReadOnly to true");
+        }
+        else{
+            readOnly = false;
+        }
+    }
 }

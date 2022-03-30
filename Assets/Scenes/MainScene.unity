@@ -894,6 +894,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8132848421150269996}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
+        m_MethodName: setWhetherProjectIsReadOnly
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &91192531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9344,6 +9356,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8132848421150269996}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
+        m_MethodName: setWhetherProjectIsReadOnly
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1701709971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11004,6 +11028,7 @@ MonoBehaviour:
   createNewProjectPanel: {fileID: 4813278068281607725}
   createdByMeToggle: {fileID: 339078562}
   sharedWithUserEmail: {fileID: 0}
+  readOnly: 0
 --- !u!114 &1983991719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18364,6 +18389,7 @@ MonoBehaviour:
   createNewProjectPanel: {fileID: 74157660}
   createdByMeToggle: {fileID: 339078562}
   sharedWithUserEmail: {fileID: 245513901}
+  readOnly: 0
 --- !u!222 &8132848421150269999
 CanvasRenderer:
   m_ObjectHideFlags: 0
