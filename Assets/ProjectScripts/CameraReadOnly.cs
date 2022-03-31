@@ -29,6 +29,10 @@ public class CameraReadOnly : MonoBehaviour
         {
             GameObject.Find("Button-EditText").SetActive(trigger);
         }
+        if (GameObject.Find("Button-NewNode") != null)
+        {
+            GameObject.Find("Button-NewNode").SetActive(trigger);
+        }
     }
 
 }
