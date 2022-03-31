@@ -169,11 +169,11 @@ public class SavedProjects : MonoBehaviour
     {
         if (createdByMeToggle.GetComponent<Toggle>().isOn)
         {
-            readOnly = false;
+            Camera.main.GetComponent<CameraReadOnly>().readOnly= false;
             Debug.Log("set ReadOnly to false");
         }
         else{
-            readOnly =  true;
+            Camera.main.GetComponent<CameraReadOnly>().readOnly=true;
             Debug.Log("set ReadOnly to true");
         }
     }
