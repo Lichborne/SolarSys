@@ -6,9 +6,13 @@ using UnityEngine.EventSystems;
 public class Click : MonoBehaviour
 {
     [SerializeField]
-    private LayerMask clickablesLayer;
+    private LayerMask clickableNodeLayer;
+    [SerializeField]
+    private LayerMask clickableEdgeLayer;
     [HideInInspector]
     public GameObject selectedObject;
+    [HideInInspector]
+    public GameObject selectedEdge;
     public List<GameObject> selectedObjects;
     private List<GameObject> hiddenNodes;
     private List<GameObject> hiddenEdges;
@@ -37,8 +41,23 @@ public class Click : MonoBehaviour
         {
             RaycastHit rayHit;
 
-            //If clicked on something on a clickablesLayer
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickablesLayer))
+            //If clicked on an edge
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableEdgeLayer))
+            {
+                selectedEdge = rayHit.collider.gameObject;
+            }
+             //if clicked on an empty space
+            else 
+            {
+                //If pointer is not over (clicking on UI)
+                if (!EventSystem.current.IsPointerOverGameObject()) 
+                {
+                   selectedEdge = null;  
+                }
+            }
+
+            //If clicked on something on a clickableNodeLayer (planet), below if else all related to planets
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableNodeLayer))
             {   
                 ClickOn clickOnScript = rayHit.collider.GetComponent<ClickOn>();
                 if (Input.GetKey("left ctrl"))
@@ -116,33 +135,44 @@ public class Click : MonoBehaviour
             }
             //If is not showing path
             else{
-                //if selectedObjects is empty when not in path mode
-                if (selectedObjects.Count == 0)
+                //if there is an edge selected
+                if (selectedEdge != null) 
                 {
-                    UIPanel.SetActive(false);
-                    UIPanelMultiple.SetActive(false);
-                    UIPanelPath.SetActive(false);
-                }
-
-                //if selectedObjects only countatins one selected node, might be useful to Josh
-                if (selectedObjects.Count == 1)
-                {
-                    selectedObject = selectedObjects[0];
                     UIPanel.SetActive(true);
                     UIPanelMultiple.SetActive(false);
                     UIPanelPath.SetActive(false);
                 }
-                else {
-                    selectedObject = null;
+                else
+                {
+                    //if selectedObjects is empty when not in path mode
+                    if (selectedObjects.Count == 0)
+                    {
+                        UIPanel.SetActive(false);
+                        UIPanelMultiple.SetActive(false);
+                        UIPanelPath.SetActive(false);
+                    }
+
+                    //if selectedObjects only countatins one selected node
+                    if (selectedObjects.Count == 1)
+                    {
+                        selectedObject = selectedObjects[0];
+                        UIPanel.SetActive(true);
+                        UIPanelMultiple.SetActive(false);
+                        UIPanelPath.SetActive(false);
+                    }
+                    else {
+                        selectedObject = null;
+                    }
+
+                    //if more than one selected objects - change UI view
+                    if (selectedObjects.Count > 1) 
+                    {
+                        UIPanel.SetActive(false);
+                        UIPanelPath.SetActive(false);
+                        UIPanelMultiple.SetActive(true);
+                    }
                 }
 
-                //if more than one selected objects - change UI view
-                if (selectedObjects.Count > 1) 
-                {
-                    UIPanel.SetActive(false);
-                    UIPanelPath.SetActive(false);
-                    UIPanelMultiple.SetActive(true);
-                }
             }
                 
             

@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 6861316028221246947}
   - component: {fileID: 3476498693285748524}
   - component: {fileID: 3950783686999908666}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StraightEdge
   m_TagString: Edge
   m_Icon: {fileID: 0}

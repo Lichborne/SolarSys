@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8215623797142899490}
   - component: {fileID: 7127161931684458238}
   - component: {fileID: 1724261149798277935}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: goodEdge
   m_TagString: Edge
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isCurved: 0
+  _rotation: 0
 --- !u!114 &8215623797142899490
 MonoBehaviour:
   m_ObjectHideFlags: 0
