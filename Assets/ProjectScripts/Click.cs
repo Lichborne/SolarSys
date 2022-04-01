@@ -20,6 +20,7 @@ public class Click : MonoBehaviour
     public GameObject UIPanel;
     public GameObject UIPanelPath;
     public GameObject UIPanelMultiple;
+    public GameObject UIPanelEdge;
     private bool isShowingPath = false;
 
 
@@ -131,6 +132,7 @@ public class Click : MonoBehaviour
                 UIPanelPath.SetActive(true);
                 UIPanel.SetActive(false);
                 UIPanelMultiple.SetActive(false);
+                UIPanelEdge.SetActive(false);
 
             }
             //If is not showing path
@@ -138,9 +140,10 @@ public class Click : MonoBehaviour
                 //if there is an edge selected
                 if (selectedEdge != null) 
                 {
-                    UIPanel.SetActive(true);
+                    UIPanel.SetActive(false);
                     UIPanelMultiple.SetActive(false);
                     UIPanelPath.SetActive(false);
+                    UIPanelEdge.SetActive(true);
                 }
                 else
                 {
@@ -150,6 +153,7 @@ public class Click : MonoBehaviour
                         UIPanel.SetActive(false);
                         UIPanelMultiple.SetActive(false);
                         UIPanelPath.SetActive(false);
+                        UIPanelEdge.SetActive(false);
                     }
 
                     //if selectedObjects only countatins one selected node
@@ -159,6 +163,7 @@ public class Click : MonoBehaviour
                         UIPanel.SetActive(true);
                         UIPanelMultiple.SetActive(false);
                         UIPanelPath.SetActive(false);
+                        UIPanelEdge.SetActive(false);
                     }
                     else {
                         selectedObject = null;
@@ -170,6 +175,7 @@ public class Click : MonoBehaviour
                         UIPanel.SetActive(false);
                         UIPanelPath.SetActive(false);
                         UIPanelMultiple.SetActive(true);
+                        UIPanelEdge.SetActive(false);
                     }
                 }
 
@@ -187,6 +193,7 @@ public class Click : MonoBehaviour
         UIPanel.SetActive(false);
         UIPanelMultiple.SetActive(false);
         UIPanelPath.SetActive(true);
+        UIPanelEdge.SetActive(false);
 
         if (selectedObjects.Count > 0)
         {
@@ -236,6 +243,7 @@ public class Click : MonoBehaviour
         UIPanelPath.SetActive(false);
         UIPanelMultiple.SetActive(false);
         UIPanel.SetActive(false);
+        UIPanelEdge.SetActive(false);
 
         //deselect everything
         foreach (GameObject obj in selectedObjects) 
