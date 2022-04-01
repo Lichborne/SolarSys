@@ -9091,10 +9091,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a7bc0487bf3cf940a6ad8908776ae69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clickablesLayer:
+  clickableNodeLayer:
     serializedVersion: 2
     m_Bits: 8
+  clickableEdgeLayer:
+    serializedVersion: 2
+    m_Bits: 64
   selectedObject: {fileID: 0}
+  selectedEdge: {fileID: 0}
   selectedObjects: []
   shownNodes: []
   UIPanel: {fileID: 941591993497452965}
