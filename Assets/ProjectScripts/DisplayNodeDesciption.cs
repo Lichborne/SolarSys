@@ -19,20 +19,39 @@ public class DisplayNodeDesciption : MonoBehaviour
 
     public void displayDescription()
     {
-        GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
-        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-
-        m_TitleText = titleField.GetComponent<TMP_Text>();
-        m_DescriptionText = descriptionField.GetComponent<TMP_Text>();
-
-        m_TitleText.text = attachedNode.Title;
-        m_DescriptionText.text = attachedNode.Description;
+        try
+        {
+            GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
+            m_TitleText = titleField.GetComponent<TMP_Text>();
+            m_DescriptionText = descriptionField.GetComponent<TMP_Text>();
+            if (currentlySelectedObject.tag == "Node")
+            {
+                GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();    
+                m_TitleText.text = attachedNode.Title;
+                m_DescriptionText.text = attachedNode.Description;
+            }
+            else if (currentlySelectedObject.tag == "Edge")
+            {
+                GraphEdge attachedEdge= currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;    
+                m_TitleText.text = attachedEdge.Title;
+                m_DescriptionText.text = attachedEdge.Description;
+            }
+        }             
+        catch
+        {
+            Debug.Log("Please select a planet or an edge first");
+        }
     }
     
-    private GameObject findCurrentlySelectedPlanet()
+    private GameObject findCurrentlySelectedPlanetorEdge()
     {
-        GameObject currentlySelectedGameObject = Camera.main.GetComponent<Click>().selectedObject;
-        return currentlySelectedGameObject;
+        GameObject currentlySelectedObject = Camera.main.GetComponent<Click>().selectedObject;
+        if (!currentlySelectedObject) // If no planet was found then they must have chosen an edge
+        {
+            currentlySelectedObject = Camera.main.GetComponent<Click>().selectedEdge;
+        }
+        // Debug.Log("Currently selected object = " + currentlySelectedObject);
+        return currentlySelectedObject;
     }
 
 }

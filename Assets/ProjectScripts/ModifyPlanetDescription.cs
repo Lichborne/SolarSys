@@ -19,30 +19,52 @@ public class ModifyPlanetDescription : MonoBehaviour
         descriptionEntry = inputField.GetComponent<TMP_InputField>().text;
         if (descriptionEntry != "") // Users cannot input null entries
         {
-            GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
             try
             {
-                GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-                StartCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
-                // inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
-            }
-            catch(InvalidOperationException)
+            GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
+            if (currentlySelectedObject.tag == "Node")
             {
-                Debug.Log("Please select a planet first");
+                GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
+                StartCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
+            }
+            else if (currentlySelectedObject.tag == "Edge")
+            {
+                GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
+                StartCoroutine(attachedEdge.UpdateDescriptionCo(descriptionEntry));
+            }
+            
+            // inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
+            }
+            catch
+            {
+                Debug.Log("Please select a planet or an edge first");
             }
         } 
     }
 
-    private GameObject findCurrentlySelectedPlanet()
+    private GameObject findCurrentlySelectedPlanetorEdge()
     {
-        GameObject currentlySelectedGameObject = Camera.main.GetComponent<Click>().selectedObject;
-        return currentlySelectedGameObject;
+        GameObject currentlySelectedObject = Camera.main.GetComponent<Click>().selectedObject;
+        if (!currentlySelectedObject) // If no planet was found then they must have chosen an edge
+        {
+            currentlySelectedObject = Camera.main.GetComponent<Click>().selectedEdge;
+        }
+        // Debug.Log("Currently selected object = " + currentlySelectedObject);
+        return currentlySelectedObject;
     }
 
     public void displayDescription()
     {// To be called when "Edit Text is called", will update description to 
-        GameObject currentlySelectedPlanet = findCurrentlySelectedPlanet();
-        GraphNode attachedNode = currentlySelectedPlanet.GetComponent<FrontEndNode>().getDatabaseNode();
-        inputField.GetComponent<TMP_InputField>().text = attachedNode.Description;
+        GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
+        if (currentlySelectedObject.tag == "Node")
+        {
+            GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
+            inputField.GetComponent<TMP_InputField>().text = attachedNode.Description;
+        }
+        else if (currentlySelectedObject.tag == "Edge")
+        {
+            GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
+            inputField.GetComponent<TMP_InputField>().text = attachedEdge.Description;
+        }
     }
 }

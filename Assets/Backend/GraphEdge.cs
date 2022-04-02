@@ -74,12 +74,6 @@ namespace Backend
         }
 
         // Updates the title of the edge, writing change to database
-        public IEnumerator UpdateTitle(string title)
-        {
-            Title = title;
-            yield return Project.User.Database.UpdateEdgeTitleCo(this, title);
-        }
-
         public IEnumerator UpdateTitleCo(string title)
         {
             Title = title;
@@ -87,11 +81,6 @@ namespace Backend
         }
 
         // updates the description of the edge, writing change to database
-        public IEnumerator UpdateDescription(string description)
-        {
-            Description = description;
-            yield return Project.User.Database.UpdateEdgeDescriptionCo(this, description);
-        }
 
         public IEnumerator UpdateDescriptionCo(string description)
         {

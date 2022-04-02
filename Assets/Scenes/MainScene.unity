@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0025969907, g: 0.018092118, b: 0.07727372, a: 1}
+  m_IndirectSpecularColor: {r: 0.0025865214, g: 0.018158766, b: 0.077492416, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1371,7 +1371,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1739459528}
   m_HandleRect: {fileID: 1739459527}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7598,7 +7598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select Action
+  m_text: Select Action on Node
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
@@ -8606,7 +8606,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1045024105}
   m_HandleRect: {fileID: 1045024104}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9436,6 +9436,7 @@ GameObject:
   - component: {fileID: 1687258587}
   - component: {fileID: 1687258589}
   - component: {fileID: 1687258588}
+  - component: {fileID: 1687258590}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -9634,6 +9635,19 @@ MonoBehaviour:
   UIPanelPath: {fileID: 3492458473271019277}
   UIPanelMultiple: {fileID: 3492458474247872956}
   UIPanelEdge: {fileID: 538190258}
+--- !u!114 &1687258590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687258581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f750b60be6aa7554aa71e353bfc4bcbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  readOnly: 0
 --- !u!1 &1696942740
 GameObject:
   m_ObjectHideFlags: 0
@@ -9997,7 +10011,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select Action
+  m_text: Select Action on Edge
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
