@@ -23,11 +23,27 @@ public class SavedPathViews : MonoBehaviour
     public PathRoot selectedPathView;
     [HideInInspector]
     public GraphUser user;
+    public GameObject errorMessage;
+    public GameObject textDisplayPanel;
+    public GameObject textInputPanel;
+    public GameObject actionsPanel;
 
     void Start()
     {
         pathViewList = new List<string>();
       
+    }
+
+    void Update()
+    {
+        if (selectedPathView == null)
+        {
+            actionsPanel.SetActive(false);
+        }
+        else
+        {
+            actionsPanel.SetActive(true);
+        }
     }
 
     //function to load list of path views for a selected project
@@ -66,34 +82,62 @@ public class SavedPathViews : MonoBehaviour
     //This function is called when SavePathView button is clicked in the NewPathViewPopUpPanel
     public void CreatePathViewButtonClicked()
     {
-        createNewPathViewPanel.SetActive(false);
+        bool error = false;
         string pathTitle = newPathViewName.GetComponent<TMP_InputField>().text;
-        var currentlySelectedNodes = Camera.main.GetComponent<Click>().shownNodes;
-        AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
 
-        selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
-        PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
-        Debug.Log("Current Nodes" + currentlySelectedNodes);
-        foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
+        foreach (PathRoot path in selectedProject.Paths)
         {
-            GraphNode attachedNode = gameobject.GetComponent<FrontEndNode>().getDatabaseNode();
-            Debug.Log("Adding Node to Path" + attachedNode.Title);
-            path.AddNode(attachedNode); // adding the graph node
+            if (pathTitle == path.Title) 
+            {
+                error = true;
+                errorMessage.SetActive(true);
+            }
         }
 
-        player.GetComponent<LoadGraph>().StartCoroutine(path.CreateInDatabase()); // saving the project to the database
+        createNewPathViewPanel.SetActive(false);
+
+        if (error == false)
+        {
+            var currentlySelectedNodes = Camera.main.GetComponent<Click>().shownNodes;
+
+            // Olivia: i don't think the line below is needed, check in the end
+            AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
+
+            selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
+            PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
+            Debug.Log("Current Nodes" + currentlySelectedNodes);
+            foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
+            {
+                GraphNode attachedNode = gameobject.GetComponent<FrontEndNode>().getDatabaseNode();
+                Debug.Log("Adding Node to Path" + attachedNode.Title);
+                path.AddNode(attachedNode); // adding the graph node
+            }
+
+            player.GetComponent<LoadGraph>().StartCoroutine(path.CreateInDatabase()); // saving the project to the database
+            newPathViewName.GetComponent<TMP_InputField>().text = "";
+        }
+        
+
     }
 
     // this function is for loading the original project and not a path view
     public void LoadOriginalProject() 
     {
+        textDisplayPanel.SetActive(false);
+        textInputPanel.SetActive(false);
         player.GetComponent<LoadGraph>().LoadProject(selectedProject.Title);
+        //set true or false depending on toggle value
+        savedProjectsPanel.GetComponent<SavedProjects>().setWhetherProjectIsReadOnly();
+
     }
 
     // this function is for loading the selected path view
     public void LoadSelectedPathView()
     {
+        textDisplayPanel.SetActive(false);
+        textInputPanel.SetActive(false);
         player.GetComponent<LoadGraph>().LoadPath(selectedPathView);
+        Camera.main.GetComponent<CameraReadOnly>().readOnly=true; //always read-only
     }
 
     // this function is to detroy all path views displayed on screen
@@ -103,5 +147,14 @@ public class SavedPathViews : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void DeletePathView()
+    {
+        //need to do this
+        // StartCoroutine(
+        //     selectedPathView.DeleteFromDatabase(CreatedByMeToggleValueChanged)
+        // );  
+        //selectedPath = null;
     }
 }

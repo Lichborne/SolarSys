@@ -16,6 +16,7 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject controlPanel;
     public GameObject loginPanel;
     public GameObject shareWithUserPanel;
+    public GameObject copyProjectPanel;
    
     // for TextDisplayPanel
     public void Toggle_infoDisplay()
@@ -144,6 +145,19 @@ public class ShowHideChildren : MonoBehaviour
         else 
         {
             shareWithUserPanel.SetActive(true);
+        }
+    }
+
+    // for CopyProjectPopUpPanel
+    public void Toggle_copyProjectPanel()
+    {
+        if (copyProjectPanel.activeSelf == true) 
+        {
+            copyProjectPanel.SetActive(false);
+        }
+        else 
+        {
+            copyProjectPanel.SetActive(true);
         }
     }
 

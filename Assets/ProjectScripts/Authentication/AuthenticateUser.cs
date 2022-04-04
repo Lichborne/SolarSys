@@ -14,6 +14,7 @@ public class AuthenticateUser : MonoBehaviour
     public GameObject savedProjectsPanel;
     public GameObject loginPanel;
     public GameObject errorMessage;
+    public GameObject usernameField;
 
 
     string authServer = "https://api-materials.doc.ic.ac.uk/auth/login";
@@ -24,7 +25,7 @@ public class AuthenticateUser : MonoBehaviour
         GameObject signInBox = gameObject.transform.parent.gameObject;
         Debug.Log($"Running auth for {signInBox.name}");
 
-        GameObject usernameField = signInBox.transform.Find("InputField_Username").gameObject;
+        usernameField = signInBox.transform.Find("InputField_Username").gameObject;
         GameObject passwordField = signInBox.transform.Find("InputField_Password").gameObject;
         if(usernameField == null || passwordField == null)
         {
