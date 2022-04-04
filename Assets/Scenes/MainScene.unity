@@ -9283,7 +9283,7 @@ MonoBehaviour:
   savedPathViewContainer: {fileID: 447909890}
   newPathViewName: {fileID: 4813278068975609229}
   createNewPathViewPanel: {fileID: 4813278068281607725}
-  savedPathViewsPanel: {fileID: 0}
+  savedPathViewsPanel: {fileID: 1613203965}
   savedProjectsPanel: {fileID: 8132848421150269994}
   player: {fileID: 1487399002}
 --- !u!1 &1668308839

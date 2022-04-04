@@ -17,7 +17,7 @@ public class ShowHideChildren : MonoBehaviour
     public GameObject loginPanel;
     public GameObject shareWithUserPanel;
    
-   
+    // for TextDisplayPanel
     public void Toggle_infoDisplay()
     {   
         if (infoDisplay.activeSelf == true) 
@@ -30,6 +30,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for TextInputPanel
     public void Toggle_textInput()
     {   
         if (textInput.activeSelf == true) 
@@ -42,6 +43,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for UIPanel
     public void Toggle_UI()
     {   
         if (UI.activeSelf == true) 
@@ -54,6 +56,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for SavedProjectsPanel
     public void Toggle_SavedProjects()
     {
         if (savedProjects.activeSelf == true) 
@@ -66,6 +69,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for SavedPathViewsPanel
     public void Toggle_SavedPathViews()
     {
         if (savedPathViews.activeSelf == true) 
@@ -78,6 +82,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for NewProjectPopUpPanel
     public void Toggle_CreateNewGraphPopUp()
     {
         if (createNewGraphPopUp.activeSelf == true) 
@@ -90,6 +95,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for NewPathViewPopUpPanel
     public void Toggle_CreateNewPathViewPopUp()
     {
         if (createNewPathViewPopUp.activeSelf == true) 
@@ -102,6 +108,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    // for ControlsPanel
     public void Toggle_controlPanel()
     {
         if (controlPanel.activeSelf == true) 
@@ -114,6 +121,7 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
+    //for LoginPanel
     public void Toggle_loginPanel()
     {
         if (loginPanel.activeSelf == true) 
@@ -126,7 +134,8 @@ public class ShowHideChildren : MonoBehaviour
         }
     }
 
-     public void Toggle_shareWithUserPanel()
+    // for ShareWithUserPopUpPanel
+    public void Toggle_shareWithUserPanel()
     {
         if (shareWithUserPanel.activeSelf == true) 
         {
@@ -137,9 +146,6 @@ public class ShowHideChildren : MonoBehaviour
             shareWithUserPanel.SetActive(true);
         }
     }
-  
-
-   
 
   
 }

@@ -17,7 +17,7 @@ namespace Backend
         private string password;
 
         public DatabaseConnection(
-            string databaseUrl = "localhost", //"cloud-vm-42-36.doc.ic.ac.uk", 
+            string databaseUrl = "cloud-vm-42-36.doc.ic.ac.uk",
             int portNumber = 7474,
             string databaseName = "neo4j",
             string username = "neo4j",

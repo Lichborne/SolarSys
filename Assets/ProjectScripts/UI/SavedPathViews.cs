@@ -26,40 +26,16 @@ public class SavedPathViews : MonoBehaviour
 
     void Start()
     {
-        // savedGraphsList = new List<GameObject>();
         pathViewList = new List<string>();
-
-        //for now put this in Start(), just to test
-
-        // // Commenting out Olivia's code
-        // string pathView1 = "PathView1";
-        // string pathView2 = "PathView2";
-        // string pathView3 = "PathView3";
-        // string pathView4 = "PathView4";
-        // string pathView5 = "PathView5";
-       
-
-        // AddPathView(pathView1, savedPathViewContainer, savedPathViewsContent);
-        // AddPathView(pathView2, savedPathViewContainer, savedPathViewsContent);
-        // AddPathView(pathView3, savedPathViewContainer, savedPathViewsContent);
-        // AddPathView(pathView4, savedPathViewContainer, savedPathViewsContent);
-        // AddPathView(pathView5, savedPathViewContainer, savedPathViewsContent);
-       
-
       
     }
 
-    //load list of path views for selected project
+    //function to load list of path views for a selected project
     public void LoadPathViewsForProject() {
-        // Debug.Log(selectedProject);
-        // Debug.Log(project);
-
-        // project.ReadFromDatabase() - how to use
-        // user = savedProjectsPanel.GetComponent<SavedProjects>().user;
-        // Debug.Log(user.Email);
 
         ClearPathViewsDisplay();
         selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
+        Debug.Log(selectedProject.Title);
         StartCoroutine(
             selectedProject.ReadFromDatabase(DisplayPathViewTitles)
         );
@@ -67,7 +43,7 @@ public class SavedPathViews : MonoBehaviour
     
     
 
-    //function to append to list of graphs
+    //function add a path view for display on screen
     public void AddPathView(string pathViewName, Transform chosenContainer, Transform ChosenParentPanel)
     {
         pathViewList.Add(pathViewName);
@@ -75,9 +51,9 @@ public class SavedPathViews : MonoBehaviour
         TextMeshProUGUI textComponent = savedGraphRectTransform.GetComponentInChildren<TextMeshProUGUI>();
         textComponent.text = pathViewName;
         savedGraphRectTransform.gameObject.SetActive(true);
-
     }
 
+    // function to iterate through all path views of a project and add them for display
     private void DisplayPathViewTitles(GraphProject project)
     {
         foreach (PathRoot path in project.Paths)
@@ -87,7 +63,7 @@ public class SavedPathViews : MonoBehaviour
 
     }
 
-    //This function is called when we select create new project in pop-up panel
+    //This function is called when SavePathView button is clicked in the NewPathViewPopUpPanel
     public void CreatePathViewButtonClicked()
     {
         createNewPathViewPanel.SetActive(false);
@@ -108,18 +84,19 @@ public class SavedPathViews : MonoBehaviour
         player.GetComponent<LoadGraph>().StartCoroutine(path.CreateInDatabase()); // saving the project to the database
     }
 
+    // this function is for loading the original project and not a path view
     public void LoadOriginalProject() 
     {
         player.GetComponent<LoadGraph>().LoadProject(selectedProject.Title);
     }
 
+    // this function is for loading the selected path view
     public void LoadSelectedPathView()
     {
         player.GetComponent<LoadGraph>().LoadPath(selectedPathView);
     }
 
-   
-
+    // this function is to detroy all path views displayed on screen
     private void ClearPathViewsDisplay()
     {
         foreach(Transform child in savedPathViewsContent)

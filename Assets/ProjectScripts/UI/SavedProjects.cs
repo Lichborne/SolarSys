@@ -27,41 +27,10 @@ public class SavedProjects : MonoBehaviour
 
     void Start()
     {
-        // savedGraphsList = new List<GameObject>();
+        // instantiate new list for project names
         projectList = new List<string>();
 
-        //for now put this in Start(), just to test
-
-        // Commenting out Olivia's code
-        // string project1 = "Project1";
-        // string project2 = "Project2";
-        // string project3 = "Project3";
-        // string project4 = "Project4";
-        // string project5 = "Project5";
-        // string project6 = "Project6";
-        // string project7 = "Project7";
-        // string project8 = "Project8";
-        // string project9 = "Project9";
-        // string project10 = "Project10";
-        // string project11 = "Project11";
-        // string project12 = "Project12";
-
-        // AddProject(project1, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project2, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project3, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project4, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project5, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project6, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project7, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project8, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project9, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project10, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project11, savedProjectContainer, savedProjectsPanel);
-        // AddProject(project12, savedProjectContainer, savedProjectsPanel);
-
-
-
-        // Adding my own Coroutine code
+        // Coroutine code to display project selections when user logs in
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
         string userEmail = "foo.bar@doc.ic.ac.uk";
         // string userEmail = "balazs.frei@ic.ac.uk";
@@ -73,7 +42,7 @@ public class SavedProjects : MonoBehaviour
     
     
 
-    //function to append to list of graphs
+    // function to add a project to the list and for display
     public void AddProject(string projectName, Transform chosenContainer, Transform ChosenParentPanel)
     {
         projectList.Add(projectName);
@@ -84,6 +53,7 @@ public class SavedProjects : MonoBehaviour
 
     }
 
+    // function to iterate through all projects of a user and add them
     public void DisplayProjectTitles(GraphUser user)
     {
         if (createdByMeToggle.GetComponent<Toggle>().isOn)
@@ -106,12 +76,14 @@ public class SavedProjects : MonoBehaviour
     {
         createNewProjectPanel.SetActive(false);
         string projectTitle = newProjectName.GetComponent<TMP_InputField>().text;
-        // AddProject(projectTitle, savedProjectContainer, savedProjectsContent);
         GraphProject newProject = new GraphProject(user, projectTitle);
+        //need to change this, currently new project does not show up immediately on screen
         StartCoroutine(newProject.CreateInDatabase());
         CreatedByMeToggleValueChanged();
+        newProjectName.GetComponent<TMP_InputField>().text = "";
     }
 
+    // this function is called then toggle value is changed, or when we want to refresh the list of projects displayed
     public void CreatedByMeToggleValueChanged() 
     {
         ClearProjectDisplay();
@@ -129,6 +101,7 @@ public class SavedProjects : MonoBehaviour
         }
     }
 
+    // function to destroy all objects shown in screen
     private void ClearProjectDisplay()
     {
         foreach(Transform child in savedProjectsContent)
@@ -137,6 +110,7 @@ public class SavedProjects : MonoBehaviour
         }
     }
 
+    // this function is called when the user clicks share in the ShareWithUserPopUpPanel
     public void ShareProject()
     {
         string userEmail = sharedWithUserEmail.GetComponent<TMP_InputField>().text;
@@ -149,6 +123,7 @@ public class SavedProjects : MonoBehaviour
         
     }
 
+    // function to delete a project
     public void DeleteProject()
     {
         StartCoroutine(
@@ -156,6 +131,7 @@ public class SavedProjects : MonoBehaviour
         );  
     }
 
+    // function to copy a project
     public void CopyProject()
     {
         string title = "Copy1";
@@ -165,6 +141,7 @@ public class SavedProjects : MonoBehaviour
         CreatedByMeToggleValueChanged();
     }
 
+    // function to set whether project is read only, called when a path or a project is loaded
     public void setWhetherProjectIsReadOnly()
     {
         if (createdByMeToggle.GetComponent<Toggle>().isOn)

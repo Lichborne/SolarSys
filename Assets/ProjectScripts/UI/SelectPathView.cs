@@ -9,18 +9,8 @@ public class SelectPathView : MonoBehaviour
 {
     public GameObject savedPathViewsPanel;
     public GameObject selectedPathViewDisplayText;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // this function is to set the selectedPathView variable in SavedPathViews.cs and also changed the display text for the selected path view
     public void SetSelectedPath() 
     {
         GameObject projectContainer = gameObject.transform.parent.gameObject;
@@ -37,7 +27,6 @@ public class SelectPathView : MonoBehaviour
         }
         savedPathViewsPanel.GetComponent<SavedPathViews>().selectedPathView = selected_path;
         selectedPathViewDisplayText.GetComponent<TextMeshProUGUI>().text = title;
-        // savedPathViewsPanel.GetComponent<SavedPathViews>().LoadSelectedPathView(selected_path);
 
     }
 }

@@ -12,18 +12,8 @@ public class SelectProject : MonoBehaviour
     public GameObject savedProjectsPanel;
     public GameObject selectedProjectDisplayText;
     public GameObject createdByMeToggle;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+   
+    // this function is to set the selectedProject variable in SavedProjects.cs and also changed the display text for the selected project
     public void SetSelectedProject() 
     {
         GameObject projectContainer = gameObject.transform.parent.gameObject;
