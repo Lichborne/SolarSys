@@ -41,72 +41,82 @@ public class Click : MonoBehaviour
     {   
         //On left click
         if (Input.GetMouseButtonDown(0))
-        {   
-            // if not clicking over UI, in any case close text input and text display panels
-            if (!EventSystem.current.IsPointerOverGameObject()) 
-            {
-                textDisplayPanel.SetActive(false);
-                textInputPanel.SetActive(false);
+        {    
+            
+            RaycastHit rayHit;
 
-                RaycastHit rayHit;
+            //If clicked on something on a clickableNodeLayer (planet), below if else all related to planets
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableNodeLayer))
+            {   
+                selectedEdge = null;
 
-                //If clicked on an edge
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableEdgeLayer))
-                {
-                    selectedEdge = rayHit.collider.gameObject;
-                }
-                //if clicked on an empty space
-                else 
-                {
-                    selectedEdge = null;  
-                }
-
-                //If clicked on something on a clickableNodeLayer (planet), below if else all related to planets
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableNodeLayer))
+                ClickOn clickOnScript = rayHit.collider.GetComponent<ClickOn>();
+                if (Input.GetKey("left ctrl"))
                 {   
-                    ClickOn clickOnScript = rayHit.collider.GetComponent<ClickOn>();
-                    if (Input.GetKey("left ctrl"))
-                    {   
-                        //if clicked object is not selected, add object to currentlySelected list and update it
-                        if (clickOnScript.currentlySelected == false)
-                        {
-                            selectedObjects.Add(rayHit.collider.gameObject);
-                            clickOnScript.currentlySelected = true;
-                            clickOnScript.ClickMe();
-                        }
-                        //if clicked object is selected, remove object from currentlySelected list and update it
-                        else
-                        {   
-                            selectedObjects.Remove(rayHit.collider.gameObject);
-                            clickOnScript.currentlySelected = false;
-                            clickOnScript.ClickMe();
-                        }
-                    }
-                    //if ctrl key is not pressed when mouse button is down
-                    else
+                    //if clicked object is not selected, add object to currentlySelected list and update it
+                    if (clickOnScript.currentlySelected == false)
                     {
-                        //wipe all objects from the currentlySelected list and update them
-                        if (selectedObjects.Count > 0)
-                        {
-                            foreach (GameObject obj in selectedObjects) 
-                            {
-                                obj.GetComponent<ClickOn>().currentlySelected = false;
-                                obj.GetComponent<ClickOn>().ClickMe();
-                            }
-
-                            selectedObjects.Clear();
-                        }
-
-                        //selected object that is clicked on and add to list
                         selectedObjects.Add(rayHit.collider.gameObject);
                         clickOnScript.currentlySelected = true;
                         clickOnScript.ClickMe();
                     }
-                    
+                    //if clicked object is selected, remove object from currentlySelected list and update it
+                    else
+                    {   
+                        selectedObjects.Remove(rayHit.collider.gameObject);
+                        clickOnScript.currentlySelected = false;
+                        clickOnScript.ClickMe();
+                    }
                 }
+                //if ctrl key is not pressed when mouse button is down
+                else
+                {
+                    //wipe all objects from the currentlySelected list and update them
+                    if (selectedObjects.Count > 0)
+                    {
+                        foreach (GameObject obj in selectedObjects) 
+                        {
+                            obj.GetComponent<ClickOn>().currentlySelected = false;
+                            obj.GetComponent<ClickOn>().ClickMe();
+                        }
 
-                //if clicked on an empty space
-                else 
+                        selectedObjects.Clear();
+                    }
+
+                    //selected object that is clicked on and add to list
+                    selectedObjects.Add(rayHit.collider.gameObject);
+                    clickOnScript.currentlySelected = true;
+                    clickOnScript.ClickMe();
+                }
+                
+            }
+
+            //If clicked on an edge
+            else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit, Mathf.Infinity, clickableEdgeLayer))
+            {
+                selectedEdge = rayHit.collider.gameObject;
+
+                 //If there is more than 0 objects on the selectedObjects list deselect them
+                if (selectedObjects.Count > 0)
+                {
+                    foreach (GameObject obj in selectedObjects) 
+                    {
+                        obj.GetComponent<ClickOn>().currentlySelected = false;
+                        obj.GetComponent<ClickOn>().ClickMe();
+                    }
+
+                    //clear list
+                    selectedObjects.Clear();
+                    textDisplayPanel.SetActive(false);
+                    textInputPanel.SetActive(false);
+                }
+            }
+
+            //if clicked on an empty space
+            else 
+            {
+                // if not clicking over UI
+                if (!EventSystem.current.IsPointerOverGameObject()) 
                 {
                     //If there is more than 0 objects on the selectedObjects list deselect them
                     if (selectedObjects.Count > 0)
@@ -119,10 +129,16 @@ public class Click : MonoBehaviour
 
                         //clear list
                         selectedObjects.Clear();
+                        textDisplayPanel.SetActive(false);
+                        textInputPanel.SetActive(false);
                     }
-                      
+
+                    selectedEdge = null; 
                 }
+                
+                    
             }
+            
 
            SelectWhichUIPanelToShow();
              

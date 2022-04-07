@@ -94,7 +94,7 @@ public class SavedPathViews : MonoBehaviour
             }
         }
 
-        createNewPathViewPanel.SetActive(false);
+        
 
         if (error == false)
         {
@@ -114,7 +114,10 @@ public class SavedPathViews : MonoBehaviour
             }
 
             player.GetComponent<LoadGraph>().StartCoroutine(path.CreateInDatabase()); // saving the project to the database
+            createNewPathViewPanel.SetActive(false);
+            errorMessage.SetActive(false);
             newPathViewName.GetComponent<TMP_InputField>().text = "";
+
         }
         
 
