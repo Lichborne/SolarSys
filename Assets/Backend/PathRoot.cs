@@ -65,7 +65,13 @@ namespace Backend
             {
                 GraphNode node = Project.Nodes.Find(n => n.Id == nodeId);
                 Nodes.Add(node);
-                Edges.AddRange(node.Edges);
+
+                // adding an edge only if the child is also in the path
+                foreach (GraphEdge edge in node.Edges)
+                {
+                    if (idsOfNodeInPath.Contains(edge.Child.Id))
+                        Edges.Add(edge);
+                }
             }
         }
 
