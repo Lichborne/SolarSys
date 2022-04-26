@@ -130,7 +130,7 @@ namespace Backend
             return new GraphProject(user, Guid.Parse(guidString), title);
         }
 
-        public IEnumerator CreateCopyInDatabase(GraphUser newUser, string newTitle)
+        public IEnumerator CreateCopyInDatabase(GraphUser newUser, string newTitle, Action cleanupFunc = null)
         {
             yield return ReadFromDatabase(null);
             
@@ -139,9 +139,12 @@ namespace Backend
                 newUser.Projects.Add(this); // bad
             
             yield return copy.CreateInDatabase();
+
+            if (cleanupFunc != null)
+                cleanupFunc();
         }
 
-        public IEnumerator CreateInDatabase()
+        public IEnumerator CreateInDatabase(Action cleanupFunc = null)
         {
             yield return User.Database.CreateBlankGraphProject(this);
             
@@ -153,9 +156,12 @@ namespace Backend
             
             foreach (GraphEdge edge in Edges)
                 yield return edge.CreateInDatabase();
+
+            if (cleanupFunc != null)
+                cleanupFunc();
         }
 
-        public IEnumerator DeleteFromDatabase(Action cleanupFunc)
+        public IEnumerator DeleteFromDatabase(Action cleanupFunc = null)
         {
             yield return User.Database.DeleteGraphProject(this);
             User.Projects.RemoveAll(proj => proj.Id == Id);
