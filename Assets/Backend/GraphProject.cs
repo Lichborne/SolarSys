@@ -144,7 +144,7 @@ namespace Backend
                 cleanupFunc();
         }
 
-        public IEnumerator CreateInDatabase(Action cleanupFunc = null)
+        public IEnumerator CreateInDatabase(Action cleanupFunc)
         {
             yield return User.Database.CreateBlankGraphProject(this);
             
@@ -161,7 +161,10 @@ namespace Backend
                 cleanupFunc();
         }
 
-        public IEnumerator DeleteFromDatabase(Action cleanupFunc = null)
+        public IEnumerator CreateInDatabase()
+            => CreateInDatabase(null);
+
+        public IEnumerator DeleteFromDatabase(Action cleanupFunc)
         {
             yield return User.Database.DeleteGraphProject(this);
             User.Projects.RemoveAll(proj => proj.Id == Id);
