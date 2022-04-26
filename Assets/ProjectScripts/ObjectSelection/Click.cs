@@ -44,7 +44,7 @@ public class Click : MonoBehaviour
         //On left click
         if (Input.GetMouseButtonDown(0))
         {    
-            if(!savedProjectsPanel.activeSelf && ! savedPathViewPanel.activeSelf) {
+            if(!savedProjectsPanel.activeSelf && !savedPathViewPanel.activeSelf && !textInputPanel.activeSelf && !textDisplayPanel.activeSelf) {
             
                 RaycastHit rayHit;
 
@@ -110,8 +110,8 @@ public class Click : MonoBehaviour
 
                         //clear list
                         selectedObjects.Clear();
-                        textDisplayPanel.SetActive(false);
-                        textInputPanel.SetActive(false);
+                        // textDisplayPanel.SetActive(false);
+                        // textInputPanel.SetActive(false);
                     }
                 }
 
@@ -137,8 +137,8 @@ public class Click : MonoBehaviour
 
                         selectedEdge = null; 
                         //close all tese open panels when clicked on an empty space
-                        textDisplayPanel.SetActive(false);
-                        textInputPanel.SetActive(false);
+                        // textDisplayPanel.SetActive(false);
+                        // textInputPanel.SetActive(false);
                     }
                     
                         

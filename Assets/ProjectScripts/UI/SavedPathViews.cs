@@ -152,6 +152,7 @@ public class SavedPathViews : MonoBehaviour
         }
     }
 
+    //function to delete a pathView
     public void DeletePathView()
     {
         //need to do this
