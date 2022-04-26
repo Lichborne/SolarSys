@@ -79,6 +79,16 @@ public class SavedPathViews : MonoBehaviour
 
     }
 
+    // overloading - function to iterate through all path views of a project and add them for display
+    private void DisplayPathViewTitles()
+    {
+        foreach (PathRoot path in selectedProject.Paths)
+        {
+            AddPathView(path.Title, savedPathViewContainer, savedPathViewsContent);
+        }
+
+    }
+
     //This function is called when SavePathView button is clicked in the NewPathViewPopUpPanel
     public void CreatePathViewButtonClicked()
     {
@@ -100,7 +110,6 @@ public class SavedPathViews : MonoBehaviour
         {
             var currentlySelectedNodes = Camera.main.GetComponent<Click>().shownNodes;
 
-            // Olivia: i don't think the line below is needed, check in the end
             AddPathView(pathTitle, savedPathViewContainer, savedPathViewsContent);
 
             selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
@@ -152,13 +161,16 @@ public class SavedPathViews : MonoBehaviour
         }
     }
 
+
     //function to delete a pathView
     public void DeletePathView()
     {
-        //need to do this
-        // StartCoroutine(
-        //     selectedPathView.DeleteFromDatabase(CreatedByMeToggleValueChanged)
-        // );  
-        //selectedPath = null;
+
+        ClearPathViewsDisplay();
+        StartCoroutine(
+            selectedPathView.DeleteFromDatabase(LoadPathViewsForProject)
+        );  
+        selectedPathView = null;
+        
     }
 }

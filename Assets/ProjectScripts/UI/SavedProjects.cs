@@ -110,9 +110,7 @@ public class SavedProjects : MonoBehaviour
             createNewProjectPanel.SetActive(false);
         
             GraphProject newProject = new GraphProject(user, projectTitle);
-            //need to change this, currently new project does not show up immediately on screen
-            StartCoroutine(newProject.CreateInDatabase());
-            CreatedByMeToggleValueChanged();
+            StartCoroutine(newProject.CreateInDatabase(CreatedByMeToggleValueChanged));
             newProjectName.GetComponent<TMP_InputField>().text = "";
         }
         
@@ -187,9 +185,8 @@ public class SavedProjects : MonoBehaviour
             createCopyProjectPanel.SetActive(false);
         
             StartCoroutine(
-                selectedProject.CreateCopyInDatabase(user,projectTitle)
+                selectedProject.CreateCopyInDatabase(user,projectTitle,CreatedByMeToggleValueChanged)
             );  
-            CreatedByMeToggleValueChanged();
             copyProjectName.GetComponent<TMP_InputField>().text = "";
         }
        

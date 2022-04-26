@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6564982509017538328}
   - component: {fileID: 1679056041032944486}
   - component: {fileID: 1820585772909767689}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Ring
   m_TagString: Edge
   m_Icon: {fileID: 0}
@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isCurved: 0
+  _rotation: 0
 --- !u!114 &1679056041032944486
 MonoBehaviour:
   m_ObjectHideFlags: 0
