@@ -10675,6 +10675,8 @@ MonoBehaviour:
   UIPanelEdge: {fileID: 538190258}
   textDisplayPanel: {fileID: 4573723581086729124}
   textInputPanel: {fileID: 8908797314494589616}
+  savedProjectsPanel: {fileID: 8132848421150269994}
+  savedPathViewPanel: {fileID: 1613203965}
 --- !u!114 &1687258590
 MonoBehaviour:
   m_ObjectHideFlags: 0
