@@ -474,7 +474,7 @@ namespace Backend
 
         public IEnumerator DeletePath(PathRoot path)
         {
-            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}}" +
+            string query = $"MATCH (path_root :PATH_ROOT {{guid: '{path.Id}'}})" +
                 $"DETACH DELETE path_root";
 
             yield return connection.SendWriteTransactions(query);
