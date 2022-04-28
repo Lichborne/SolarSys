@@ -19,8 +19,8 @@ public class DisplayNodeDesciption : MonoBehaviour
 
     public void displayDescription()
     {
-        try
-        {
+        // try
+        // {
             GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
             m_TitleText = titleField.GetComponent<TMP_Text>();
             m_DescriptionText = descriptionField.GetComponent<TMP_Text>();
@@ -36,21 +36,22 @@ public class DisplayNodeDesciption : MonoBehaviour
                 m_TitleText.text = attachedEdge.Title;
                 m_DescriptionText.text = attachedEdge.Description;
             }
-        }             
-        catch
-        {
-            Debug.Log("Please select a planet or an edge first");
-        }
+        // }             
+        // catch
+        // {
+        //     Debug.Log("Please select a planet or an edge first");
+        // }
     }
     
     private GameObject findCurrentlySelectedPlanetorEdge()
     {
+
+         // If no planet was found then they must have chosen an edge
         GameObject currentlySelectedObject = Camera.main.GetComponent<Click>().selectedObject;
-        if (!currentlySelectedObject) // If no planet was found then they must have chosen an edge
+        if (Camera.main.GetComponent<Click>().selectedObjects.Count == 0) 
         {
             currentlySelectedObject = Camera.main.GetComponent<Click>().selectedEdge;
         }
-        // Debug.Log("Currently selected object = " + currentlySelectedObject);
         return currentlySelectedObject;
     }
 

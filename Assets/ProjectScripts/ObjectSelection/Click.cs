@@ -179,6 +179,7 @@ public class Click : MonoBehaviour
                 //if selectedObjects is empty when not in path mode
                 if (selectedObjects.Count == 0)
                 {
+                    selectedObject=null;
                     UIPanel.SetActive(false);
                     UIPanelMultiple.SetActive(false);
                     UIPanelPath.SetActive(false);
