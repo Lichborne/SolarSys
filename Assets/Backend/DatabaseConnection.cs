@@ -17,11 +17,11 @@ namespace Backend
         private string password;
 
         public DatabaseConnection(
-            string databaseUrl = "cloud-vm-42-36.doc.ic.ac.uk",
-            int portNumber = 7474,
-            string databaseName = "neo4j",
-            string username = "neo4j",
-            string password = "s3cr3t")
+            string databaseUrl,
+            int portNumber,
+            string databaseName,
+            string username,
+            string password)
         {
             this.databaseUrl = databaseUrl;
             this.portNumber = portNumber;

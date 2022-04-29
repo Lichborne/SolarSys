@@ -11,17 +11,15 @@ namespace Backend
     {
         private DatabaseConnection connection;
 
-        public DatabaseView(string username, string password)
-        {
-            connection = new DatabaseConnection(username: username, password: password);
-        }
-
         public DatabaseView()
         {
-            connection = new DatabaseConnection();
+            DatabaseProperties properties = new DatabaseProperties();
+            connection = new DatabaseConnection(properties.databaseUrl, 
+                                                properties.portNumber, 
+                                                properties.databaseName, 
+                                                properties.username, 
+                                                properties.password);
         }
-
-
 
         // ========================== CREATE
         private IEnumerator MakeAndLogChangeQueryCo(GraphProject project, string changeQuery, LogNode logNode)
