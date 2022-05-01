@@ -46,7 +46,7 @@ public class AddEdge : MonoBehaviour
         RaycastHit hitInfo;
 
         // If there is a click, and we are hitting a node -> we are adding an edge
-        if (Input.GetMouseButtonDown(1) && Physics.Raycast(ray, out hitInfo, Mathf.Infinity) && hitInfo.transform.tag == "Node")
+        if ((Input.GetKeyDown("e") || Input.GetMouseButtonDown(1)) && Physics.Raycast(ray, out hitInfo, Mathf.Infinity) && hitInfo.transform.tag == "Node")
         {   
             // when we are adding an edge, we do not want the mouse to move the camera.
             cameraController.enabled = false;
@@ -58,7 +58,7 @@ public class AddEdge : MonoBehaviour
 
         // If there is a button release, if we weren't adding we do nothing, if we are adding but we are not hitting
         //  node by raycast, we do nothing and reset adding, and if we do hit a node, then, finally, we add an edge
-        if(Input.GetMouseButtonUp(1)) 
+        if((Input.GetKeyDown("e") || Input.GetMouseButtonDown(1)) ) 
         {
             if (!adding) 
             {
