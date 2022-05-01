@@ -31,7 +31,7 @@ class Drag : MonoBehaviour
     private float radius = 36;
 
     void OnMouseOver () {
-        if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("q"))
+        if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("2"))
         {
             Vector3 NewPosition = Vector3.zero;
             
