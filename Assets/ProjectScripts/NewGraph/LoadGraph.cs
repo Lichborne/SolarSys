@@ -52,6 +52,11 @@ public class LoadGraph : MonoBehaviour
 
     public void LoadProject(string projectTitle) 
     {
+        foreach (GameObject o in GameObject.FindObjectsOfType<GameObject>()) {
+            if (o.tag == "Node" || o.tag == "Edge" || o.tag == "Text") {
+                UnityEngine.Object.Destroy(o);
+            }
+        }
         graph = new GraphProject(projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
