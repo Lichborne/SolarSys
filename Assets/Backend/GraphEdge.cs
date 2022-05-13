@@ -20,12 +20,12 @@ namespace Backend
 
         public GraphEdge(Guid id, string title, string body, GraphNode parent, GraphNode child)
         {
-            Title = title.Replace('"', '“');
-            Description = body.Replace('"', '“');
+            Title = title?.Replace('"', '“');
+            Description = body?.Replace('"', '“');
             Id = id;
             Parent = parent;
             Child = child;
-            Project = parent.Project;
+            Project = parent?.Project;
         }
 
         public GraphEdge(string title, string body, GraphNode parent, GraphNode child) :
