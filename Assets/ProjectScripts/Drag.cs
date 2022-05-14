@@ -19,6 +19,8 @@ class Drag : MonoBehaviour
     // Self reference edge prefab
     public GameObject _selfReferencePreFab;
 
+    public GameObject _textObject;
+
     // To trackwhether we are dragging at the moment
     private bool dragging = false;
 
@@ -28,7 +30,10 @@ class Drag : MonoBehaviour
     // The radius in which we look at other nodes present to avoid when placing new nodes automatically.
     // this is a "magic number", but much as many things in UI, it is a number we arrived at by trial and error
     // and subjective judgement of visuals; there was and is no way around this.
-    private float radius = 36;
+    private const float RADIUS = 36;
+
+    // The divisor by which the radius is devided when searching for a good position; derived by trial and error.
+    private const float DIVISOR = 6;
 
     void OnMouseOver () {
         if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("2"))
@@ -37,7 +42,7 @@ class Drag : MonoBehaviour
             
             List<Vector3> hitPoints = new List<Vector3>();
 
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, RADIUS);
 
             foreach (var hitCollider in hitColliders)
             {
@@ -46,31 +51,36 @@ class Drag : MonoBehaviour
 
             int tries = 0;
 
-            /* better: find furthest based on average distance
-            List<Vector3> randomPoints = new List<Vector3>();
-            List<float> averageDistances = new List<float>();*/
-
-            // We generate random positions within a reasonable rane and see if there are any collisions with 6 blocks, if not, the new node will be placed in a sufficiently far enough position
+            // We generate random positions within a reasonable rane and see if there are any collisions with DIVISOR blocks, if not, the new node will be placed in a sufficiently far enough position
             // This is a naive solution, but wuite effective, it is quick, and unless someone builds a sphwere of nodes around a node, is guaranteed to work (it will mostly take at most 5 tries,
             // each of which is unmeasurably fst on its own)
             while (tries < 100) 
             {
-                NewPosition = new Vector3(gameObject.transform.position.x+Random.Range(-radius/6, radius/6), gameObject.transform.position.y+Random.Range(-radius/6, radius/6), gameObject.transform.position.z+Random.Range(-radius/6, radius/6));
+                NewPosition = new Vector3(gameObject.transform.position.x +
+                    Random.Range(-RADIUS/DIVISOR, RADIUS/DIVISOR), 
+                    gameObject.transform.position.y + Random.Range(-RADIUS/DIVISOR, RADIUS/DIVISOR), 
+                    gameObject.transform.position.z + Random.Range(-RADIUS/DIVISOR, RADIUS/DIVISOR));
+                
+                bool goodPosition = true;
 
                 foreach (Vector3 hitPoint in hitPoints) 
                 {
-                    if (Vector3.Distance(NewPosition, hitPoint) < radius/6) 
+                    if (Vector3.Distance(NewPosition, hitPoint) < RADIUS/DIVISOR) 
                     {
                         tries +=1;
-                        continue;
+                        goodPosition = false;
+                        break;
                     }  
                 }
-                break;
+
+                if (goodPosition) {
+                    break;
+                }
             }
 
-            // if by some miracle this was impossible, we regretfully do nothing. A practical impossibility.
+            // if by some miracle this was impossible, we regretfully place the new node in whatever position it happens to be thrown to last; this is practically impossible.
             if(tries == 100) {
-                Debug.Log("No available position found");
+                Debug.Log("No good available position found");
             }
             
             // Create new database node and store it in the newly created gameObject
@@ -84,11 +94,8 @@ class Drag : MonoBehaviour
             GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
             StartCoroutine(databaseEdge.CreateInDatabaseCo());
-            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, null, gameObject, nodeObject, 90);
-
-            //two lines of Olivia's code, if inefficient can refactor later
-            //edgeObject.GetComponent<StoreParentChild>().parent = gameObject;
-            //edgeObject.GetComponent<StoreParentChild>().child = nodeObject;
+             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
+            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
 
             //if we get time, this should be turned into a function as it recurrs
             gameObject.GetComponent<FrontEndNode>().to.Add(nodeObject);
@@ -99,28 +106,41 @@ class Drag : MonoBehaviour
         // if we are hovering over a node, and we click delete, it gets deleted, poof. 
         // quite straightforward
         if (Input.GetKeyDown("delete")) 
-        {
-            
+        {           
             foreach (GameObject node in gameObject.GetComponent<FrontEndNode>().from) 
             {
-                node.GetComponent<FrontEndNode>().to.RemoveAll(item => item == gameObject);
-
+                
                 foreach (GameObject edge in node.GetComponent<FrontEndNode>().edgeOut) 
-                {
-                    if (edge.GetComponent<FrontEndEdge>()._child == gameObject)
-                    {
-                        Destroy(edge.GetComponent<FrontEndEdge>()._textObject);
-                        Destroy(edge);
+                {   
+                    // good to be defensive
+                    if (edge != null) {
+                        if (edge.GetComponent<FrontEndEdge>()._child == gameObject)
+                        {
+                            Destroy(edge.GetComponent<FrontEndEdge>()._textObject);
+                            Destroy(edge);
+                        }
                     }
                 }
-
+                
+                node.GetComponent<FrontEndNode>().to.RemoveAll(item => item == gameObject);
                 node.GetComponent<FrontEndNode>().edgeOut.RemoveAll(item => item == null);
+                
+            }
+            foreach (GameObject node in gameObject.GetComponent<FrontEndNode>().to) 
+            {
+                node.GetComponent<FrontEndNode>().from.RemoveAll(item => item == gameObject);
             }
 
             foreach (GameObject edge in gameObject.GetComponent<FrontEndNode>().edgeOut) 
             {
-                Destroy(edge.GetComponent<FrontEndEdge>()._textObject);
-                Destroy(edge);
+                if (edge != null) {
+                    // We need these first two lines to avoid exceptions because Update() is called on a non-null text object which has already been destroyed
+                    GameObject objectRef = edge.GetComponent<FrontEndEdge>()._textObject;
+                    edge.GetComponent<FrontEndEdge>()._textObject = null;
+
+                    Destroy(objectRef);
+                    Destroy(edge);
+                }
             }
 
             StartCoroutine(gameObject.GetComponent<FrontEndNode>()._databaseNode.DeleteFromDatabaseCo(() => Destroy(gameObject)));

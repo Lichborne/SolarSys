@@ -20,6 +20,15 @@ namespace Backend
 
         public GraphEdge(Guid id, string title, string body, GraphNode parent, GraphNode child)
         {
+            if (parent == null)
+                throw new NullReferenceException("GraphEdge received a null parent");
+
+            if (child == null)
+                throw new NullReferenceException("GraphEdge received a null child");
+
+            if (parent.Project == null)
+                throw new NullReferenceException("GraphEdge received a parent with a null project");
+
             Title = title?.Replace('"', '“');
             Description = body?.Replace('"', '“');
             Id = id;

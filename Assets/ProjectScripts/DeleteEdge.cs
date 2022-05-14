@@ -22,7 +22,10 @@ public class DeleteEdge : MonoBehaviour
 
             //repositionOrRemakeEdges(gameObject.GetComponent<FrontEndEdge>()._parent, gameObject.GetComponent<FrontEndEdge>()._child);
 
-            Destroy(gameObject.GetComponent<FrontEndEdge>()._textObject);
+            // We need these first two lines to avoid exceptions because Update() is called on a non-null text object which has already been destroyed
+            GameObject objectRef = gameObject.GetComponent<FrontEndEdge>()._textObject;
+            gameObject.GetComponent<FrontEndEdge>()._textObject = null;
+            Destroy(objectRef);
 
             StartCoroutine(gameObject.GetComponent<FrontEndEdge>()._databaseEdge.DeleteFromDatabaseCo(() => Destroy(gameObject)));
         }

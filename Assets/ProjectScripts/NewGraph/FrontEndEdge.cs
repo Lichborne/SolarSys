@@ -24,7 +24,7 @@ public class FrontEndEdge : MonoBehaviour
     }
     void Update()
     {   
-        if (_databaseEdge == null && !(_textObject == null)) {
+        if (_databaseEdge == null || _textObject == null) {
             return;
         }
         //if it's a self reference edge, we just update its position in a more simple manner, get the text object in a nice place, and return

@@ -21,6 +21,9 @@ namespace Backend
 
         public GraphNode(Guid id, GraphProject project, string title, string description, (float x, float y, float z) coordinates)
         {
+            if (project == null)
+                throw new NullReferenceException("GraphNode received null project");
+
             Title = title.Replace('"', '“');
             Description = description.Replace('"', '“');
             Id = id;
@@ -110,6 +113,15 @@ namespace Backend
         // deletes the node from the database along with its edges. does not affect the node's children
         public IEnumerator DeleteFromDatabaseCo(Action cleanupFunc = null) // works
         {
+            if (Project == null)  {
+                Debug.Log("Project is nulle");
+            }
+            if (Project.User == null)  {
+                Debug.Log("User is nulle");
+            }
+            if (Project.User.Database == null)  {
+                Debug.Log("Database is nulle");
+            }
             yield return Project.User.Database.DestroyNodeCo(this);
             if (cleanupFunc != null)
                 cleanupFunc();
