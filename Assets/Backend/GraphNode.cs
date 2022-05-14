@@ -77,16 +77,21 @@ namespace Backend
             => Edges.Remove(edge);
 
 
-        public IEnumerator UpdateTitle(string title)
-        {
-            Title = title;
-            yield return Project.User.Database.UpdateNodeTitleCo(this, title);
-        }
+        // public IEnumerator UpdateTitle(string title)
+        // {
+        //     Title = title;
+        //     yield return Project.User.Database.UpdateNodeTitleCo(this, title);
+        // }
 
-        public IEnumerator UpdateTitleCo(string title) // Works!
+        public IEnumerator UpdateTitleCo(string title, Action callback = null) // Works!
         {
             yield return Project.User.Database.UpdateNodeTitleCo(this, title);
             Title = title;
+
+            if (callback != null) {
+                yield return null; // waiting for next frame
+                callback();
+            }
         }
 
         public IEnumerator UpdateDescription(string description)
