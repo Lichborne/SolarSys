@@ -83,10 +83,15 @@ namespace Backend
         }
 
         // Updates the title of the edge, writing change to database
-        public IEnumerator UpdateTitleCo(string title)
+        public IEnumerator UpdateTitleCo(string title, Action callback = null)
         {
             Title = title;
             yield return Project.User.Database.UpdateEdgeTitleCo(this, title);
+            
+            if (callback != null) {
+                yield return null; // waiting for next frame
+                callback();
+            }
         }
 
         // updates the description of the edge, writing change to database
