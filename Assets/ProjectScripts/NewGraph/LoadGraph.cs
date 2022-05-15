@@ -115,7 +115,7 @@ public class LoadGraph : MonoBehaviour
             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, graphNodes[parentIndex], graphNodes[childIndex], 0);
-
+            ChangeText.ChangeInputFieldText(edgeObject.GetComponent<FrontEndEdge>()._textObject, edgeObject.GetComponent<FrontEndEdge>()._databaseEdge.Title);
             //depricated
             //edgeObject.GetComponent<StoreParentChild>().parent = graphNodes[parentIndex];
             //edgeObject.GetComponent<StoreParentChild>().child = graphNodes[childIndex];
