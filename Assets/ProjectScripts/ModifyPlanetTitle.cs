@@ -63,6 +63,7 @@ public class ModifyPlanetTitle: MonoBehaviour
     public void displayTitle()
     {// To be called when "Edit Text is called", will update description to 
         GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
+        Debug.Log("Title" + currentlySelectedObject);
         if (currentlySelectedObject.tag == "Node")
         {
             GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();

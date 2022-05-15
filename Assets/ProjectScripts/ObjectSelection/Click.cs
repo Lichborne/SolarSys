@@ -109,6 +109,7 @@ public class Click : MonoBehaviour
                         }
 
                         //clear list
+                        selectedObject = null;
                         selectedObjects.Clear();
                         // textDisplayPanel.SetActive(false);
                         // textInputPanel.SetActive(false);

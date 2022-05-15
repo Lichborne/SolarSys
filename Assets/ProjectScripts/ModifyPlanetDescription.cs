@@ -47,6 +47,7 @@ public class ModifyPlanetDescription : MonoBehaviour
     private GameObject findCurrentlySelectedPlanetorEdge()
     {
         GameObject currentlySelectedObject = Camera.main.GetComponent<Click>().selectedObject;
+        Debug.Log(currentlySelectedObject);
         if (!currentlySelectedObject) // If no planet was found then they must have chosen an edge
         {
             currentlySelectedObject = Camera.main.GetComponent<Click>().selectedEdge;
