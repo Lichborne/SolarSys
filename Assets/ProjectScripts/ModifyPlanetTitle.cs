@@ -19,24 +19,34 @@ public class ModifyPlanetTitle: MonoBehaviour
         titleEntry = inputField.GetComponent<TMP_InputField>().text;
         if (titleEntry != "") // Users cannot input null entries
         {
-            try
-            {
+            // try
+            // {
                 GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
                 if (currentlySelectedObject.tag == "Node")
                 {
                     GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
                     StartCoroutine(attachedNode.UpdateTitleCo(titleEntry));
+                    //update UI
+                    // Canvas canvas = currentlySelectedObject.GetComponent<Canvas>();
+                    // Debug.Log(canvas.GetComponent<TMP_InputField>().text);
+                    ChangeText.ChangeInputFieldText(currentlySelectedObject, titleEntry);
+
                 }
                 else if (currentlySelectedObject.tag == "Edge")
                 {
                     GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
                     StartCoroutine(attachedEdge.UpdateTitleCo(titleEntry));
-                }    
-            }
-            catch
-            {
-                Debug.Log("Please select a planet first");
-            }
+                    ChangeText.ChangeInputFieldText(currentlySelectedObject.GetComponent<FrontEndEdge>()._textObject, titleEntry);
+                    // currentlySelectedObject.GetComponent<FrontEndEdge>()._textObject.text=titleEntry;
+                }
+
+                // Update UI
+
+            // }
+            // catch
+            // {
+            //     Debug.Log("Please select a planet first");
+            // }
         } 
     }
 

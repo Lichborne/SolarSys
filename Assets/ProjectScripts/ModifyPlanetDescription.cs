@@ -19,8 +19,8 @@ public class ModifyPlanetDescription : MonoBehaviour
         descriptionEntry = inputField.GetComponent<TMP_InputField>().text;
         if (descriptionEntry != "") // Users cannot input null entries
         {
-            try
-            {
+            // try
+            // {
             GameObject currentlySelectedObject = findCurrentlySelectedPlanetorEdge();
             if (currentlySelectedObject.tag == "Node")
             {
@@ -32,13 +32,15 @@ public class ModifyPlanetDescription : MonoBehaviour
                 GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
                 StartCoroutine(attachedEdge.UpdateDescriptionCo(descriptionEntry));
             }
-            
+
+
+            //Update the frontend text
             // inputField.GetComponent<TMP_InputField>().text = ""; // reset text field
-            }
-            catch
-            {
-                Debug.Log("Please select a planet or an edge first");
-            }
+            // }
+            // catch
+            // {
+            //     Debug.Log("Please select a planet or an edge first");
+            // }
         } 
     }
 
