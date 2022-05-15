@@ -8,19 +8,55 @@ using UnityEngine.UI;
 using Backend;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEngine.EventSystems;
+
 
 public class AuthenticateUser : MonoBehaviour
 {
     public GameObject savedProjectsPanel;
     public GameObject loginPanel;
     public GameObject errorMessage;
+    [HideInInspector]
     public GameObject usernameField;
+    EventSystem system;
 
 
     string authServer = "https://api-materials.doc.ic.ac.uk/auth/login";
     private IEnumerator coroutine;
 
-    // Start is called before the first frame update
+    void Start ()
+    {
+        system = EventSystem.current;
+         
+    }
+
+    void Update() {
+        if(loginPanel.activeSelf)
+        {
+            if(Input.GetKeyDown (KeyCode.Return))
+            {
+                authenticate();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                Selectable next = system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
+            
+                if (next != null)
+                {
+                
+                    InputField inputfield = next.GetComponent<InputField>();
+                    if (inputfield != null)
+                        inputfield.OnPointerClick(new PointerEventData(system));  //if it's an input field, also set the text caret
+                
+                    system.SetSelectedGameObject(next.gameObject, new BaseEventData(system));
+                }
+                //else Debug.Log("next nagivation element not found");
+            
+            }
+        }
+    }
+
     public void authenticate(){
         GameObject signInBox = gameObject.transform.parent.gameObject;
         Debug.Log($"Running auth for {signInBox.name}");
@@ -111,14 +147,4 @@ public class AuthenticateUser : MonoBehaviour
     }
 
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
