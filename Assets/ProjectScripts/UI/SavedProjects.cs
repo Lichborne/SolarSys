@@ -39,7 +39,8 @@ public class SavedProjects : MonoBehaviour
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
 
         // can get username from login like this
-        // string userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField;
+        // string userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField.GetComponent<TMP_InputField>().text;
+        // Debug.Log(userEmail);
 
         string userEmail = "foo.bar@doc.ic.ac.uk";
         // string userEmail = "balazs.frei@ic.ac.uk";
