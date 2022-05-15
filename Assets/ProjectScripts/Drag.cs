@@ -7,25 +7,23 @@ using Backend;
 
 // Class for node interactions; dragging nodes around with left mouse button, adding a new node with middle mouse button, and deleting by pressing delete key on hover.  
 // Once again, we can only inherit from MonoBehaviour, so although the data members are similar to other classes, we cannot have an abstract class.
-// I would also like to avoid touching MonoBehaviour; it'!'s a delicate beast, and central to everything we do in Unity.
+// I would also like to avoid touching MonoBehaviour; it's a delicate beast, and central to everything we do in Unity.
 class Drag : MonoBehaviour
 {
-    // Straigh edge prefab
-    public GameObject _edgePrefab;
+    // The objects the class at some point may have to instantiate; must be public so that it can be set from editor.
 
-    // Node prefab. On usage, see LodGraph.cs
-    public GameObject _nodePrefab;
+    public GameObject _edgePrefab;              // Straight edge prefab
+    
+    public GameObject _nodePrefab;              // Node prefab. On usage, see LodGraph.cs
 
-    // Self reference edge prefab
-    public GameObject _selfReferencePreFab;
+    public GameObject _selfReferencePreFab;     // Self reference edge prefab
 
-    public GameObject _textObject;
+    // This is the separate text for edges; cannot be a part of the prefabs due to universal scaling being uncircumventable from inside game object
+    public GameObject _textObject;              // Text object
 
-    // To trackwhether we are dragging at the moment
-    private bool dragging = false;
+    private bool dragging = false;              // To trackwhether we are dragging at the moment
 
-    // aid for dragging
-    private float distance;
+    private float distance;                     // aid for dragging
 
     // The radius in which we look at other nodes present to avoid when placing new nodes automatically.
     // this is a "magic number", but much as many things in UI, it is a number we arrived at by trial and error
@@ -94,7 +92,7 @@ class Drag : MonoBehaviour
             GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
             StartCoroutine(databaseEdge.CreateInDatabaseCo());
-             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
+            GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
 
             //if we get time, this should be turned into a function as it recurrs

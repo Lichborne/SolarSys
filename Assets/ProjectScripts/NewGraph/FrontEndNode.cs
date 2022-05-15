@@ -99,9 +99,12 @@ public class FrontEndNode : MonoBehaviour
         List<GameObject> edgesToReplace = new List<GameObject>();
         foreach (GameObject edge in edgeOut) 
         {
-            if (edge.GetComponent<FrontEndEdge>()._child == toNode) //&& edge.GetComponent<FrontEndEdge>()._child != edge.GetComponent<FrontEndEdge>()._parent) 
-            {
-                edgesToReplace.Add(edge);
+            // staying defensive
+            if (edge != null) {
+                if (edge.GetComponent<FrontEndEdge>()._child == toNode) //&& edge.GetComponent<FrontEndEdge>()._child != edge.GetComponent<FrontEndEdge>()._parent) 
+                {
+                    edgesToReplace.Add(edge);
+                }
             }
         }
         // Have to iterate twie because we cant change the contents of the ist while enumerating

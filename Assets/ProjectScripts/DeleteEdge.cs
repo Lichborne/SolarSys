@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class DeleteEdge : MonoBehaviour
 {
-
-    public GameObject _selfReferencePrefab;
-    public GameObject _edgePrefab;
-    public GameObject _curvedPrefab;
+    // The objects the class at some point may have to instantiate; must be public so that it can be set from editor.
+    public GameObject _selfReferencePrefab;         // Self-reference prefab (ring)
+    public GameObject _edgePrefab;                  // Straight edge prefab
+    public GameObject _curvedPrefab;                // Curved edge prefab
 
     void OnMouseOver () {
          if (Input.GetKeyDown("delete")) 
@@ -20,7 +20,7 @@ public class DeleteEdge : MonoBehaviour
 
             gameObject.GetComponent<FrontEndEdge>()._parent.GetComponent<FrontEndNode>().edgeOut.Remove(gameObject);
 
-            //repositionOrRemakeEdges(gameObject.GetComponent<FrontEndEdge>()._parent, gameObject.GetComponent<FrontEndEdge>()._child);
+            // repositionOrRemakeEdges(gameObject.GetComponent<FrontEndEdge>()._parent, gameObject.GetComponent<FrontEndEdge>()._child);
 
             // We need these first two lines to avoid exceptions because Update() is called on a non-null text object which has already been destroyed
             GameObject objectRef = gameObject.GetComponent<FrontEndEdge>()._textObject;
@@ -87,7 +87,7 @@ public class DeleteEdge : MonoBehaviour
             float rotation = 180/(edgeCount-1);
             foreach (GameObject edge in edgesToChange) 
             {
-                edge.GetComponent<FrontEndEdge>()._rotation = rotation*i;
+                edge.GetComponent<FrontEndEdge>()._rotation = (rotation*i);
                 i=i+1;
             }
         } 

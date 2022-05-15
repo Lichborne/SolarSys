@@ -2,25 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class FrontEndEdge : MonoBehaviour
 {
-    public bool _isCurved = false;
+    // to represent the database edge which it represents; public because access is needed by many operations; 
+    // safety has to be ensured by careful use, regardless of protection level
+    public Backend.GraphEdge _databaseEdge { get; set; } = null;          
 
-    public Backend.GraphEdge _databaseEdge { get; set; } = null;
+    // separate text for edges; cannot be a part of the prefabs due to universal scaling being uncircumventable from inside game object
+    public GameObject _textObject { get; set; } = null;                   
 
-    public GameObject _textObject { get; set; } = null;
-
+    // parent object; other classes need frequent access, so getters and setters seemed needlessly indirect; 
+    // safety has to be ensured by careful use, regardless of protection level
     public GameObject _parent { get; set; } = null;
 
-    public GameObject _child {get; set; } = null;
+    // child object; other classes need frequent access, so getters and setters seemed needlessly indirect;
+    // safety has to be ensured by careful use, regardless of protection level
+    public GameObject _child { get; set; } = null;
+    
+    // public because certain unity functionality used for keeping rotations aligned does not work otherwise, and 
+    // because system needs access multiple times a second, for every object, therefore it is not prudent to go indirectly.
+    public float _rotation { get; set; } = 0;
 
-    public float _rotation = 0;
+    private bool _isCurved { get; set; } = false;
 
-    // Instead of update; moving called by funct in node.
+    // to represent displacement for text object from edge when the edge is curved, same as above
+    private float _scale = 2;         
+
+    // this is needed so that when edge text is close to the camera, it faces it, otherwise not; private here because it should not be changed
+    private Camera cameraToLookAt;     
+
+    // to represent basic displacement for text object from edge. It is a "magic number", 
+    // so to speak; arrived at by testing. This was, as in some other cases, unavoidable
+    private const float BASIC = 3f; 
+
+    // a quarter turn 
+    private const float QUARTERTURN = 90f;          
+
+    // max distance of camera from obejct at which text is rotated to face it
+    private const float MAXDISTANCE = 30f;       
+    
+
     void Start() 
     {
-        
+        // we set the camera
+        cameraToLookAt = Camera.main;
     }
     void Update()
     {   
@@ -29,9 +56,9 @@ public class FrontEndEdge : MonoBehaviour
         }
         //if it's a self reference edge, we just update its position in a more simple manner, get the text object in a nice place, and return
         if (_parent == _child) {
-            gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z);
-            _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 3, gameObject.transform.position.z);
-            _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y+90f, gameObject.transform.rotation.z+90f, gameObject.transform.rotation.w);
+            gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z); 
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + BASIC, gameObject.transform.position.z);
+            _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y+QUARTERTURN, gameObject.transform.rotation.z+QUARTERTURN, gameObject.transform.rotation.w);
             return;
         }
 
@@ -57,6 +84,8 @@ public class FrontEndEdge : MonoBehaviour
 
         }
 
+        _scale = ls.z/6;
+
         //scale
         gameObject.transform.localScale = ls;
 
@@ -66,14 +95,44 @@ public class FrontEndEdge : MonoBehaviour
             (_child.transform.position.y+_parent.transform.position.y)/2,
             (_child.transform.position.z+_parent.transform.position.z)/2);
         
-        //if(_isCurved) 
-        //{
-            //_textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2, gameObject.transform.position.z);
-        //} else {
-        _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 1, gameObject.transform.position.z);
-        //}
+        if (!_isCurved) 
+        {
+            _textObject.transform.position = new Vector3((_child.transform.position.x+_parent.transform.position.x)/2, gameObject.transform.position.y + 1, (_child.transform.position.z+_parent.transform.position.z)/2);
+        
+        } 
+        else if (_rotation == 0) 
+        {
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(_rotation)), gameObject.transform.position.z + (float)(_scale*Math.Sin(_rotation)));
+        }
+        else if (_rotation > 0) 
+        {
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
+                gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
+            
+        } else {
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x - (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
+                gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
+        }
+
+        // if within range, return
+        if (Vector3.Distance(gameObject.transform.position, cameraToLookAt.transform.position) < MAXDISTANCE) {
+            // if we are close, enable
+            if(!_textObject.activeSelf) {
+                _textObject.SetActive(true);
+            }
+
+            // transform to always look at the camera
+            _textObject.transform.rotation = Quaternion.LookRotation(-cameraToLookAt.transform.forward, cameraToLookAt.transform.up);
+            _textObject.transform.Rotate(180, 90, 180);
+            
+            return;
+        }
+
+        _textObject.SetActive(false);
         //_textObject.transform.LookAt(_parent.transform);
-        _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y, gameObject.transform.rotation.z, gameObject.transform.rotation.w);
+        //_textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y, gameObject.transform.rotation.z, gameObject.transform.rotation.w);
+
   }
     // constructors are ill advised, so we use this instead
     public void InstantiateEdge(bool isCurvedEdge, Backend.GraphEdge graphEdge, GameObject text, GameObject p, GameObject c, float rotation = 0f) { 
@@ -85,10 +144,26 @@ public class FrontEndEdge : MonoBehaviour
         _child = c;
         _rotation = rotation;
 
-        //gameObject.GetComponent<StoreParentChild>().parent = _parent;
-        //gameObject.GetComponent<StoreParentChild>().child = _child;
-        //gameObject.transform.LookAt(_child.transform);
         gameObject.transform.Rotate(0.0f, 0.0f, rotation);
 
     }
+
+    public double ConvertToRadians(double angle)
+    {
+        return (Math.PI / 180) * angle;
+    }
 }
+
+/*if (Math.Abs(_rotation) <= 90) {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
+            } else if (Math.Abs(_rotation) <= 180) {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
+            } else if (Math.Abs(_rotation) <= 270) {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
+            } else if (Math.Abs(_rotation) <= 360) {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
+            }*/

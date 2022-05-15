@@ -11,29 +11,25 @@ public class AddEdge : MonoBehaviour
     // representative a different kind of relationship than inside the class
     private GameObject _fromNode = null;
 
-    // The child node the edge points to; same as above.
-    private GameObject _toNode = null;
-
-    // Straight edge prefab
-    public GameObject _edgePrefab = null;
+    private GameObject _toNode = null;                  // The child node the edge points to; same as above.
     
-    // Curved edge prefab
-    public GameObject _curvedPrefab = null;
+    public GameObject _edgePrefab = null;               // Straight edge prefab
+    
+    public GameObject _curvedPrefab = null;             // Curved edge prefab
+    
+    public GameObject _selfReferencePreFab = null;      // Self reference prefab
 
-    // Self reference prefab
-    public GameObject _selfReferencePreFab = null;
+    // needed because we have to freeze the camera when adding an edge, otherwise controls are very uncomfortable
+    public MonoBehaviour cameraController;
     
     // This is the separate text for edges; cannot be a part of the prefabs due to universal scaling being uncircumventable from inside game object
     public GameObject _textObject = null;
 
     // Behaviour is slightly different when we have to be placing a curved edge
-    private bool isCurvedEdge = false;
+    private bool isCurvedEdge { get; set; } = false;
 
     // True when we are in the (potential) process of adding an edge
-    private bool adding = false;
-
-    // Because we have to freeze the camera when adding an edge, otherwise controls are very uncomfortable
-    public MonoBehaviour cameraController;
+    private bool adding { get; set; } = false;
 
     // Update is called once per frame
     void Update()
@@ -97,13 +93,11 @@ public class AddEdge : MonoBehaviour
                 //if we get time, this should be turned into a function as it recurrs
                 GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", _fromNode.GetComponent<FrontEndNode>()._databaseNode, _toNode.GetComponent<FrontEndNode>()._databaseNode);
+                
                 StartCoroutine(databaseEdge.CreateInDatabaseCo());
+                
                 GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, _fromNode, _toNode, rotation);
-                
-                //depricated
-                //edgeObject.GetComponent<StoreParentChild>().parent = _fromNode;
-                //edgeObject.GetComponent<StoreParentChild>().child = _toNode;
 
                 //if we get time, this should be turned into a function as it recurrs
                 _fromNode.GetComponent<FrontEndNode>().to.Add(_toNode);
