@@ -72,7 +72,6 @@ namespace Backend
                             $" CREATE (project_root) -[:CONTAINS]-> " +
                             $" (:NODE {{guid: '{node.Id}', title: '{node.Title}', description: '{node.Description}', coordinates: [{node.Coordinates.X}, {node.Coordinates.Y}, {node.Coordinates.Z}]}})";
 
-            Debug.Log($"CreateUnlinkedNode with query {query}");
             LogNode logNode = new NodeCreationLog(node);
             yield return MakeAndLogChangeQueryCo(node.Project, query, logNode);
         }
