@@ -5738,10 +5738,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Create a node: \nPress \"n\" or 1 on your keyboard.\n\n\nCreate an edge
-    between two nodes: \nif you have a mouse hover over one node, right click and
-    drag to another node. \nIf you have a trackpad, hover over one node, press \"3\",
-    and move over (while pressing on the 3) to another node. \n"
+  m_text: "Create a node: \nPress \"n\" or \"1\" on your keyboard.\n\n\nCreate an
+    edge between two nodes: \nIf you have a mouse hover over one node, right click
+    and drag to another node. \nIf you have a trackpad, hover over one node, press
+    \"3\", and move over to another node and release \"3\". \n\nCamera Navigation:\n\"w\"
+    - Forward, \"s\" - Backward, \"a\" - Left, \"d\" - Right, \"e\" - Up, \"q\" -
+    Down\nRight Click - Change angle\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
@@ -17555,7 +17557,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 54.2, y: 50.3}
+  m_AnchoredPosition: {x: 54.19995, y: 50.299988}
   m_SizeDelta: {x: 804.4799, y: 889.1011}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3492458473271019264
@@ -17803,7 +17805,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
       - m_Target: {fileID: 1687258588}
         m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
         m_MethodName: activateCamera
@@ -18525,9 +18527,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "The universe (Latin: universus) is all of space and time[a] and their
-    contents,[10] including planets, stars, galaxies, and all other forms of matter
-    and energy. The Big Bang theory is the prevailing cosmological \n"
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
@@ -18661,7 +18663,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Universe
+  m_text: New Node
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
