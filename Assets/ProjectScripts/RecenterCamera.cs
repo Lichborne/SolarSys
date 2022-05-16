@@ -23,7 +23,7 @@ public class RecenterCamera : MonoBehaviour
 
         // Work with the transform's variables
         dummy.transform.position = new Vector3(0, 0, 0);
-        dummy.transform.rotation = Quaternion.Euler(180, 0, 0);
+        dummy.transform.rotation = Quaternion.Euler(180, 0, 180);
         dummy.transform.localScale = new Vector3(1, 1, 1);
 
         cameraToRecenter.GetComponent<UnityTemplateProjects.SimpleCameraController>().m_TargetCameraState.SetFromTransform(dummy.transform);
