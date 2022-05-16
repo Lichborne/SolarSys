@@ -21,23 +21,23 @@ public class AddEdge : MonoBehaviour
     public GameObject _selfReferencePreFab = null;      // Self reference prefab
 
     // needed because we have to freeze the camera when adding an edge, otherwise controls are very uncomfortable
-    public MonoBehaviour cameraController;
+    public MonoBehaviour _cameraController;
     
     // This is the separate text for edges; cannot be a part of the prefabs due to universal scaling being uncircumventable from inside game object
     public GameObject _textObject = null;
 
     // Behaviour is slightly different when we have to be placing a curved edge
-    private bool isCurvedEdge { get; set; } = false;
+    private bool _isCurvedEdge { get; set; } = false;
 
     // True when we are in the (potential) process of adding an edge
-    private bool adding { get; set; } = false;
+    private bool _adding { get; set; } = false;
 
     // Panel States to check                  
-    private GameObject[] panels;
+    private GameObject[] _panels;
 
     void Start() 
     {
-        panels = GameObject.FindGameObjectsWithTag("Panel");
+        _panels = GameObject.FindGameObjectsWithTag("Panel");
     }
 
     // Update is called once per frame
@@ -45,10 +45,10 @@ public class AddEdge : MonoBehaviour
     {
         // depending on the order things are created we may not yet have the panels before start is called,
         // so we do have to poll for this
-        if (panels.Length == 0) panels = GameObject.FindGameObjectsWithTag("Panel");
-        
+        if (_panels.Length == 0) _panels = GameObject.FindGameObjectsWithTag("Panel");
+
         // don't run if any of the panels are active
-        foreach (GameObject p in panels) if (p.activeSelf) return; 
+        foreach (GameObject p in _panels) if (p.activeSelf) return; 
 
         // We use raycasts and update, putting this whole behaviour separately from functionality in Drag, 
         // becuase we have to drag the click, the possible hold, and release, and wehther that release hits another node object;
@@ -61,9 +61,9 @@ public class AddEdge : MonoBehaviour
         if ((Input.GetKeyDown("3") || Input.GetMouseButtonDown(1)) && Physics.Raycast(ray, out hitInfo, Mathf.Infinity) && hitInfo.transform.tag == "Node")
         {   
             // when we are adding an edge, we do not want the mouse to move the camera.
-            cameraController.enabled = false;
+            _cameraController.enabled = false;
             _fromNode = hitInfo.collider.gameObject;
-            adding = true;
+            _adding = true;
             Debug.Log("ADDING");
 
         }
@@ -72,14 +72,14 @@ public class AddEdge : MonoBehaviour
         //  node by raycast, we do nothing and reset adding, and if we do hit a node, then, finally, we add an edge
         if((Input.GetKeyUp("3") || Input.GetMouseButtonUp(1)) ) 
         {
-            if (!adding) 
+            if (!_adding) 
             {
                 Debug.Log("NOT ADDING");
                 return;
             }
 
             //no matter what happens, we let go of the camera as early as possible.
-            cameraController.enabled = true;
+            _cameraController.enabled = true;
             Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo2;
 
@@ -89,7 +89,7 @@ public class AddEdge : MonoBehaviour
 
                 GameObject rightPrefab = _edgePrefab;
 
-                isCurvedEdge = false;
+                _isCurvedEdge = false;
 
                 float rotation = 0;
 
@@ -103,24 +103,24 @@ public class AddEdge : MonoBehaviour
                 {
                     rightPrefab = _curvedPrefab;
                     rotation = _fromNode.GetComponent<FrontEndNode>().changeEdge(_toNode, _curvedPrefab);
-                    isCurvedEdge = true;
+                    _isCurvedEdge = true;
                 } 
 
                 //if we get time, this should be turned into a function as it recurrs
                 GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", _fromNode.GetComponent<FrontEndNode>()._databaseNode, _toNode.GetComponent<FrontEndNode>()._databaseNode);
-                
+                Debug.Log("WEEEEEEE");
                 StartCoroutine(databaseEdge.CreateInDatabaseCo());
                 
                 GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
-                edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, _fromNode, _toNode, rotation);
+                edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(_isCurvedEdge, databaseEdge, textObject, _fromNode, _toNode, rotation);
 
                 //if we get time, this should be turned into a function as it recurrs
                 _fromNode.GetComponent<FrontEndNode>().to.Add(_toNode);
                 _fromNode.GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
                 _toNode.GetComponent<FrontEndNode>().from.Add(_fromNode);
             }
-            adding = false;   
+            _adding = false;   
             Debug.Log("ADDED");
         }
     }
