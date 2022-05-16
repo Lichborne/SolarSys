@@ -50,7 +50,7 @@ public class AddEdge : MonoBehaviour
         // don't run if any of the panels are active
         foreach (GameObject p in _panels) if (p.activeSelf) return; 
 
-        // We use raycasts and update, putting this whole behaviour separately from functionality in Drag, 
+        // We use raycasts and update, putting this whole behaviour separately from functionality in NodeOperations, 
         // becuase we have to drag the click, the possible hold, and release, and wehther that release hits another node object;
         // while  all of this would be possible in that context, since we need to operate between frames, it is cleaner
         // this way, and Drag is already, if anything, a little cluttered.
