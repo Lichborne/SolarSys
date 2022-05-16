@@ -20,6 +20,9 @@ public class AuthenticateUser : MonoBehaviour
     public GameObject usernameField;
     EventSystem system;
 
+    [HideInInspector]
+    public GraphUser currentUser;
+
 
     string authServer = "https://api-materials.doc.ic.ac.uk/auth/login";
     private IEnumerator coroutine;
@@ -69,13 +72,13 @@ public class AuthenticateUser : MonoBehaviour
         }
         string user = usernameField.GetComponent<TMP_InputField>().text;
         string password = passwordField.GetComponent<TMP_InputField>().text;
-        coroutine = SendAuthRequest(user, password, HandleAuth);
+        coroutine = SendAuthRequest(user, password, (long code) => HandleAuth(code, user));
         StartCoroutine(coroutine);
 
 
     }
     
-    public void HandleAuth(long code){
+    public void HandleAuth(long code, string userEmail) {
         Debug.Log($"Web request return code {code} ");
         switch(code)
         {
@@ -85,6 +88,8 @@ public class AuthenticateUser : MonoBehaviour
                 loginPanel.SetActive(false);
                 savedProjectsPanel.SetActive(true);
                 Camera.main.GetComponent<DeactivateCamera>().activateCamera();
+                currentUser = new GraphUser(userEmail);
+
                 break;
             case 401:
                 // Do not successful

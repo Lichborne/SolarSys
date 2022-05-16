@@ -39,6 +39,8 @@ public class LoadGraph : MonoBehaviour
     // // A list to help keep track of the Edges while setting up the visualization initially
     private List<GameObject> graphEdges = new List<GameObject>();
 
+    private AuthenticateUser authenticateUser = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +50,7 @@ public class LoadGraph : MonoBehaviour
         // StartCoroutine(graph.ReadFromDatabase(displayProject));
 
         // // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
+        authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
     }
 
     public void LoadProject(string projectTitle) 
@@ -57,7 +60,8 @@ public class LoadGraph : MonoBehaviour
                 UnityEngine.Object.Destroy(o);
             }
         }
-        graph = new GraphProject(projectTitle);
+
+        graph = new GraphProject(authenticateUser.currentUser, projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 
