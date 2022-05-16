@@ -30,7 +30,7 @@ public class SavedProjects : MonoBehaviour
     public GameObject actionsPanel;
 
 
-    void Start()
+    IEnumerator Start()
     {
         // instantiate new list for project names
         projectList = new List<string>();
@@ -39,11 +39,12 @@ public class SavedProjects : MonoBehaviour
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
 
         // can get username from login like this
-        // string userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField.GetComponent<TMP_InputField>().text;
+        string userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField.GetComponent<TMP_InputField>().text;
         // Debug.Log(userEmail);
 
-        string userEmail = "foo.bar@doc.ic.ac.uk";
+        // string userEmail = "foo.bar@doc.ic.ac.uk";
         // string userEmail = "balazs.frei@ic.ac.uk";
+        yield return GraphUser.CreateIfNotExists(userEmail);
         user = new GraphUser(userEmail);
         CreatedByMeToggleValueChanged();
     }

@@ -9,6 +9,7 @@ TagManager:
   - Clickable
   - UI
   - Text
+  - Panel
   layers:
   - Default
   - TransparentFX

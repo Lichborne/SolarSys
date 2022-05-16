@@ -266,6 +266,7 @@ public class Click : MonoBehaviour
     //function to restore all hidden nodes and edges
     public void HidePath()
     {   
+      
         isShowingPath = false;
         UIPanelPath.SetActive(false);
         UIPanelMultiple.SetActive(false);
@@ -294,5 +295,6 @@ public class Click : MonoBehaviour
 
         }
         shownNodes.Clear();
+        
     }
 }
