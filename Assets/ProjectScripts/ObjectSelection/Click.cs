@@ -266,33 +266,37 @@ public class Click : MonoBehaviour
     //function to restore all hidden nodes and edges
     public void HidePath()
     {   
-        isShowingPath = false;
-        UIPanelPath.SetActive(false);
-        UIPanelMultiple.SetActive(false);
-        UIPanel.SetActive(false);
-        UIPanelEdge.SetActive(false);
-
-        //deselect everything
-        foreach (GameObject obj in selectedObjects) 
-        {   
-            obj.GetComponent<ClickOn>().currentlySelected = false;
-            obj.GetComponent<ClickOn>().ClickMe();
-        }
-
-        selectedObjects.Clear();
-        //unhide all nodes
-        foreach (GameObject obj in hiddenNodes)
+        if (isShowingPath == true) 
         {
-            obj.GetComponent<ClickOn>().currentlyHidden = false;
-            obj.GetComponent<ClickOn>().HideUnhideMe(); 
-        }
-        //unhide all edges
-        foreach (GameObject obj in hiddenEdges)
-        {  
-            obj.SetActive(true);
-            obj.GetComponent<FrontEndEdge>()._textObject.SetActive(true);
 
+            isShowingPath = false;
+            UIPanelPath.SetActive(false);
+            UIPanelMultiple.SetActive(false);
+            UIPanel.SetActive(false);
+            UIPanelEdge.SetActive(false);
+
+            //deselect everything
+            foreach (GameObject obj in selectedObjects) 
+            {   
+                obj.GetComponent<ClickOn>().currentlySelected = false;
+                obj.GetComponent<ClickOn>().ClickMe();
+            }
+
+            selectedObjects.Clear();
+            //unhide all nodes
+            foreach (GameObject obj in hiddenNodes)
+            {
+                obj.GetComponent<ClickOn>().currentlyHidden = false;
+                obj.GetComponent<ClickOn>().HideUnhideMe(); 
+            }
+            //unhide all edges
+            foreach (GameObject obj in hiddenEdges)
+            {  
+                obj.SetActive(true);
+                obj.GetComponent<FrontEndEdge>()._textObject.SetActive(true);
+
+            }
+            shownNodes.Clear();
         }
-        shownNodes.Clear();
     }
 }
