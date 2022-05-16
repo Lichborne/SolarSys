@@ -36,7 +36,7 @@ public class LoadGraph : MonoBehaviour
     // A list to help keep track of the Nodes while setting up the visualization initially
     private List<GameObject> graphNodes = new List<GameObject>();
 
-    // // A list to help keep track of the Edges while setting up the visualization initially
+    // A list to help keep track of the Edges while setting up the visualization initially
     private List<GameObject> graphEdges = new List<GameObject>();
 
     private AuthenticateUser authenticateUser = null;
@@ -134,6 +134,8 @@ public class LoadGraph : MonoBehaviour
                 UnityEngine.Object.Destroy(o);
             }
         }
+        graphNodes.Clear();
+        graphEdges.Clear();
 
     }
 
