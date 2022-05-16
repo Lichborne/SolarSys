@@ -9,9 +9,23 @@ public class DeleteEdge : MonoBehaviour
     public GameObject _selfReferencePrefab;         // Self-reference prefab (ring)
     public GameObject _edgePrefab;                  // Straight edge prefab
     public GameObject _curvedPrefab;                // Curved edge prefab
+    private GameObject[] panels;                    // Panel States to check
 
-    void OnMouseOver () {
-         if (Input.GetKeyDown("delete")) 
+    void Start() 
+    {
+        panels = GameObject.FindGameObjectsWithTag("Panel");
+    }
+
+    void OnMouseOver () 
+    {
+        // depending on the order things are created we may not yet have the panels before start is called,
+        // so we do have to poll for this
+        if (panels.Length == 0) panels = GameObject.FindGameObjectsWithTag("Panel");
+        
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
+         if (Input.GetKeyDown("delete") || Input.GetKeyDown("backspace")) 
          {
             
             gameObject.GetComponent<FrontEndEdge>()._child.GetComponent<FrontEndNode>().from.Remove(gameObject.GetComponent<FrontEndEdge>()._parent);

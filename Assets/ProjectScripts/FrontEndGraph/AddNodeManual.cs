@@ -5,19 +5,27 @@ using Backend;
 
 public class AddNodeManual : MonoBehaviour
 {
-    // how far to put it in front of cam 
-    public float distance = 12.0f;
-    // node type
-    public GameObject _nodePrefab;
-    // Start is called before the first frame update
-    void Start()
+    
+    public float distance = 12.0f;                  // how far to put it in front of cam 
+    public GameObject _nodePrefab;                  // node type
+    private GameObject[] panels;                    // Panel States to check
+
+    void Start() 
     {
-        
+        panels = GameObject.FindGameObjectsWithTag("Panel");
     }
 
     // Update is called once per frame
     void Update()
     {
+        // depending on the order things are created we may not yet have the panels before start is called,
+        // so we do have to poll for this
+        if (panels.Length == 0)
+        {
+            panels = GameObject.FindGameObjectsWithTag("Panel");
+        }
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
 
         if (Input.GetKeyDown("n") || Input.GetKeyDown("1")) 
         {
