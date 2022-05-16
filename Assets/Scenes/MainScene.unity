@@ -11083,6 +11083,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f750b60be6aa7554aa71e353bfc4bcbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonEditText1: {fileID: 941591993164198295}
+  player: {fileID: 1487399002}
+  buttonEditText2: {fileID: 1249213281}
+  sphere: {fileID: 3404108376748283412, guid: 8ebf8a09aeee6a14b88a43c97b2a2923, type: 3}
   readOnly: 0
 --- !u!114 &1687258591
 MonoBehaviour:
@@ -11359,6 +11363,18 @@ MonoBehaviour:
       - m_Target: {fileID: 3492458472742587808}
         m_TargetAssemblyTypeName: ShowHideChildren, Assembly-CSharp
         m_MethodName: Toggle_controlPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1701709973}
+        m_TargetAssemblyTypeName: SavedProjects, Assembly-CSharp
+        m_MethodName: setWhetherProjectIsReadOnly
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

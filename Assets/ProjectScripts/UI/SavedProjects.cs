@@ -44,8 +44,8 @@ public class SavedProjects : MonoBehaviour
 
         // string userEmail = "foo.bar@doc.ic.ac.uk";
         // string userEmail = "balazs.frei@ic.ac.uk";
-        user = new GraphUser(userEmail);
         yield return GraphUser.CreateIfNotExists(userEmail);
+        user = new GraphUser(userEmail);
         CreatedByMeToggleValueChanged();
     }
 
@@ -97,13 +97,9 @@ public class SavedProjects : MonoBehaviour
     {
         bool error = false;
         string projectTitle = newProjectName.GetComponent<TMP_InputField>().text;
-        if (user == null) 
-        {
-            throw new System.NullReferenceException("user == null in SavedProjects");
-        }
         foreach (GraphProject project in user.Projects)
         {
-                        if (projectTitle == project.Title) 
+            if (projectTitle == project.Title) 
             {
                 error = true;
                 errorMessage.SetActive(true);

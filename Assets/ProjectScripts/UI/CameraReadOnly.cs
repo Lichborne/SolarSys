@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class CameraReadOnly : MonoBehaviour
 {
+
+    public GameObject buttonEditText1; //UI Panel for nodes
+    public GameObject player;
+    public GameObject buttonEditText2; // UI panel for edges
+    public GameObject sphere;
     // Start is called before the first frame update
     [HideInInspector]
     public bool readOnly = false;
+   
 
     public void makeReadOnly()
     {
@@ -20,24 +26,20 @@ public class CameraReadOnly : MonoBehaviour
         }
         else
         {
+            Debug.Log("Turning on functionality");
             triggerFunctionality(true);
         }
     }
 
     private void triggerFunctionality(bool trigger)
     {
-        if (GameObject.Find("Sphere") != null)
-        {
-            GameObject.Find("Sphere").GetComponent<Drag>().enabled = trigger;
-        }
-        if (GameObject.Find("Button-EditText") != null)
-        {
-            GameObject.Find("Button-EditText").SetActive(trigger);
-        }
-        if (GameObject.Find("Button-NewNode") != null)
-        {
-            GameObject.Find("Button-NewNode").SetActive(trigger);
-        }
+        Debug.Log("Turning functionality to " + trigger);
+
+        sphere.GetComponent<Drag>().enabled = trigger;
+        Camera.main.GetComponent<AddNodeManual>().enabled = trigger;
+        player.GetComponent<AddEdge>().enabled = trigger;
+        buttonEditText1.SetActive(trigger);
+        buttonEditText2.SetActive(trigger);
     }
 
 }
