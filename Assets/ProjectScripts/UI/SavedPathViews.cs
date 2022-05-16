@@ -137,7 +137,7 @@ public class SavedPathViews : MonoBehaviour
     {
         textDisplayPanel.SetActive(false);
         textInputPanel.SetActive(false);
-        player.GetComponent<LoadGraph>().LoadProject(selectedProject.Title);
+        player.GetComponent<LoadGraph>().LoadProject(selectedProject.User.Email, selectedProject.Title);
         //set true or false depending on toggle value
         savedProjectsPanel.GetComponent<SavedProjects>().setWhetherProjectIsReadOnly();
 

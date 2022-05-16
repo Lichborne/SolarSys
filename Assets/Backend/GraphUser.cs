@@ -16,7 +16,7 @@ namespace Backend
 
         public bool IsEmpty { get => !Projects.Any(); }
 
-        public GraphUser(string email = "foo.bar@doc.ic.ac.uk")
+        public GraphUser(string email)
         {
             this.Email = email;
         }

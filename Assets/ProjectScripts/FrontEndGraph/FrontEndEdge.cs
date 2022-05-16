@@ -25,17 +25,17 @@ public class FrontEndEdge : MonoBehaviour
     // because system needs access multiple times a second, for every object, therefore it is not prudent to go indirectly.
     public float _rotation { get; set; } = 0;
 
-    private bool _isCurved { get; set; } = false;
+    // to record whether the edge is curved or not 
+    private bool _isCurved = false;
 
     // to represent displacement for text object from edge when the edge is curved, same as above
     private float _scale = 2;         
 
     // this is needed so that when edge text is close to the camera, it faces it, otherwise not; private here because it should not be changed
-    private Camera cameraToLookAt;     
+    private Camera _cameraToLookAt;     
 
-    // to represent basic displacement for text object from edge. It is a "magic number", 
-    // so to speak; arrived at by testing. This was, as in some other cases, unavoidable
-    private const float BASIC = 3f; 
+    // the displacement scale fro self reference edges
+    private const float SELFSCALE = 4f; 
 
     // a quarter turn 
     private const float QUARTERTURN = 90f;          
@@ -47,7 +47,7 @@ public class FrontEndEdge : MonoBehaviour
     void Start() 
     {
         // we set the camera
-        cameraToLookAt = Camera.main;
+        _cameraToLookAt = Camera.main;
     }
     void Update()
     {   
@@ -55,75 +55,78 @@ public class FrontEndEdge : MonoBehaviour
             return;
         }
         //if it's a self reference edge, we just update its position in a more simple manner, get the text object in a nice place, and return
-        if (_parent == _child) {
+        if (_parent == _child) 
+        {
             gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z); 
-            _textObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + BASIC, gameObject.transform.position.z);
-            _textObject.transform.rotation = new Quaternion (gameObject.transform.rotation.x, gameObject.transform.rotation.y+QUARTERTURN, gameObject.transform.rotation.z+QUARTERTURN, gameObject.transform.rotation.w);
-            return;
-        }
-
-        gameObject.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        
-        // rotate towards child
-        gameObject.transform.LookAt(_child.transform);
-
-        gameObject.transform.Rotate(0.0f, 0.0f, _rotation);
-        
-        //for scaling
-        Vector3 ls = gameObject.transform.localScale;
-
-        // get scaling measure
-        ls.z = Vector3.Distance(_parent.transform.position, _child.transform.position);
-        
-        // some additional scaling if the edge is curved
-        if (_isCurved) {
-
-            ls.y = Vector3.Distance(_parent.transform.position, _child.transform.position)/3;
-
-            ls.x = Vector3.Distance(_parent.transform.position, _child.transform.position)/8;
-
-        }
-
-        _scale = ls.z/6;
-
-        //scale
-        gameObject.transform.localScale = ls;
-
-        //move into position
-        gameObject.transform.position = new Vector3(
-            (_child.transform.position.x+_parent.transform.position.x)/2,
-            (_child.transform.position.y+_parent.transform.position.y)/2,
-            (_child.transform.position.z+_parent.transform.position.z)/2);
-        
-        if (!_isCurved) 
-        {
-            _textObject.transform.position = new Vector3((_child.transform.position.x+_parent.transform.position.x)/2, gameObject.transform.position.y + 1, (_child.transform.position.z+_parent.transform.position.z)/2);
-        
+            _textObject.transform.position = new Vector3(gameObject.transform.position.x + (float)(SELFSCALE*Math.Sin(ConvertToRadians(_rotation))), 
+                    gameObject.transform.position.y + (float)(SELFSCALE*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
         } 
-        else if (_rotation == 0) 
+        else 
         {
-            _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                    gameObject.transform.position.y + (float)(_scale*Math.Cos(_rotation)), gameObject.transform.position.z + (float)(_scale*Math.Sin(_rotation)));
-        }
-        else if (_rotation > 0) 
-        {
-            _textObject.transform.position = new Vector3(gameObject.transform.position.x + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
-                gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
+            gameObject.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             
-        } else {
-            _textObject.transform.position = new Vector3(gameObject.transform.position.x - (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
-                gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
-        }
+            // rotate towards child
+            gameObject.transform.LookAt(_child.transform);
 
+            gameObject.transform.Rotate(0.0f, 0.0f, _rotation);
+            
+            //for scaling
+            Vector3 ls = gameObject.transform.localScale;
+
+            // get scaling measure
+            ls.z = Vector3.Distance(_parent.transform.position, _child.transform.position);
+            
+            // some additional scaling if the edge is curved
+            if (_isCurved) {
+
+                ls.y = Vector3.Distance(_parent.transform.position, _child.transform.position)/3;
+
+                ls.x = Vector3.Distance(_parent.transform.position, _child.transform.position)/8;
+
+            }
+
+            _scale = ls.z/6;
+
+            //scale
+            gameObject.transform.localScale = ls;
+
+            //move into position
+            gameObject.transform.position = new Vector3(
+                (_child.transform.position.x+_parent.transform.position.x)/2,
+                (_child.transform.position.y+_parent.transform.position.y)/2,
+                (_child.transform.position.z+_parent.transform.position.z)/2);
+            
+            if (!_isCurved) 
+            {
+                _textObject.transform.position = new Vector3((_child.transform.position.x+_parent.transform.position.x)/2, gameObject.transform.position.y + 1, (_child.transform.position.z+_parent.transform.position.z)/2);
+            
+            } 
+            else if (_rotation == 0) 
+            {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
+                        gameObject.transform.position.y + (float)(_scale*Math.Cos(_rotation)), gameObject.transform.position.z + (float)(_scale*Math.Sin(_rotation)));
+            }
+            else if (_rotation > 0) 
+            {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
+                
+            } 
+            else 
+            {
+                _textObject.transform.position = new Vector3(gameObject.transform.position.x - (float)(_scale*Math.Sin(ConvertToRadians(_rotation))), 
+                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
+            }
+        }
         // if within range, return
-        if (Vector3.Distance(gameObject.transform.position, cameraToLookAt.transform.position) < MAXDISTANCE) {
+        if (Vector3.Distance(gameObject.transform.position, _cameraToLookAt.transform.position) < MAXDISTANCE) {
             // if we are close, enable
             if(!_textObject.activeSelf) {
                 _textObject.SetActive(true);
             }
 
             // transform to always look at the camera
-            _textObject.transform.rotation = Quaternion.LookRotation(-cameraToLookAt.transform.forward, cameraToLookAt.transform.up);
+            _textObject.transform.rotation = Quaternion.LookRotation(-_cameraToLookAt.transform.forward, _cameraToLookAt.transform.up);
             _textObject.transform.Rotate(180, 90, 180);
             
             return;

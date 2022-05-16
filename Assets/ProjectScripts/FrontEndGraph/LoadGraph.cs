@@ -34,12 +34,12 @@ public class LoadGraph : MonoBehaviour
     public Backend.GraphProject graph = null;
 
     // A list to help keep track of the Nodes while setting up the visualization initially
-    private List<GameObject> graphNodes = new List<GameObject>();
+    private List<GameObject> _graphNodes = new List<GameObject>();
 
     // A list to help keep track of the Edges while setting up the visualization initially
-    private List<GameObject> graphEdges = new List<GameObject>();
+    private List<GameObject> _graphEdges = new List<GameObject>();
 
-    private AuthenticateUser authenticateUser = null;
+    private AuthenticateUser _authenticateUser = null;
 
     // Start is called before the first frame update
     void Start()
@@ -50,14 +50,14 @@ public class LoadGraph : MonoBehaviour
         // StartCoroutine(graph.ReadFromDatabase(displayProject));
 
         // // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
-        authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
+        _authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
     }
 
-    public void LoadProject(string projectTitle) 
+    public void LoadProject(string userEmail, string projectTitle) 
     {
         clearSpace();
 
-        graph = new GraphProject(authenticateUser.currentUser, projectTitle);
+        graph = new GraphProject(userEmail, projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 
@@ -82,7 +82,7 @@ public class LoadGraph : MonoBehaviour
             GameObject nodeObject = Instantiate(_nodePrefab, pos, Quaternion.identity);
             nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(node);
             ChangeText.ChangeInputFieldText(nodeObject, node.Title);
-            graphNodes.Add(nodeObject);
+            _graphNodes.Add(nodeObject);
         }
         // for simplicity's sake and to avoid duplicates, we do a separate loop.
         // remember to add self-reference.
@@ -97,45 +97,45 @@ public class LoadGraph : MonoBehaviour
 
             // this is needed so that edgeObject will be instantiated in the right context
             GameObject rightPrefab = _edgePreFab;
-
             // if it is a self reference, we need a self reference edge, otherwise a normal edge
             if (parentIndex == childIndex) 
             {
                 rightPrefab = _selfReferencePreFab;
-            } 
 
-            if (graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(graphNodes[childIndex]) || 
-                        graphNodes[childIndex].GetComponent<FrontEndNode>().from.Contains(graphNodes[parentIndex])) 
+            } 
+            else if (_graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[childIndex]) || 
+                        _graphNodes[childIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[parentIndex])) 
             {
                 rightPrefab = _curvedPrefab;
-                graphNodes[parentIndex].GetComponent<FrontEndNode>().changeEdge(graphNodes[childIndex], _curvedPrefab);
+                _graphNodes[parentIndex].GetComponent<FrontEndNode>().changeEdge(_graphNodes[childIndex], _curvedPrefab);
                 isCurvedEdge = true;
-            }
+            } else {} // this is by design; case-exclusivity is preferable before the first ifs.
 
             //if we get time, this should be turned into a function as it recurrs
             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
-            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, graphNodes[parentIndex], graphNodes[childIndex], 0);
+            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, _graphNodes[parentIndex], _graphNodes[childIndex], 0);
             ChangeText.ChangeInputFieldText(edgeObject.GetComponent<FrontEndEdge>()._textObject, edgeObject.GetComponent<FrontEndEdge>()._databaseEdge.Title);
             //depricated
-            //edgeObject.GetComponent<StoreParentChild>().parent = graphNodes[parentIndex];
-            //edgeObject.GetComponent<StoreParentChild>().child = graphNodes[childIndex];
+            //edgeObject.GetComponent<StoreParentChild>().parent = _graphNodes[parentIndex];
+            //edgeObject.GetComponent<StoreParentChild>().child = _graphNodes[childIndex];
 
              //if we get time, this should be turned into a function as it recurrs
-            graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(graphNodes[childIndex]);
-            graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
-            graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);
+            _graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(_graphNodes[childIndex]);
+            _graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
+            _graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(_graphNodes[parentIndex]);
         }
 
     }
     private void clearSpace() {
+
         foreach (GameObject o in GameObject.FindObjectsOfType<GameObject>()) {
             if (o.tag == "Node" || o.tag == "Edge" || o.tag == "Text") {
                 UnityEngine.Object.Destroy(o);
             }
         }
-        graphNodes.Clear();
-        graphEdges.Clear();
+        _graphNodes.Clear();
+        _graphEdges.Clear();
 
     }
 
