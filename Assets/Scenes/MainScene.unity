@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 71338856}
   m_Layer: 5
   m_Name: ShareWithUserPopUpPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -563,7 +563,7 @@ GameObject:
   - component: {fileID: 74157661}
   m_Layer: 5
   m_Name: NewProjectPopUpPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10045,7 +10045,7 @@ GameObject:
   - component: {fileID: 1555988066}
   m_Layer: 5
   m_Name: CopyProjectPopUpPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10202,7 +10202,7 @@ GameObject:
   - component: {fileID: 1613203970}
   m_Layer: 5
   m_Name: SavedPathViewsPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12465,7 +12465,7 @@ GameObject:
   - component: {fileID: 1983991718}
   m_Layer: 5
   m_Name: LoginPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18269,7 +18269,7 @@ GameObject:
   - component: {fileID: 4573723581086729125}
   m_Layer: 5
   m_Name: TextDisplayPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20351,7 +20351,7 @@ GameObject:
   - component: {fileID: 8132848421150269996}
   m_Layer: 5
   m_Name: SavedProjectsPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20566,7 +20566,7 @@ GameObject:
   - component: {fileID: 8908797314494589622}
   m_Layer: 5
   m_Name: TextInputPanel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
