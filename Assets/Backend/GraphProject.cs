@@ -24,8 +24,8 @@ namespace Backend
             Title = title;
         }
 
-        public GraphProject(string title) :
-            this(new GraphUser("foo.bar@doc.ic.ac.uk"), Guid.NewGuid(), title)
+        public GraphProject(string userEmail, string title) :
+            this(new GraphUser(userEmail), Guid.NewGuid(), title)
         { }
 
         public GraphProject(GraphUser user, string title) : 

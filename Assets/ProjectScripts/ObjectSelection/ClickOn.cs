@@ -16,7 +16,7 @@ public class ClickOn : MonoBehaviour
     [HideInInspector]
     public bool currentlyHidden = false;
 
-    private Backend.GraphProject graph = new Backend.GraphProject("Test Project");
+    // private Backend.GraphProject graph = new Backend.GraphProject("Test Project");
 
     private MeshRenderer myRend;
     // Start is called before the first frame update
