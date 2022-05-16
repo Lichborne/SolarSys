@@ -196,7 +196,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 100
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8432814057563205319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +249,7 @@ MonoBehaviour:
   _edgePrefab: {fileID: 3639624899920325730, guid: e1f8c4f3d64ac514b8f442daf57f3a2e, type: 3}
   _nodePrefab: {fileID: 4974278123316600395}
   _selfReferencePreFab: {fileID: 1015780934767744, guid: a37573ad5d3fb7a47997aadbf0976202, type: 3}
+  _textObject: {fileID: 0}
 --- !u!114 &4479089368949881827
 MonoBehaviour:
   m_ObjectHideFlags: 0
