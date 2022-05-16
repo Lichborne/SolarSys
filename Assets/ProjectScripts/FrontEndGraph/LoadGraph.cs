@@ -55,11 +55,7 @@ public class LoadGraph : MonoBehaviour
 
     public void LoadProject(string projectTitle) 
     {
-        foreach (GameObject o in GameObject.FindObjectsOfType<GameObject>()) {
-            if (o.tag == "Node" || o.tag == "Edge" || o.tag == "Text") {
-                UnityEngine.Object.Destroy(o);
-            }
-        }
+        clearSpace();
 
         graph = new GraphProject(authenticateUser.currentUser, projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
@@ -67,6 +63,7 @@ public class LoadGraph : MonoBehaviour
 
     public void LoadPath(PathRoot selectedPath) 
     {
+        clearSpace();
         StartCoroutine(selectedPath.ReadFromDatabase(displayProject));
     }
 
@@ -128,6 +125,14 @@ public class LoadGraph : MonoBehaviour
             graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(graphNodes[childIndex]);
             graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
             graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(graphNodes[parentIndex]);
+        }
+
+    }
+    private void clearSpace() {
+        foreach (GameObject o in GameObject.FindObjectsOfType<GameObject>()) {
+            if (o.tag == "Node" || o.tag == "Edge" || o.tag == "Text") {
+                UnityEngine.Object.Destroy(o);
+            }
         }
 
     }

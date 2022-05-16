@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Backend;
+using UnityEngine.EventSystems;
 // This class handles adding edges. We can only inherit from MonoBehaviour, so although the data members are similar to other classes,
 // we cannot have an abstract class. I would also like to avoid touching MonoBehaviour; it's a delicate beast, and central to 
 // everything we do in Unity.
@@ -31,9 +32,24 @@ public class AddEdge : MonoBehaviour
     // True when we are in the (potential) process of adding an edge
     private bool adding { get; set; } = false;
 
+    // Panel States to check                  
+    private GameObject[] panels;
+
+    void Start() 
+    {
+        panels = GameObject.FindGameObjectsWithTag("Panel");
+    }
+
     // Update is called once per frame
     void Update()
     {
+        // depending on the order things are created we may not yet have the panels before start is called,
+        // so we do have to poll for this
+        if (panels.Length == 0) panels = GameObject.FindGameObjectsWithTag("Panel");
+        
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
         // We use raycasts and update, putting this whole behaviour separately from functionality in Drag, 
         // becuase we have to drag the click, the possible hold, and release, and wehther that release hits another node object;
         // while  all of this would be possible in that context, since we need to operate between frames, it is cleaner
