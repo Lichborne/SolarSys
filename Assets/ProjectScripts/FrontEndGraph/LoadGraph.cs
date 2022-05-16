@@ -53,11 +53,11 @@ public class LoadGraph : MonoBehaviour
         _authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
     }
 
-    public void LoadProject(string projectTitle) 
+    public void LoadProject(string userEmail, string projectTitle) 
     {
         clearSpace();
 
-        graph = new GraphProject(_authenticateUser.currentUser, projectTitle);
+        graph = new GraphProject(userEmail, projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 

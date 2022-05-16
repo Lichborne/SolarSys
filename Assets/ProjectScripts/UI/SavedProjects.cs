@@ -28,6 +28,7 @@ public class SavedProjects : MonoBehaviour
     public bool readOnly = false;
     public GameObject signInButton;
     public GameObject actionsPanel;
+    public string userEmail;
 
 
     IEnumerator Start()
@@ -39,7 +40,7 @@ public class SavedProjects : MonoBehaviour
         DatabaseView database = new DatabaseView(); // constructor that doesnt load in Neo4J drivers
 
         // can get username from login like this
-        string userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField.GetComponent<TMP_InputField>().text;
+        userEmail = signInButton.GetComponent<AuthenticateUser>().usernameField.GetComponent<TMP_InputField>().text;
         // Debug.Log(userEmail);
 
         // string userEmail = "foo.bar@doc.ic.ac.uk";
