@@ -8,6 +8,11 @@ public class CameraReadOnly : MonoBehaviour
     [HideInInspector]
     public bool readOnly = false;
 
+    void makeReadOnly()
+    {
+        readOnly = true;
+    }
+
     void Update(){
         if (readOnly)
         {
