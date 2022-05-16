@@ -89,7 +89,13 @@ namespace Backend
                 $" (project_root) -[:CONTAINS]-> (child :NODE {{guid: '{child.Id}'}}) " +
                 $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (child)";
 
+            if (parent.Id == child.Id) {
+                query = $" MATCH (project_root :PROJECT_ROOT) -[:CONTAINS]-> (parent :NODE {{guid: '{parent.Id}'}}) " +
+                $" CREATE (parent) -[:LINK {{guid: '{edge.Id}', title: '{edge.Title}', body: '{edge.Description}'}}]-> (parent)";
+            }
+
             LogNode logNode = new EdgeCreationLog(parent, edge, child);
+            Debug.Log($"CreateParentChildRelationship with query = {query}");
             yield return MakeAndLogChangeQueryCo(parent.Project, query, logNode);
 
         }
