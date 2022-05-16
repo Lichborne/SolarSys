@@ -1,4 +1,5 @@
-//Very loosely inspired by Tobias J. at https://forum.unity.com/threads/implement-a-drag-and-drop-script-with-c.130515/.
+// Very loosely inspired by J., "Tobias, Comment in 'Implement a Drag and Drop Script with C#'", Forums/Unity Community Discussion/Scripting,
+// Feb 21, 2012, at https://forum.unity.com/threads/implement-a-drag-and-drop-script-with-c.130515/.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ class Drag : MonoBehaviour
 
     private float distance;                     // aid for dragging
 
+    private GameObject[] panels;                    // Panel States to check
+
     // The radius in which we look at other nodes present to avoid when placing new nodes automatically.
     // this is a "magic number", but much as many things in UI, it is a number we arrived at by trial and error
     // and subjective judgement of visuals; there was and is no way around this.
@@ -33,7 +36,20 @@ class Drag : MonoBehaviour
     // The divisor by which the radius is devided when searching for a good position; derived by trial and error.
     private const float DIVISOR = 6;
 
-    void OnMouseOver () {
+    void Start()
+    {
+        panels = GameObject.FindGameObjectsWithTag("Panel");
+    }
+
+    void OnMouseOver () 
+    {
+        // depending on the order things are created we may not yet have the panels before start is called,
+        // so we do have to poll for this
+        if (panels.Length == 0) panels = GameObject.FindGameObjectsWithTag("Panel");
+    
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
         if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("2"))
         {
             Vector3 NewPosition = Vector3.zero;
@@ -103,7 +119,7 @@ class Drag : MonoBehaviour
 
         // if we are hovering over a node, and we click delete, it gets deleted, poof. 
         // quite straightforward
-        if (Input.GetKeyDown("delete")) 
+        if (Input.GetKeyDown("delete")|| Input.GetKeyDown("backspace")) 
         {           
             foreach (GameObject node in gameObject.GetComponent<FrontEndNode>().from) 
             {
@@ -147,19 +163,28 @@ class Drag : MonoBehaviour
     }
     
     void OnMouseDown() // On mouse down will be called when ever mouse is pressed down while over the colider
-    {
+    {      
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
         distance = Vector3.Distance(transform.position, Camera.main.transform.position);
         dragging = true;
     }
  
     void OnMouseUp()
     { // On mouse u is called whenever the mouse is released from the planet that it was initially dragging
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
         dragging = false;
         updatePlanetPosition();
     }
  
     void Update()
     {
+        // don't run if any of the panels are active
+        foreach (GameObject p in panels) if (p.activeSelf) return; 
+
         if (dragging)
         { // Get position of input mouse and update planet position accordingly
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
