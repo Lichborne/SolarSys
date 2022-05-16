@@ -112,7 +112,7 @@ namespace Backend
 
         public IEnumerator CreateUserIfNotExists(string userEmail)
         {
-            string query = $"MERGE (user :USER {{email: '{userEmail}', 'name': '{userEmail}'}})";
+            string query = $"MERGE (user :USER {{email: '{userEmail}', name: '{userEmail}'}})";
             yield return connection.SendWriteTransactions(query);
         }
 
