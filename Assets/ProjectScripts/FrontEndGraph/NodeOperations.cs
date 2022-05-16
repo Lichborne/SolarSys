@@ -9,7 +9,7 @@ using Backend;
 // Class for node interactions; dragging nodes around with left mouse button, adding a new node with middle mouse button, and deleting by pressing delete key on hover.  
 // Once again, we can only inherit from MonoBehaviour, so although the data members are similar to other classes, we cannot have an abstract class.
 // I would also like to avoid touching MonoBehaviour; it's a delicate beast, and central to everything we do in Unity.
-class Drag : MonoBehaviour
+class NodeOperations : MonoBehaviour
 {
     // The objects the class at some point may have to instantiate; must be public so that it can be set from editor.
 

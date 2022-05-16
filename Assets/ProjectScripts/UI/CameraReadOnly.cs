@@ -35,7 +35,7 @@ public class CameraReadOnly : MonoBehaviour
     {
         Debug.Log("Turning functionality to " + trigger);
 
-        sphere.GetComponent<Drag>().enabled = trigger;
+        sphere.GetComponent<NodeOperations>().enabled = trigger;
         Camera.main.GetComponent<AddNodeManual>().enabled = trigger;
         player.GetComponent<AddEdge>().enabled = trigger;
         buttonEditText1.SetActive(trigger);

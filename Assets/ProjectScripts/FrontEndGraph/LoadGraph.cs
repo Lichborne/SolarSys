@@ -101,6 +101,12 @@ public class LoadGraph : MonoBehaviour
             if (parentIndex == childIndex) 
             {
                 rightPrefab = _selfReferencePreFab;
+                isCurvedEdge = false; // defensive
+                if (_graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[childIndex]) || 
+                        _graphNodes[childIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[parentIndex])) 
+                {
+                     _graphNodes[parentIndex].GetComponent<FrontEndNode>().changeEdge(_graphNodes[childIndex], _selfReferencePreFab);
+                }
 
             } 
             else if (_graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[childIndex]) || 
@@ -109,8 +115,8 @@ public class LoadGraph : MonoBehaviour
                 rightPrefab = _curvedPrefab;
                 _graphNodes[parentIndex].GetComponent<FrontEndNode>().changeEdge(_graphNodes[childIndex], _curvedPrefab);
                 isCurvedEdge = true;
-            } else {} // this is by design; case-exclusivity is preferable before the first ifs.
-
+            } 
+            
             //if we get time, this should be turned into a function as it recurrs
             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
@@ -120,7 +126,7 @@ public class LoadGraph : MonoBehaviour
             //edgeObject.GetComponent<StoreParentChild>().parent = _graphNodes[parentIndex];
             //edgeObject.GetComponent<StoreParentChild>().child = _graphNodes[childIndex];
 
-             //if we get time, this should be turned into a function as it recurrs
+            //if we get time, this should be turned into a function as it recurrs
             _graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(_graphNodes[childIndex]);
             _graphNodes[parentIndex].GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
             _graphNodes[childIndex].GetComponent<FrontEndNode>().from.Add(_graphNodes[parentIndex]);
