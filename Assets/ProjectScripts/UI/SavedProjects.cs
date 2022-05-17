@@ -113,7 +113,8 @@ public class SavedProjects : MonoBehaviour
             createNewProjectPanel.SetActive(false);
         
             GraphProject newProject = new GraphProject(user, projectTitle);
-            StartCoroutine(newProject.CreateInDatabase(CreatedByMeToggleValueChanged));
+            Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(newProject.CreateInDatabase(CreatedByMeToggleValueChanged));
+            // StartCoroutine(newProject.CreateInDatabase(CreatedByMeToggleValueChanged));
             newProjectName.GetComponent<TMP_InputField>().text = "";
         }
         
@@ -124,15 +125,17 @@ public class SavedProjects : MonoBehaviour
     {
         ClearProjectDisplay();
         if (createdByMeToggle.GetComponent<Toggle>().isOn) {
-            StartCoroutine(
-                user.ReadEmptyProjectsOwned(DisplayProjectTitles)
-            );
+            // StartCoroutine(
+            //     user.ReadEmptyProjectsOwned(DisplayProjectTitles)
+            // );
+            Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(user.ReadEmptyProjectsOwned(DisplayProjectTitles));
         }
         else 
         {
-            StartCoroutine(
-                user.ReadEmptyProjectsShared(DisplayProjectTitles)
-            );
+            // StartCoroutine(
+            //     user.ReadEmptyProjectsShared(DisplayProjectTitles)
+            // );
+            Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(user.ReadEmptyProjectsShared(DisplayProjectTitles));
             // Debug.Log("Read Only Projects");
         }
     }
@@ -153,18 +156,20 @@ public class SavedProjects : MonoBehaviour
         // Debug.Log(userEmail);
         GraphUser user = new GraphUser(userEmail);
 
-        StartCoroutine(
-            selectedProject.ShareWith(user)
-        );
+        // StartCoroutine(
+        //     selectedProject.ShareWith(user)
+        // );
+        Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(selectedProject.ShareWith(user));
         sharedWithUserEmail.GetComponent<TMP_InputField>().text = "";
     }
 
     // function to delete a project
     public void DeleteProject()
     {
-        StartCoroutine(
-            selectedProject.DeleteFromDatabase(CreatedByMeToggleValueChanged)
-        );  
+        // StartCoroutine(
+        //     selectedProject.DeleteFromDatabase(CreatedByMeToggleValueChanged)
+        // );  
+        Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(selectedProject.DeleteFromDatabase(CreatedByMeToggleValueChanged));
         selectedProject = null;
     }
 
@@ -187,9 +192,11 @@ public class SavedProjects : MonoBehaviour
             errorMessage_copy.SetActive(false);
             createCopyProjectPanel.SetActive(false);
         
-            StartCoroutine(
-                selectedProject.CreateCopyInDatabase(user,projectTitle,CreatedByMeToggleValueChanged)
-            );  
+            // StartCoroutine(
+            //     selectedProject.CreateCopyInDatabase(user,projectTitle,CreatedByMeToggleValueChanged)
+            // );  
+
+            Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(selectedProject.CreateCopyInDatabase(user,projectTitle,CreatedByMeToggleValueChanged));
             copyProjectName.GetComponent<TMP_InputField>().text = "";
         }
        

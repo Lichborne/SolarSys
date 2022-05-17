@@ -52,9 +52,10 @@ public class SavedPathViews : MonoBehaviour
         ClearPathViewsDisplay();
         selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
         // Debug.Log(selectedProject.Title);
-        StartCoroutine(
-            selectedProject.ReadFromDatabase(DisplayPathViewTitles)
-        );
+        // StartCoroutine(
+        //     selectedProject.ReadFromDatabase(DisplayPathViewTitles)
+        // );
+        Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(selectedProject.ReadFromDatabase(DisplayPathViewTitles));
     }
     
     
@@ -167,9 +168,10 @@ public class SavedPathViews : MonoBehaviour
     {
 
         ClearPathViewsDisplay();
-        StartCoroutine(
-            selectedPathView.DeleteFromDatabase(LoadPathViewsForProject)
-        );  
+        // StartCoroutine(
+        //     selectedPathView.DeleteFromDatabase(LoadPathViewsForProject)
+        // );  
+        Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(selectedPathView.DeleteFromDatabase(LoadPathViewsForProject));
         selectedPathView = null;
         
     }
