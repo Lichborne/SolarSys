@@ -6,6 +6,7 @@ using System.Collections;
 using Newtonsoft.Json.Linq;
 namespace Backend
 {
+    // Represents an entire graph, consisting of GraphNodes and GraphEdges, that the user has made
     public class GraphProject : IGraphRegion
     {
         public Guid Id { get; private set; }

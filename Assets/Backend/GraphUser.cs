@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
+    // Represents a user, who may have made multiple GraphProjects, and may have been given GraphProjects that other users own
     public class GraphUser : IEquatable<GraphUser>
     {
         public string Email { get; private set; }

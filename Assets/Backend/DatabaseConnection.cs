@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Backend
 {
+    // Sends read and write transactions to the database over HTTP. Called by DatabaseView
     public class DatabaseConnection
     {
         private string databaseUrl;

@@ -41,7 +41,7 @@ public class AddNodeManual : MonoBehaviour
             Vector3 pos = Camera.main.transform.position + Camera.main.transform.forward*_distance;
             GameObject nodeObject = Instantiate(_nodePrefab, pos , Camera.main.transform.rotation);
             GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", ( pos.x, pos.y, pos.z)); 
-            StartCoroutine(databaseNode.CreateInDatabaseCo());
+            StartCoroutine(databaseNode.CreateInDatabase());
             nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
         }
     }

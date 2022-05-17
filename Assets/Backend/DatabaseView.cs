@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Backend
 {
+    // Connects the GraphUser, GraphProject, GraphNode and GraphEdge classes to the neo4j database
     public class DatabaseView
     {
         private DatabaseConnection connection;
