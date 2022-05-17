@@ -20,21 +20,11 @@ public class CameraReadOnly : MonoBehaviour
     }
 
     void Update(){
-        if (readOnly)
-        {
-            triggerFunctionality(false);
-        }
-        else
-        {
-            // Debug.Log("Turning on functionality");
-            triggerFunctionality(true);
-        }
+        triggerFunctionality(!readOnly);
     }
 
     private void triggerFunctionality(bool trigger)
     {
-        // Debug.Log("Turning functionality to " + trigger);
-
         sphere.GetComponent<NodeOperations>().enabled = trigger;
         Camera.main.GetComponent<AddNodeManual>().enabled = trigger;
         player.GetComponent<AddEdge>().enabled = trigger;
