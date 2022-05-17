@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Backend;
+using UnityEngine.UI;
 
 public class AddNodeManual : MonoBehaviour
 {
@@ -27,16 +28,22 @@ public class AddNodeManual : MonoBehaviour
 
         if (Input.GetKeyDown("n") || Input.GetKeyDown("1")) 
         {
-            if(Camera.main.GetComponent<DeactivateCamera>().DisableScript.enabled)
-            {
-                // Create new database node and store it in the newly created gameObject
-                // if we get time, this should be turned into a function as it recurrs
-                Vector3 pos = Camera.main.transform.position + Camera.main.transform.forward*_distance;
-                GameObject nodeObject = Instantiate(_nodePrefab, pos , Camera.main.transform.rotation);
-                GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", ( pos.x, pos.y, pos.z)); 
-                StartCoroutine(databaseNode.CreateInDatabaseCo());
-                nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
-            }
+           addNewNode();
         }
     }
+
+    public void addNewNode() 
+    {
+        if(Camera.main.GetComponent<CameraReadOnly>().readOnly == false && Camera.main.GetComponent<DeactivateCamera>().DisableScript.enabled)
+        {
+            // Create new database node and store it in the newly created gameObject
+            // if we get time, this should be turned into a function as it recurrs
+            Vector3 pos = Camera.main.transform.position + Camera.main.transform.forward*_distance;
+            GameObject nodeObject = Instantiate(_nodePrefab, pos , Camera.main.transform.rotation);
+            GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", ( pos.x, pos.y, pos.z)); 
+            StartCoroutine(databaseNode.CreateInDatabaseCo());
+            nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
+        }
+    }
+
 }
