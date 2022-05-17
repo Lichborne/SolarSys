@@ -5878,7 +5878,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter email of user to share project with
+  m_text: Enter username of user to share project with
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
   m_sharedMaterial: {fileID: 9128189210188959882, guid: a5c80dbc94722eb4a9b61c478b8de3e6, type: 2}
