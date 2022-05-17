@@ -25,8 +25,9 @@ public class ModifyPlanetTitle: MonoBehaviour
                 if (currentlySelectedObject.tag == "Node")
                 {
                     GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
-                    StartCoroutine(attachedNode.UpdateTitleCo(titleEntry));
-                    Debug.Log("Changing title of " + attachedNode.Title + " to " + titleEntry);
+                    Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(attachedNode.UpdateTitleCo(titleEntry));
+                    // StartCoroutine(attachedNode.UpdateTitleCo(titleEntry));
+                    
                     //update UI
                     // Canvas canvas = currentlySelectedObject.GetComponent<Canvas>();
                     // Debug.Log(canvas.GetComponent<TMP_InputField>().text);
@@ -36,7 +37,9 @@ public class ModifyPlanetTitle: MonoBehaviour
                 else if (currentlySelectedObject.tag == "Edge")
                 {
                     GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
-                    StartCoroutine(attachedEdge.UpdateTitleCo(titleEntry));
+                    Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(attachedEdge.UpdateTitleCo(titleEntry));
+                    // StartCoroutine(attachedEdge.UpdateTitleCo(titleEntry));
+
                     ChangeText.ChangeInputFieldText(currentlySelectedObject.GetComponent<FrontEndEdge>()._textObject, titleEntry);
                     // currentlySelectedObject.GetComponent<FrontEndEdge>()._textObject.text=titleEntry;
                 }
