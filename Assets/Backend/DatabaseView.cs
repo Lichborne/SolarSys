@@ -25,24 +25,26 @@ namespace Backend
         // ========================== CREATE
         private IEnumerator MakeAndLogChangeQueryCo(GraphProject project, string changeQuery, LogNode logNode)
         {
-            Guid headLogNodeId = Guid.Empty;
+            yield return connection.SendWriteTransactions(changeQuery);
 
-            yield return GetHeadLogNodeIdCo(project, t => headLogNodeId = t);
-            List<String> queries = new List<String>();
+            // Guid headLogNodeId = Guid.Empty;
 
-            if (headLogNodeId == Guid.Empty)
-            {
-                queries.Add(changeQuery);
-                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
-            }
-            else
-            {
-                queries.Add(changeQuery);
-                queries.Add(DestroyLogHistoryEdgeQuery(project));
-                queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
-                queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
-            }
-            yield return connection.SendWriteTransactions(queries);
+            // yield return GetHeadLogNodeIdCo(project, t => headLogNodeId = t);
+            // List<String> queries = new List<String>();
+
+            // if (headLogNodeId == Guid.Empty)
+            // {
+            //     queries.Add(changeQuery);
+            //     queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+            // }
+            // else
+            // {
+            //     queries.Add(changeQuery);
+            //     queries.Add(DestroyLogHistoryEdgeQuery(project));
+            //     queries.Add(CreateUnlinkedLogNodeQuery(project, logNode));
+            //     queries.Add(CreateLogLinkQuery(logNode.Id, headLogNodeId));
+            // }
+            // yield return connection.SendWriteTransactions(queries);
         }
 
         public IEnumerator CreateBlankGraphProject(GraphProject project)
