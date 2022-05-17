@@ -3,6 +3,13 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+// The reason we need to replicate the graph structure in the front end is simple; we want as little interaction with the
+// backend as possible because that is the biggest bottleneck; so we read once, and then write whenever needed.
+// The design of the front-end graph structure is such that each node contains information about its edges and 
+// other nodes connected to it; this is because, since interactions happen on an object-per-object basis 
+// (i.e. what is targeted), this way the most possible things can be done base don information already attached
+// to whatever is being interacted with, so this way it is faster than having to search through a central graph object.
+// Each traversal is only local, and therefore quicker.
 public class FrontEndNode : MonoBehaviour
 {
     // To keep track of the equivalent database node so we know to delete or update it

@@ -9,6 +9,9 @@ using Backend;
 // Class for node interactions; dragging nodes around with left mouse button, adding a new node with middle mouse button, and deleting by pressing delete key on hover.  
 // Once again, we can only inherit from MonoBehaviour, so although the data members are similar to other classes, we cannot have an abstract class.
 // I would also like to avoid touching MonoBehaviour; it's a delicate beast, and central to everything we do in Unity.
+// Node operations are not separated out because they are always node-object-based; some edge operations are also based on 
+// other objects in the world, notably nodes themselves, so functionality has to be separated out. 
+// Adding a separate node in space is moved out because it is camera position dependent.
 class NodeOperations : MonoBehaviour
 {
     // The objects the class at some point may have to instantiate; must be public so that it can be set from editor.
@@ -103,8 +106,10 @@ class NodeOperations : MonoBehaviour
 
         if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("2"))
         {
+            // to keep the new position for the added node we find
             Vector3 NewPosition = Vector3.zero;
             
+            // below is standard practice for raycasts
             List<Vector3> hitPoints = new List<Vector3>();
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, RADIUS);
@@ -208,26 +213,34 @@ class NodeOperations : MonoBehaviour
         // Create new database node and store it in the newly created gameObject
         GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
         GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", (NewPosition.x, NewPosition.y, NewPosition.z)); 
-        StartCoroutine(CreateAndAddEdge(nodeObject, databaseNode, NewPosition));
+        StartCoroutine(createAndAddEdge(nodeObject, databaseNode, NewPosition));
         
     }
-
-    private IEnumerator CreateAndAddEdge(GameObject nodeObject, GraphNode node, Vector3 NewPosition)
+    
+    // for safety we need yield returns here; in other parts of the code there are not as many operations chained and interleaved
+    // between front and backend, so this is unneccessary and a little slow, but here, we need it.
+    private IEnumerator createAndAddEdge(GameObject nodeObject, GraphNode  databaseNode, Vector3 NewPosition)
     {
-        yield return node.CreateInDatabase();
-        yield return addConnectedEdge(nodeObject, node, NewPosition);
+        yield return databaseNode.CreateInDatabase();
+        yield return addConnectedEdge(nodeObject, databaseNode, NewPosition);
     }
 
+    // finally, add the connected edge safely
     private IEnumerator addConnectedEdge(GameObject nodeObject, GraphNode databaseNode, Vector3 NewPosition) 
     {
+        // set database connection, make edge
         nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
-        
         GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
         GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
+
+        // database access        
         yield return databaseEdge.CreateInDatabase();
+        
+        // make text and edge
         GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
         edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
 
+        // add relevant connections 
         gameObject.GetComponent<FrontEndNode>().to.Add(nodeObject);
         gameObject.GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
         nodeObject.GetComponent<FrontEndNode>().from.Add(gameObject);

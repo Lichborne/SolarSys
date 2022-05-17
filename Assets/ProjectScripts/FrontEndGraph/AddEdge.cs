@@ -57,6 +57,9 @@ public class AddEdge : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
 
+        // Since the below only relates to one functionality, and it is neither too long nor complicated
+        // and because we have a raycast that we would pass around, I elected to not move the below out into
+        // separate funtions, especially since this is how things are typically mean to be done inUnity, anyway.
         // If there is a click, and we are hitting a node -> we are adding an edge
         if ((Input.GetKeyDown("3") || Input.GetMouseButtonDown(1)) && Physics.Raycast(ray, out hitInfo, Mathf.Infinity) && hitInfo.transform.tag == "Node")
         {   
@@ -99,6 +102,7 @@ public class AddEdge : MonoBehaviour
                     rightPrefab = _selfReferencePreFab;
                     rotation = _fromNode.GetComponent<FrontEndNode>().changeEdge(_toNode, _selfReferencePreFab);
                 } 
+                
                 else if (_fromNode.GetComponent<FrontEndNode>().from.Contains(_toNode) || _toNode.GetComponent<FrontEndNode>().from.Contains(_fromNode)) 
                 {
                     rightPrefab = _curvedPrefab;

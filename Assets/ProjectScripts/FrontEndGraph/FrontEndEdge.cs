@@ -4,6 +4,10 @@ using UnityEngine;
 using TMPro;
 using System;
 
+// for overall idea behing fornd end graphs, see FrontEndNode.cs. The edge also contains information about 
+// the nodes it is connected to so that information needed for operations such as deletion can be directly 
+// accessed (even if in two steps) instead of indirectly, and each graph traversal is shorter (because only
+// local connections are known). This is aligned with how interactions are based on targeting and is faster.
 public class FrontEndEdge : MonoBehaviour
 {
     // to represent the database edge which it represents; public because access is needed by many operations; 
@@ -57,6 +61,9 @@ public class FrontEndEdge : MonoBehaviour
         //if it's a self reference edge, we just update its position in a more simple manner, get the text object in a nice place, and return
         if (_parent == _child) 
         {
+            // text positioning is done base don the rotation of the edges; since due to scaling the two objects
+            // have to be decoupled, we need to implement this manually using the sine and cosine components of 
+            // relevant spatial displacements
             gameObject.transform.position = new Vector3(_parent.transform.position.x, _parent.transform.position.y, _parent.transform.position.z); 
             _textObject.transform.position = new Vector3(gameObject.transform.position.x + (float)(SELFSCALE*Math.Sin(ConvertToRadians(_rotation))), 
                     gameObject.transform.position.y + (float)(SELFSCALE*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z);
@@ -103,8 +110,13 @@ public class FrontEndEdge : MonoBehaviour
             } 
             else if (_rotation == 0) 
             {
+                // once again, for here and below, the text positions are calculated based on trig components of, in this case
+                // a scaled distance metric. What this conveniently results in is that depending on how the edges are arranged spatially
+                // the texts that lie flat fill overlap minimally (you can see this by rotatinng a double-connected pair of nodes,
+                // one around the other, 360 degress). There were alternative approaches, but this seemed the best mix of 
+                // still decent appearance, and readability
                 _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                        gameObject.transform.position.y + (float)(_scale*Math.Cos(_rotation)), gameObject.transform.position.z + (float)(_scale*Math.Sin(_rotation)));
+                        gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
             }
             else if (_rotation > 0) 
             {
@@ -156,17 +168,3 @@ public class FrontEndEdge : MonoBehaviour
         return (Math.PI / 180) * angle;
     }
 }
-
-/*if (Math.Abs(_rotation) <= 90) {
-                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
-            } else if (Math.Abs(_rotation) <= 180) {
-                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
-            } else if (Math.Abs(_rotation) <= 270) {
-                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
-            } else if (Math.Abs(_rotation) <= 360) {
-                _textObject.transform.position = new Vector3(gameObject.transform.position.x, 
-                    gameObject.transform.position.y + (float)(_scale*Math.Cos(ConvertToRadians(_rotation))), gameObject.transform.position.z + (float)(_scale*Math.Sin(ConvertToRadians(_rotation))));
-            }*/
