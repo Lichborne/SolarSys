@@ -107,7 +107,7 @@ class NodeOperations : MonoBehaviour
             //if we get time, this should be turned into a function as it recurrs
             GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
-            StartCoroutine(databaseEdge.CreateInDatabaseCo());
+            StartCoroutine(databaseEdge.CreateInDatabase());
             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
 

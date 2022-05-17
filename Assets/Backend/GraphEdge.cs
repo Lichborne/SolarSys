@@ -77,10 +77,10 @@ namespace Backend
         public IEnumerator CreateInDatabase()
             => Project.User.Database.CreateParentChildRelationshipCo(Parent, this, Child);
 
-        public IEnumerator CreateInDatabaseCo()
-        {
-            yield return Project.User.Database.CreateParentChildRelationshipCo(Parent, this, Child);
-        }
+        // public IEnumerator CreateInDatabaseCo()
+        // {
+        //     yield return Project.User.Database.CreateParentChildRelationshipCo(Parent, this, Child);
+        // }
 
         // Updates the title of the edge, writing change to database
         public IEnumerator UpdateTitleCo(string title, Action callback = null)
