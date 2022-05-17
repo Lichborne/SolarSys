@@ -26,6 +26,7 @@ public class ModifyPlanetTitle: MonoBehaviour
                 {
                     GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
                     StartCoroutine(attachedNode.UpdateTitleCo(titleEntry));
+                    Debug.Log("Changing title of " + attachedNode.Title + " to " + titleEntry);
                     //update UI
                     // Canvas canvas = currentlySelectedObject.GetComponent<Canvas>();
                     // Debug.Log(canvas.GetComponent<TMP_InputField>().text);
@@ -48,6 +49,7 @@ public class ModifyPlanetTitle: MonoBehaviour
             //     Debug.Log("Please select a planet first");
             // }
         } 
+        Camera.main.GetComponent<CameraReadOnly>().readOnly = false;
     }
 
     private GameObject findCurrentlySelectedPlanetorEdge()
