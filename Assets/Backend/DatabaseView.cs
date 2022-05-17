@@ -461,7 +461,7 @@ namespace Backend
         }
 
         private static string DestroyLogHistoryEdgeQuery(GraphProject project)
-            => $"MATCH ({{title: '{project.Title}'}}) " +
+            => $"MATCH (:PROJECT_ROOT {{title: '{project.Title}'}}) " +
                 " -[r:LOG_HISTORY]->(n) " +
                 " DELETE r";
 
