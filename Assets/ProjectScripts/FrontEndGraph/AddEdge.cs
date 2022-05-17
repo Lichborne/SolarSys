@@ -110,7 +110,7 @@ public class AddEdge : MonoBehaviour
                 GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", _fromNode.GetComponent<FrontEndNode>()._databaseNode, _toNode.GetComponent<FrontEndNode>()._databaseNode);
                 Debug.Log("WEEEEEEE");
-                StartCoroutine(databaseEdge.CreateInDatabaseCo());
+                StartCoroutine(databaseEdge.CreateInDatabase());
                 
                 GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(_isCurvedEdge, databaseEdge, textObject, _fromNode, _toNode, rotation);

@@ -11139,6 +11139,7 @@ GameObject:
   - component: {fileID: 1687258589}
   - component: {fileID: 1687258588}
   - component: {fileID: 1687258590}
+  - component: {fileID: 1687258592}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -11372,6 +11373,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _distance: 12
   _nodePrefab: {fileID: 3404108376748283412, guid: 8ebf8a09aeee6a14b88a43c97b2a2923, type: 3}
+--- !u!114 &1687258592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687258581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92aae5a42728bfd4d9e4ca097f5e5948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1696942740
 GameObject:
   m_ObjectHideFlags: 0
@@ -16396,6 +16409,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1687258588}
+        m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
+        m_MethodName: activateCamera
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3492458472467157617
 GameObject:
   m_ObjectHideFlags: 0
@@ -17343,6 +17368,18 @@ MonoBehaviour:
       - m_Target: {fileID: 3492458472742587808}
         m_TargetAssemblyTypeName: ShowHideChildren, Assembly-CSharp
         m_MethodName: Toggle_textInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1687258588}
+        m_TargetAssemblyTypeName: DeactivateCamera, Assembly-CSharp
+        m_MethodName: activateCamera
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
