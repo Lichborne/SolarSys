@@ -51,7 +51,7 @@ public class SavedPathViews : MonoBehaviour
 
         ClearPathViewsDisplay();
         selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
-        Debug.Log(selectedProject.Title);
+        // Debug.Log(selectedProject.Title);
         StartCoroutine(
             selectedProject.ReadFromDatabase(DisplayPathViewTitles)
         );
@@ -114,11 +114,11 @@ public class SavedPathViews : MonoBehaviour
 
             selectedProject = savedProjectsPanel.GetComponent<SavedProjects>().selectedProject;
             PathRoot path = new PathRoot(selectedProject, pathTitle, "path description");
-            Debug.Log("Current Nodes" + currentlySelectedNodes);
+            // Debug.Log("Current Nodes" + currentlySelectedNodes);
             foreach (var gameobject in currentlySelectedNodes) // for each graph node you want to add to the path
             {
                 GraphNode attachedNode = gameobject.GetComponent<FrontEndNode>().getDatabaseNode();
-                Debug.Log("Adding Node to Path" + attachedNode.Title);
+                // Debug.Log("Adding Node to Path" + attachedNode.Title);
                 path.AddNode(attachedNode); // adding the graph node
             }
 

@@ -65,7 +65,7 @@ public class FrontEndNode : MonoBehaviour
                 }
             }
 
-            Debug.Log($"Rotation = {rotation}, edgestorep = {edgesToReplace.Count()}");
+            // Debug.Log($"Rotation = {rotation}, edgestorep = {edgesToReplace.Count()}");
 
             GameObject edgeObject = Instantiate(preFab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
         

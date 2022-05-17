@@ -26,14 +26,14 @@ public class CameraReadOnly : MonoBehaviour
         }
         else
         {
-            Debug.Log("Turning on functionality");
+            // Debug.Log("Turning on functionality");
             triggerFunctionality(true);
         }
     }
 
     private void triggerFunctionality(bool trigger)
     {
-        Debug.Log("Turning functionality to " + trigger);
+        // Debug.Log("Turning functionality to " + trigger);
 
         sphere.GetComponent<NodeOperations>().enabled = trigger;
         Camera.main.GetComponent<AddNodeManual>().enabled = trigger;

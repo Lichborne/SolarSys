@@ -62,14 +62,14 @@ public class AuthenticateUser : MonoBehaviour
 
     public void authenticate(){
         GameObject signInBox = gameObject.transform.parent.gameObject;
-        Debug.Log($"Running auth for {signInBox.name}");
+        // Debug.Log($"Running auth for {signInBox.name}");
 
         usernameField = signInBox.transform.Find("InputField_Username").gameObject;
         GameObject passwordField = signInBox.transform.Find("InputField_Password").gameObject;
-        if(usernameField == null || passwordField == null)
-        {
-            Debug.Log("Failed to get Gameobjects");
-        }
+        // if(usernameField == null || passwordField == null)
+        // {
+        //     // Debug.Log("Failed to get Gameobjects");
+        // }
         string user = usernameField.GetComponent<TMP_InputField>().text;
         string password = passwordField.GetComponent<TMP_InputField>().text;
         coroutine = SendAuthRequest(user, password, (long code) => HandleAuth(code, user));
@@ -79,7 +79,7 @@ public class AuthenticateUser : MonoBehaviour
     }
     
     public void HandleAuth(long code, string userEmail) {
-        Debug.Log($"Web request return code {code} ");
+        // Debug.Log($"Web request return code {code} ");
         switch(code)
         {
             case 200:

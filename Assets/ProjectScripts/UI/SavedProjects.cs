@@ -133,7 +133,7 @@ public class SavedProjects : MonoBehaviour
             StartCoroutine(
                 user.ReadEmptyProjectsShared(DisplayProjectTitles)
             );
-            Debug.Log("Read Only Projects");
+            // Debug.Log("Read Only Projects");
         }
     }
 
@@ -150,7 +150,7 @@ public class SavedProjects : MonoBehaviour
     public void ShareProject()
     {
         string userEmail = sharedWithUserEmail.GetComponent<TMP_InputField>().text;
-        Debug.Log(userEmail);
+        // Debug.Log(userEmail);
         GraphUser user = new GraphUser(userEmail);
 
         StartCoroutine(
@@ -198,14 +198,6 @@ public class SavedProjects : MonoBehaviour
     // function to set whether project is read only, called when loading a project
     public void setWhetherProjectIsReadOnly()
     {
-        if (createdByMeToggle.GetComponent<Toggle>().isOn)
-        {
-            Camera.main.GetComponent<CameraReadOnly>().readOnly= false;
-            Debug.Log("set ReadOnly to false");
-        }
-        else{
-            Camera.main.GetComponent<CameraReadOnly>().readOnly=true;
-            Debug.Log("set ReadOnly to true");
-        }
+       Camera.main.GetComponent<CameraReadOnly>().readOnly = !createdByMeToggle.GetComponent<Toggle>().isOn;
     }
 }

@@ -31,7 +31,7 @@ public class RecenterCamera : MonoBehaviour
 
         Destroy(dummy);
 
-        Debug.Log("Called");
+        // Debug.Log("Called");
     }
 
     

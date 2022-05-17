@@ -64,7 +64,7 @@ public class AddEdge : MonoBehaviour
             _cameraController.enabled = false;
             _fromNode = hitInfo.collider.gameObject;
             _adding = true;
-            Debug.Log("ADDING");
+            // Debug.Log("ADDING");
 
         }
 
@@ -74,7 +74,7 @@ public class AddEdge : MonoBehaviour
         {
             if (!_adding) 
             {
-                Debug.Log("NOT ADDING");
+                // Debug.Log("NOT ADDING");
                 return;
             }
 
@@ -109,7 +109,7 @@ public class AddEdge : MonoBehaviour
                 //if we get time, this should be turned into a function as it recurrs
                 GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
                 GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", _fromNode.GetComponent<FrontEndNode>()._databaseNode, _toNode.GetComponent<FrontEndNode>()._databaseNode);
-                Debug.Log("WEEEEEEE");
+                // Debug.Log("WEEEEEEE");
                 StartCoroutine(databaseEdge.CreateInDatabase());
                 
                 GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
@@ -121,7 +121,7 @@ public class AddEdge : MonoBehaviour
                 _toNode.GetComponent<FrontEndNode>().from.Add(_fromNode);
             }
             _adding = false;   
-            Debug.Log("ADDED");
+            // Debug.Log("ADDED");
         }
     }
 }

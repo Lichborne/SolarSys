@@ -86,7 +86,7 @@ public class placeAndRotate: MonoBehaviour
 
     private void RotateFromMouseWheel()
     {
-        Debug.Log(Input.mouseScrollDelta);
+        // Debug.Log(Input.mouseScrollDelta);
         _mouseWheelRotation += Input.mouseScrollDelta.y;
         //_currentObject.transform.Rotate(Vector3.up, _mouseWheelRotation * 10f);
     }

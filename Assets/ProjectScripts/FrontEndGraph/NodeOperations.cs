@@ -92,10 +92,10 @@ class NodeOperations : MonoBehaviour
                 }
             }
 
-            // if by some miracle this was impossible, we regretfully place the new node in whatever position it happens to be thrown to last; this is practically impossible.
-            if(tries == 100) {
-                Debug.Log("No good available position found");
-            }
+            // // if by some miracle this was impossible, we regretfully place the new node in whatever position it happens to be thrown to last; this is practically impossible.
+            // if(tries == 100) {
+            //     Debug.Log("No good available position found");
+            // }
             
             // Create new database node and store it in the newly created gameObject
             // if we get time, this should be turned into a function as it recurrs

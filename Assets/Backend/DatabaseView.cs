@@ -98,7 +98,7 @@ namespace Backend
             }
 
             LogNode logNode = new EdgeCreationLog(parent, edge, child);
-            Debug.Log($"CreateParentChildRelationship with query = {query}");
+            // Debug.Log($"CreateParentChildRelationship with query = {query}");
             yield return MakeAndLogChangeQueryCo(parent.Project, query, logNode);
 
         }
@@ -426,7 +426,7 @@ namespace Backend
             string query = $"MATCH (project :PROJECT_ROOT {{guid: '{project.Id}'}}), " +
                 $"(user :USER {{email: '{toShareWith.Email}'}}) " +
                 $"MERGE (project) -[:SHARED_WITH]-> (user)";
-                Debug.Log(query);
+                // Debug.Log(query);
             yield return connection.SendWriteTransactions(query);
         }
 
