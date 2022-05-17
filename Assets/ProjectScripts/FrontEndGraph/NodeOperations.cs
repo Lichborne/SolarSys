@@ -101,7 +101,7 @@ class NodeOperations : MonoBehaviour
             // if we get time, this should be turned into a function as it recurrs
             GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
             GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", (NewPosition.x, NewPosition.y, NewPosition.z)); 
-            StartCoroutine(databaseNode.CreateInDatabaseCo());
+            StartCoroutine(databaseNode.CreateInDatabase());
             nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
             
             //if we get time, this should be turned into a function as it recurrs

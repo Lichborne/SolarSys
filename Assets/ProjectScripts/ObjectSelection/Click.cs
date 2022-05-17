@@ -38,6 +38,8 @@ public class Click : MonoBehaviour
         UIPanelPath.SetActive(false);
     }
 
+    //referenced tutorial https://www.youtube.com/watch?v=OCGoTiV4kbM&ab_channel=c00pala
+
     // Update is called once per frame
     void Update()
     {   

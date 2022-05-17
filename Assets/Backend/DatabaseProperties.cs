@@ -1,5 +1,6 @@
 namespace Backend {
-    public class DatabaseProperties{
+    // Stores the login details of the database
+    public class DatabaseProperties {
         public string databaseUrl;
         public int portNumber;
         public string databaseName;

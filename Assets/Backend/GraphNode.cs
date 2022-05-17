@@ -8,6 +8,7 @@ using System.Collections;
 
 namespace Backend
 {
+    // Represents a node that the user has made
     public class GraphNode : IEquatable<GraphNode>
     {
         public string Title { get; private set; }
@@ -61,12 +62,6 @@ namespace Backend
         //  Writes the node, with no edges, to the database
         public IEnumerator CreateInDatabase()
             => Project.User.Database.CreateUnlinkedNode(this);
-
-
-        public IEnumerator CreateInDatabaseCo()
-        {
-            yield return Project.User.Database.CreateUnlinkedNodeCo(this);
-        }
 
         // Adds an extra edge to the node, writing it to the database
         public IEnumerator AddEdgeCo(GraphEdge edge) // works
