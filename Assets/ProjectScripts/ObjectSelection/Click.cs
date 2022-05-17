@@ -44,7 +44,7 @@ public class Click : MonoBehaviour
     void Update()
     {   
         //if delete key is pressed deselect everything
-        if (Input.GetKeyDown("delete")|| Input.GetKeyDown("backspace")) 
+        if (Input.GetKeyDown("delete")) 
         {
             selectedEdge = null;
 
