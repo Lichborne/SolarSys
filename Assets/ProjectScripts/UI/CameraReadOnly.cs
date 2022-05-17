@@ -20,15 +20,7 @@ public class CameraReadOnly : MonoBehaviour
     }
 
     void Update(){
-        if (readOnly)
-        {
-            triggerFunctionality(false);
-        }
-        else
-        {
-            Debug.Log("Turning on functionality");
-            triggerFunctionality(true);
-        }
+        triggerFunctionality(!readOnly);
     }
 
     private void triggerFunctionality(bool trigger)
