@@ -43,6 +43,24 @@ public class Click : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        //if delete key is pressed deselect everything
+        if (Input.GetKeyDown("delete")|| Input.GetKeyDown("backspace")) 
+        {
+            selectedEdge = null;
+
+            if (selectedObjects.Count > 0)
+            {
+                foreach (GameObject obj in selectedObjects) 
+                {
+                    obj.GetComponent<ClickOn>().currentlySelected = false;
+                    obj.GetComponent<ClickOn>().ClickMe();
+                }
+
+                //clear list
+                selectedObject = null;
+                selectedObjects.Clear();
+            }
+        }
         //On left click
         if (Input.GetMouseButtonDown(0))
         {    
@@ -113,8 +131,7 @@ public class Click : MonoBehaviour
                         //clear list
                         selectedObject = null;
                         selectedObjects.Clear();
-                        // textDisplayPanel.SetActive(false);
-                        // textInputPanel.SetActive(false);
+               
                     }
                 }
 

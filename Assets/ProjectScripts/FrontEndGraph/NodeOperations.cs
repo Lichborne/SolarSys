@@ -41,7 +41,7 @@ class NodeOperations : MonoBehaviour
         _panels = GameObject.FindGameObjectsWithTag("Panel");
     }
 
-    void OnMouseOver () 
+    void OnMouseOver () // when mouse is hovering over object
     {
         // depending on the order things are created we may not yet have the panels before start is called,
         // so we do have to poll for this
@@ -49,6 +49,57 @@ class NodeOperations : MonoBehaviour
     
         // don't run if any of the panels are active
         foreach (GameObject p in _panels) if (p.activeSelf) return; 
+        
+        // if we get certain inputs, we add conencted node
+        addConnectedNodeMaybe();
+
+        // upon other inputs, we delete the node hovered-over
+        deleteNodeMaybe();
+        
+    }
+    
+    void OnMouseDown() // On mouse down will be called when ever mouse is pressed down while over the colider
+    {      
+        // don't run if any of the panels are active
+        foreach (GameObject p in _panels) if (p.activeSelf) return; 
+
+        _distance = Vector3.Distance(transform.position, Camera.main.transform.position);
+        _dragging = true;
+    }
+ 
+    void OnMouseUp()
+    {   // On mouse u is called whenever the mouse is released from the planet that it was initially dragging
+        // don't run if any of the panels are active
+        foreach (GameObject p in _panels) if (p.activeSelf) return; 
+
+        _dragging = false;
+        updatePlanetPosition();
+    }
+ 
+    void Update()
+    {
+        // don't run if any of the panels are active
+        foreach (GameObject p in _panels) if (p.activeSelf) return; 
+
+        if (_dragging)
+        { // Get position of input mouse and update planet position accordingly
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Vector3 rayPoint = ray.GetPoint(_distance);
+            transform.position = rayPoint;
+        }
+        
+    }
+
+    // After we have dragged, we up[date the position in the database
+    private void updatePlanetPosition() 
+    {
+        GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
+        Vector3 currentPosition = transform.position;
+        StartCoroutine(attachedNode.UpdateCoordinatesCo((currentPosition.x, currentPosition.y, currentPosition.z)));
+    }
+
+    // add a connected node upon certain inputs
+    private void addConnectedNodeMaybe() {
 
         if (Input.GetMouseButtonDown(2) || Input.GetKeyDown("2"))
         {
@@ -92,30 +143,17 @@ class NodeOperations : MonoBehaviour
                 }
             }
 
-            // // if by some miracle this was impossible, we regretfully place the new node in whatever position it happens to be thrown to last; this is practically impossible.
-            // if(tries == 100) {
-            //     Debug.Log("No good available position found");
-            // }
-            
-            // Create new database node and store it in the newly created gameObject
-            // if we get time, this should be turned into a function as it recurrs
-            GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
-            GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", (NewPosition.x, NewPosition.y, NewPosition.z)); 
-            StartCoroutine(databaseNode.CreateInDatabase());
-            nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
-            
-            //if we get time, this should be turned into a function as it recurrs
-            GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
-            GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
-            StartCoroutine(databaseEdge.CreateInDatabase());
-            GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
-            edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
-
-            //if we get time, this should be turned into a function as it recurrs
-            gameObject.GetComponent<FrontEndNode>().to.Add(nodeObject);
-            gameObject.GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
-            nodeObject.GetComponent<FrontEndNode>().from.Add(gameObject);
+            // if by some miracle this was impossible, we regretfully place the new node in whatever position it happens to be thrown to last; this is practically impossible.
+            if(tries == 100) {
+                Debug.Log("No good available position found");
+            }
+            // add a connected node
+            addNodeWithEdge(NewPosition);
         }
+    }
+
+    // delete node hovered over upon certain inputs
+    private void deleteNodeMaybe() {
 
         // if we are hovering over a node, and we click delete, it gets deleted, poof. 
         // quite straightforward
@@ -162,46 +200,37 @@ class NodeOperations : MonoBehaviour
             
         }
     }
-    
-    void OnMouseDown() // On mouse down will be called when ever mouse is pressed down while over the colider
-    {      
-        // don't run if any of the panels are active
-        foreach (GameObject p in _panels) if (p.activeSelf) return; 
 
-        _distance = Vector3.Distance(transform.position, Camera.main.transform.position);
-        _dragging = true;
-    }
- 
-    void OnMouseUp()
-    { // On mouse u is called whenever the mouse is released from the planet that it was initially dragging
-        // don't run if any of the panels are active
-        foreach (GameObject p in _panels) if (p.activeSelf) return; 
-
-        _dragging = false;
-        updatePlanetPosition();
-    }
- 
-    void Update()
+    // add a node connected to the current game object as a child
+    private void addNodeWithEdge(Vector3 NewPosition) 
     {
-        // don't run if any of the panels are active
-        foreach (GameObject p in _panels) if (p.activeSelf) return; 
-
-        if (_dragging)
-        { // Get position of input mouse and update planet position accordingly
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Vector3 rayPoint = ray.GetPoint(_distance);
-            transform.position = rayPoint;
-        }
+        // we add a node with an edge pointing to it from the current object in this new position
+        // Create new database node and store it in the newly created gameObject
+        GameObject nodeObject = Instantiate(_nodePrefab, NewPosition, Quaternion.identity);
+        GraphNode databaseNode = new GraphNode(FindObjectsOfType<LoadGraph>()[0].graph, "New Node", ". . .", (NewPosition.x, NewPosition.y, NewPosition.z)); 
+        StartCoroutine(CreateAndAddEdge(nodeObject, databaseNode, NewPosition));
         
     }
 
-    // After we have dragged, we up[date the position in the database
-    private void updatePlanetPosition() 
+    private IEnumerator CreateAndAddEdge(GameObject nodeObject, GraphNode node, Vector3 NewPosition)
     {
-        GraphNode attachedNode = gameObject.GetComponent<FrontEndNode>().getDatabaseNode();
-        Vector3 currentPosition = transform.position;
-        StartCoroutine(attachedNode.UpdateCoordinatesCo((currentPosition.x, currentPosition.y, currentPosition.z)));
+        yield return node.CreateInDatabase();
+        yield return addConnectedEdge(nodeObject, node, NewPosition);
     }
 
+    private IEnumerator addConnectedEdge(GameObject nodeObject, GraphNode databaseNode, Vector3 NewPosition) 
+    {
+        nodeObject.GetComponent<FrontEndNode>().setDatabaseNode(databaseNode);
+        
+        GameObject edgeObject = Instantiate(_edgePrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
+        GraphEdge databaseEdge = new GraphEdge("New Edge", ". . .", gameObject.GetComponent<FrontEndNode>()._databaseNode, databaseNode);
+        yield return databaseEdge.CreateInDatabase();
+        GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
+        edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(false, databaseEdge, textObject, gameObject, nodeObject, 90);
+
+        gameObject.GetComponent<FrontEndNode>().to.Add(nodeObject);
+        gameObject.GetComponent<FrontEndNode>().edgeOut.Add(edgeObject);
+        nodeObject.GetComponent<FrontEndNode>().from.Add(gameObject);
+    }
 }
  
