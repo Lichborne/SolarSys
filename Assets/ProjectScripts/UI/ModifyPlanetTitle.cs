@@ -52,6 +52,7 @@ public class ModifyPlanetTitle: MonoBehaviour
             //     Debug.Log("Please select a planet first");
             // }
         } 
+        Camera.main.GetComponent<CameraReadOnly>().readOnly = false;
     }
 
     private GameObject findCurrentlySelectedPlanetorEdge()
