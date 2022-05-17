@@ -25,12 +25,14 @@ public class ModifyPlanetDescription : MonoBehaviour
             if (currentlySelectedObject.tag == "Node")
             {
                 GraphNode attachedNode = currentlySelectedObject.GetComponent<FrontEndNode>().getDatabaseNode();
-                StartCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
+                Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
+                // StartCoroutine(attachedNode.UpdateDescriptionCo(descriptionEntry));
             }
             else if (currentlySelectedObject.tag == "Edge")
             {
                 GraphEdge attachedEdge = currentlySelectedObject.GetComponent<FrontEndEdge>()._databaseEdge;
-                StartCoroutine(attachedEdge.UpdateDescriptionCo(descriptionEntry));
+                Camera.main.GetComponent<CoroutineRunner>().RunCoroutine(attachedEdge.UpdateDescriptionCo(descriptionEntry));
+                // StartCoroutine(attachedEdge.UpdateDescriptionCo(descriptionEntry));
             }
 
 
