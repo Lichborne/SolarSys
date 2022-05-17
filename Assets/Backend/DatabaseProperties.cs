@@ -12,7 +12,7 @@ namespace Backend {
             int portNumber = 7474,
             string databaseName = "neo4j",
             string username = "neo4j",
-            string password = "REDACTED"
+            string password = "s3cr3t"
             ) 
         {
 
