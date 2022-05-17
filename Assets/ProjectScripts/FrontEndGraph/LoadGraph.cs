@@ -44,26 +44,22 @@ public class LoadGraph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // string projectTitle = "Test Project";
-        // graph = new GraphProject(projectTitle);
-        // // graphProject.Paths will give you all the PathRoots in the GraphProject
-        // StartCoroutine(graph.ReadFromDatabase(displayProject));
-
-        // // List<string> pathNames = graphProject.Paths.Select(path => path.Title).ToList(); // gives you all the names of all the paths
-        _authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
+       _authenticateUser = GameObject.FindObjectOfType<AuthenticateUser>();
     }
 
+    // load the relevant project 
     public void LoadProject(string userEmail, string projectTitle) 
-    {
-        clearSpace();
+    {   
+        clearSpace(); // clear obejcts in world space when loading somethig else
 
         graph = new GraphProject(userEmail, projectTitle);
         StartCoroutine(graph.ReadFromDatabase(displayProject));
     }
 
+    // load a given path currently selected
     public void LoadPath(PathRoot selectedPath) 
     {
-        clearSpace();
+        clearSpace(); // clear obejcts in world space when loading somethig else
         StartCoroutine(selectedPath.ReadFromDatabase(displayProject));
     }
 
@@ -97,11 +93,13 @@ public class LoadGraph : MonoBehaviour
 
             // this is needed so that edgeObject will be instantiated in the right context
             GameObject rightPrefab = _edgePreFab;
+
             // if it is a self reference, we need a self reference edge, otherwise a normal edge
             if (parentIndex == childIndex) 
             {
                 rightPrefab = _selfReferencePreFab;
                 isCurvedEdge = false; // defensive
+                // if there is already such a self reference, we need to do a changeEdge to arrange edges appropriately
                 if (_graphNodes[parentIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[childIndex]) || 
                         _graphNodes[childIndex].GetComponent<FrontEndNode>().from.Contains(_graphNodes[parentIndex])) 
                 {
@@ -117,14 +115,11 @@ public class LoadGraph : MonoBehaviour
                 isCurvedEdge = true;
             } 
             
-            //if we get time, this should be turned into a function as it recurrs
+            // this might be preferable as as eparate function as it recurs; however, it only recurs across files, and always with variations, so we decided to forgo this
             GameObject textObject = Instantiate(_textObject, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             GameObject edgeObject = Instantiate(rightPrefab, new Vector3(UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10), UnityEngine.Random.Range(-10,10)), Quaternion.identity);
             edgeObject.GetComponent<FrontEndEdge>().InstantiateEdge(isCurvedEdge, databaseEdge, textObject, _graphNodes[parentIndex], _graphNodes[childIndex], 0);
             ChangeText.ChangeInputFieldText(edgeObject.GetComponent<FrontEndEdge>()._textObject, edgeObject.GetComponent<FrontEndEdge>()._databaseEdge.Title);
-            //depricated
-            //edgeObject.GetComponent<StoreParentChild>().parent = _graphNodes[parentIndex];
-            //edgeObject.GetComponent<StoreParentChild>().child = _graphNodes[childIndex];
 
             //if we get time, this should be turned into a function as it recurrs
             _graphNodes[parentIndex].GetComponent<FrontEndNode>().to.Add(_graphNodes[childIndex]);
@@ -133,6 +128,8 @@ public class LoadGraph : MonoBehaviour
         }
 
     }
+
+    // clear space of objects when summoning a different project or path
     private void clearSpace() {
 
         foreach (GameObject o in GameObject.FindObjectsOfType<GameObject>()) {

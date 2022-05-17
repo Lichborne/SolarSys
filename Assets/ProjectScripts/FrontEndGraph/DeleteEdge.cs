@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Handles deleting edges; does not reposition remaining edges because it was very involved and adds little, but functionality
+// is implemented below; only it is a little too computationally taxing for something so minor.
 public class DeleteEdge : MonoBehaviour
 {
     // The objects the class at some point may have to instantiate; must be public so that it can be set from editor.
@@ -25,7 +27,8 @@ public class DeleteEdge : MonoBehaviour
         // don't run if any of the panels are active
         foreach (GameObject p in _panels) if (p.activeSelf) return; 
 
-         if (Input.GetKeyDown("delete") || Input.GetKeyDown("backspace")) 
+        //this is fine as a loop here as it is the only functionality
+        if (Input.GetKeyDown("delete") || Input.GetKeyDown("backspace")) 
          {
             
             gameObject.GetComponent<FrontEndEdge>()._child.GetComponent<FrontEndNode>().from.Remove(gameObject.GetComponent<FrontEndEdge>()._parent);
@@ -33,8 +36,6 @@ public class DeleteEdge : MonoBehaviour
             gameObject.GetComponent<FrontEndEdge>()._parent.GetComponent<FrontEndNode>().to.Remove(gameObject.GetComponent<FrontEndEdge>()._child);
 
             gameObject.GetComponent<FrontEndEdge>()._parent.GetComponent<FrontEndNode>().edgeOut.Remove(gameObject);
-
-            // repositionOrRemakeEdges(gameObject.GetComponent<FrontEndEdge>()._parent, gameObject.GetComponent<FrontEndEdge>()._child);
 
             // We need these first two lines to avoid exceptions because Update() is called on a non-null text object which has already been destroyed
             GameObject objectRef = gameObject.GetComponent<FrontEndEdge>()._textObject;
@@ -45,6 +46,7 @@ public class DeleteEdge : MonoBehaviour
         }
     }
 
+    //reposition and remake edges upon deletion; not used in the end because it adds little and is actually quite involved
     void repositionOrRemakeEdges(GameObject fromNode, GameObject toNode) 
     {
         List<GameObject> allAdjacentEdgesFrom = findAllWithChildAndKeep(fromNode, toNode);

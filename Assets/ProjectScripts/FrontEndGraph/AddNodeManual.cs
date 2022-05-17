@@ -4,6 +4,8 @@ using UnityEngine;
 using Backend;
 using UnityEngine.UI;
 
+// Handles adding nodes manually with keys 1 and n 
+// this functionality is separated out ebcause it is camera-position dependent and not node object dependent
 public class AddNodeManual : MonoBehaviour
 {
     
