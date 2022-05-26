@@ -36,3 +36,6 @@ available in GraphDB, but is critical to developing a compact and informative mi
 
 https://user-images.githubusercontent.com/57185163/170499995-730a3ab9-54d6-4d80-8f32-2c0a4641cb85.mp4
 
+p.thick {
+  font-weight: bold;
+}
