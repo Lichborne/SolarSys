@@ -7,7 +7,7 @@ The objective of this project was to create a three-dimensional mind mapping app
 ## Note on Design Choices:
 The overall software organisation is shown below: 
 
-![SoftwareOrganisation](https://user-images.githubusercontent.com/57185163/170499442-fb9698aa-5b33-4c89-9625-1e8f59332583.png)
+<img src = https://user-images.githubusercontent.com/57185163/170499442-fb9698aa-5b33-4c89-9625-1e8f59332583.png width =200>
 
 We designed the frontend in Unity, a video game engine. We wished to create a
 3D environment with precise, user-friendly navigation, appropriate visualisation capabilities and a nice
