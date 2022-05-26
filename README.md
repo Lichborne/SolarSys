@@ -1,4 +1,8 @@
 # SolarSystem
+
+<p align="center">
+    ## Overview
+</p>
 The objective of this project was to create a three-dimensional mind mapping application called Mudimaap (MUltiDImensional MApping APplication). Mind maps are graphical tools commonly used to demonstrate relationships between different ideas or entities. They are ubiquitous, used in businesses to help manage the distribution of work, and in educational environments to aid the comprehension of a topic. Mind maps traditionally represent data in two dimensions, which offers the advantage of being quick to construct and simple to view. As a topic grows in complexity, 2D mind maps may suffer from becoming too “cluttered”, an issue that can be remedied by adding a third dimension to the mind map providing more space for additional data. This is the impetus behind the development Mudimaap.
 
 <p align="center">
@@ -6,7 +10,10 @@ The objective of this project was to create a three-dimensional mind mapping app
 </p>
 
 
-## Note on Design Choices:
+<p align="center">
+    ## Note on Design Choices
+</p>
+
 The overall software organisation is shown below: 
 
 <p align="center">
