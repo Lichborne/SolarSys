@@ -18,10 +18,12 @@ We designed the frontend in Unity, a video game engine. We wished to create a
 appearance, while retaining good response times is challenging, and Unity provides a solid framework
 for this. Unity was chosen over more simplistic solutions such as direct implementation in WebGL
 and WebAssembler due to the helpful functionalities it provides by default.
+
+
 The front-end communicates with the NoSQL database Neo4j, where the nodes and relationships are stored.
 Neo4j was chosen over a traditional SQL database due to its flexibility in modelling relationships between entities. In addition, it was chosen over GraphDB
 (another graph database) because it allowed edges between nodes to hold data. This feature is not
-available in GraphDB, but is critical to developing a compact and informative mind map
+available in GraphDB, but is critical to developing a compact and informative mind map.
 
 
 
